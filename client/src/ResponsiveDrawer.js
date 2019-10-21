@@ -1,0 +1,63 @@
+import React from 'react';
+import {drawerWidth} from './NavBar';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+    drawer: {
+        [theme.breakpoints.up('sm')]: {
+            width: drawerWidth,
+            flexShrink: 0,
+        },
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    }
+}));
+
+function ResponsiveDrawer(props) {
+    const { container } = props;
+    const classes = useStyles();
+    const theme = useTheme();
+
+    return (
+        // original z-index is 1200 for the Drawer, must be lowered for the lightbox to be fully visible
+        <div>
+
+            <nav className={classes.drawer} aria-label="mailbox folders">
+                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+                <Hidden smUp implementation="css">
+                    <Drawer
+                        container={container}
+                        variant="temporary"
+                        anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                        open={props.mobileOpen}
+                        onClose={props.dispose}
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        ModalProps={{
+                            keepMounted: true, // Better open performance on mobile.
+                        }}
+                    >
+                        {props.children}
+                    </Drawer>
+                </Hidden>
+                <Hidden xsDown implementation="css">
+                    <Drawer
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                        variant="permanent"
+                        open
+                    >
+                        {props.children}
+                    </Drawer>
+                </Hidden>
+            </nav>
+        </div>
+    );
+}
+
+export default ResponsiveDrawer;

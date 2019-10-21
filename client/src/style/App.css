@@ -1,0 +1,65 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 0px;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: #eeeeee;
+}
+
+/*
+ TODO: separate into elements, e.g only apply hyphens to <p> and not <pre> (which is for code snippets)
+  (applying hyphens to a URL and code snippets will break the functionality of the URL or code )
+  */
+.hyphenate {
+  /* Careful, this breaks the word wherever it is without a hyphen */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks */
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
+.hyphenate code {
+  background-color: #e4e4e4;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  -moz-hyphens: none;
+  hyphens: none;
+}
