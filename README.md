@@ -2,11 +2,15 @@
 
 Simple CMS for maintaining a blog.
 
+I wanted something exclusive and unique to provide a platform for my blog and I also wanted to learn React.
+The best way to learn a tech stack is to use it, so I did. My primitive CMS was born.
 Basic features include adding/editing/deleting posts and photo galleries. 
-Planned features include adding/editing/deleting comments on the reader side, and approving/rejecting 
-pending comments on the admin side.
+Planned features include handling comments and integrating other social media functions to allow reader engagement.
 
-This project uses the MERN stack.
+This project uses the MERN stack (MongoDB, ExpressJS, ReactJS, NodeJS).
+Although this project doesn't use Redux/Router at the moment, it might be refactored to do so at a later point in time.
+(I didn't like the idea of jumping to those libraries straight away. 
+They are not a part of core react, so one should be able to write something neat without them.)
 
 # Development
 
@@ -19,7 +23,7 @@ In the project directory, you can run:
 ### `. .drawdeps`
 
 Draws a basic dependency graph of the React components used. 
-It does not include imported packages in the output graph.
+It does not include external libraries in the output graph.
 
 ### `npm start`
 
@@ -28,6 +32,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
+
+### `nodemon server.js`
+
+Runs the dev server.<br>
+Open [http://localhost:4000/feed](http://localhost:4000/feed) to view the feed API endpoint.
+
+The page will reload if you make edits.<br>
 
 ### `npm test`
 
