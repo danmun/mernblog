@@ -35,7 +35,7 @@ function Post (props) {
     }
 
     let createdOn = new Date(post.createdOn).toLocaleString()
-    let editedOn = post.editedOn ? new Date(post.editedOn).toLocaleString() : null
+    let editedOn = post.displayEditDate ? (post.editedOn ? new Date(post.editedOn).toLocaleString() : null) : null
     return(
         <React.Fragment> {/* this padding should match with padding in app.js' swipeableview */}
             <Grid container spacing={1}>

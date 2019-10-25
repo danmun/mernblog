@@ -40,7 +40,8 @@ const upload = multer({
 //  therefore, we must introduce ROLE BASED ACCESS CONTROL in case we want to open registrations to public
 require("dotenv").config()
 
-// TODO: WRITE CODE TO MAKE SURE THESE USERS EXIST
+// NOTE: if photos directory does NOT exist in the deployed github branch, photo uploads will fail
+// TODO: WRITE CODE TO MAKE SURE THESE DIRECTORIES EXIST
 app.use(express.json()); // same as express.bodyParser
 app.use(express.static(path.join(__dirname, "client", "build")))
 app.use(express.static(path.join(__dirname, "client", "public", "static")))
@@ -160,6 +161,7 @@ app.put('/edit', withAuth, async (req, res) => {
                     post.plaintext = newPost.plaintext
                     post.tags = newPost.tags
                     post.editedOn = newPost.editedOn
+                    post.displayEditDate = newPost.displayEditDate
 
                     post.save()
                     res.send({

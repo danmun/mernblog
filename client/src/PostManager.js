@@ -15,7 +15,9 @@ class PostManager extends React.Component{
     // TODO/FIXME: if post edited from post view, then return to feed, the feed still shows the old version of the post
     // TODO: onSubmit, if edited content same as before, don't submit, just exit the modal
     handleSubmit(form){
-        let {editorState, editingPostId, title, albumTitle, createAlbumChecked, selectedDate, selectedDateChecked, tags} = form
+        let {editorState, editingPostId, title,
+            albumTitle, createAlbumChecked, displayEditDateChecked,
+            selectedDate, selectedDateChecked, tags} = form
 
         // if everything untouched, do nothing
         if(!editorState) return;
@@ -74,6 +76,7 @@ class PostManager extends React.Component{
             title: title,
             album: album,
             date: selectedDate,
+            displayEditDate: displayEditDateChecked,
             tags: tags.split("#").filter(item => item) // split string of tags into hashtagless array
         }
 

@@ -21,7 +21,7 @@ dev_endpoints.js
 /.drawdeps
 blog_data.js
 notes.txt
-TODO
+TODO.txt
 
 npm-debug.log*
 yarn-debug.log*

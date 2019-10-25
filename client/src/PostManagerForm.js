@@ -56,12 +56,16 @@ class PostManagerForm extends React.Component {
         let selectedDate = Date.now()
         let selectedDateChecked = false
         let createAlbumChecked = false
+        let displayEditDateChecked = false
+        let showDisplayEditDate = false
         let albumTitle = null
         let title = ""
         let tags = ""
 
         if(props.editingPost != null){
+            showDisplayEditDate = true
             editingPostId = props.editingPost._id
+            displayEditDateChecked = props.editingPost.displayEditDate
             let content = htmlToDraft(props.editingPost.html)
             if(content){
                 editorState = EditorState.createWithContent(ContentState.createFromBlockArray(content.contentBlocks))
@@ -73,6 +77,8 @@ class PostManagerForm extends React.Component {
         this.state = {
             editingPostId: editingPostId,
             title: title, // textfield value
+            showDisplayEditDate: showDisplayEditDate,
+            displayEditDateChecked: displayEditDateChecked,
             selectedDate: selectedDate,
             selectedDateChecked: selectedDateChecked,
             createAlbumChecked: createAlbumChecked,
@@ -90,6 +96,7 @@ class PostManagerForm extends React.Component {
         this.onEditorStateChange = this.onEditorStateChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleDateChangeChecked= this.handleDateChangeChecked.bind(this);
+        this.handleShowDisplayEditDate = this.handleShowDisplayEditDate.bind(this);
         this.handleCreateAlbumChecked = this.handleCreateAlbumChecked.bind(this);
 
         this.changeSlide = this.changeSlide.bind(this);
@@ -110,6 +117,11 @@ class PostManagerForm extends React.Component {
     handleDateChangeChecked(event){
         let flag = event.target.checked
         this.setState({selectedDateChecked: flag})
+    }
+
+    handleShowDisplayEditDate(event){
+        let flag = event.target.checked
+        this.setState({displayEditDateChecked: flag})
     }
 
     handleCreateAlbumChecked(event){
@@ -301,6 +313,22 @@ class PostManagerForm extends React.Component {
                             />
                         }
                         label="Create album"
+                    />
+                </div>
+                <div style={{display: "inline-block", verticalAlign: "middle", marginLeft: 20}}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={this.state.displayEditDateChecked}
+                                onChange={this.handleShowDisplayEditDate}
+                                value="checkedB"
+                                color="primary"
+                                inputProps={{
+                                    'aria-label': 'secondary checkbox',
+                                }}
+                            />
+                        }
+                        label="Display edit date on post page"
                     />
                 </div>
             </div>
