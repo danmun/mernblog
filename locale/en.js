@@ -7,6 +7,8 @@ const STRINGS = {
     NEWPOST_SUCCESS: "Successfully posted to the feed!",
     NEWPOST_AUTH_FAILURE: "You must log in to submit new posts.",
 
+    IMGUR_ID_REQUEST_AUTH_FAILURE: "You must be logged in to upload images to the blog.",
+
     EDITPOST_FAILURE: "Something has gone wrong while editing the post.",
     EDITPOST_SUCCESS: "Successfully edited post!",
     EDITPOST_AUTH_FAILURE: "You must log in to edit posts.",

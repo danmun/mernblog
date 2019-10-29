@@ -9,6 +9,8 @@ class PostManager extends React.Component{
         super(props)
         this.handleSubmit = this.handleSubmit.bind(this);
         this.uploadImageCallback = this.uploadImageCallback.bind(this);
+        this.uploadImage = this.uploadImage.bind(this);
+        this.getImgurClientId = this.getImgurClientId.bind(this);
         this.getPhotosFromRawContent = this.getPhotosFromRawContent.bind(this);
     }
 
@@ -110,21 +112,31 @@ class PostManager extends React.Component{
         return photos
     }
 
+    // TODO: query imgur client id while logged in, then do upload image
     /**
      * Upload image to server
      * @param file the file to upload
      * @returns {Promise<any>}
      */
-    uploadImageCallback(file) {
+    async uploadImageCallback(file) {
+        console.log(1)
+        let clientId = await this.getImgurClientId()
+        return this.uploadImage(clientId, file)
+    }
+
+    uploadImage(imgurClientId, file){
         return new Promise(
             (resolve, reject) => {
+                console.log(7)
                 const xhr = new XMLHttpRequest();
-                // TODO: change this to our own server's image-upload endpoint
-                xhr.open('POST', '/uploadImage');
+                xhr.open('POST', 'https://api.imgur.com/3/image');
+                xhr.setRequestHeader('Authorization', 'Client-ID ' + imgurClientId);
                 const data = new FormData();
                 data.append('image', file);
                 xhr.send(data);
+                console.log(8)
                 xhr.addEventListener('load', () => {
+                    console.log(9)
                     const response = JSON.parse(xhr.responseText);
                     resolve(response);
                 });
@@ -134,6 +146,20 @@ class PostManager extends React.Component{
                 });
             }
         );
+    }
+
+     async getImgurClientId(){
+        return fetch('/getImgurClientId',
+            {credentials: 'include'})
+            .then(raw => {
+                return raw.json()
+            }).then(res => {
+                return res.imgur_client_id
+            })
+            .catch(err => {
+                console.error(err);
+                return err
+            });
     }
 
     render(){

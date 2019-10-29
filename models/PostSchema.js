@@ -34,7 +34,7 @@ let PostSchema = new mongoose.Schema({
     displayEditDate: {
         type: Boolean,
         required: false,
-        default: true
+        default: false
     },
     numComments: {
         type: Number,

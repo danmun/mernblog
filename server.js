@@ -36,12 +36,9 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-// TODO: right now, all registered user can access the ADMIN API! we're assuming the only registered user is the admin!
-//  therefore, we must introduce ROLE BASED ACCESS CONTROL in case we want to open registrations to public
 require("dotenv").config()
 
-// NOTE: if photos directory does NOT exist in the deployed github branch, photo uploads will fail
-// TODO: WRITE CODE TO MAKE SURE THESE DIRECTORIES EXIST
+// NOTE: heroku filesystem is not persistent; not suitable for serving user uploaded content
 app.use(express.json()); // same as express.bodyParser
 app.use(express.static(path.join(__dirname, "client", "build")))
 app.use(express.static(path.join(__dirname, "client", "public", "static")))
@@ -240,18 +237,15 @@ app.delete('/delete', withAuth, async (req, res) => {
     }
 });
 
-app.post('/uploadImage', upload.single('image'), function (req, res, next) {
-    let raw =
-        {
-            data: {
-                // TODO: change host as required
-                // use full path if necessary e.g. http://localhost:4000/ filename etc
-                link: webhost + req.file.filename
-            },
-            status: 200,
-            success: true,
-        }
-    res.send(raw)
+// todo: query imgur client id while logged in, then upload image
+app.get('/getImgurClientId', withAuth, function (req, res, next) {
+    if(res.statusCode === 200){
+        res.send({
+            imgur_client_id: imgur_client_id
+        })
+    }else{
+        res.send(STRINGS.IMGUR_ID_REQUEST_AUTH_FAILURE)
+    }
 })
 
 function constructPost(form){
@@ -281,18 +275,18 @@ function constructAlbum(form){
             hidden: albumDetails.hidden
         }
     )
-
 }
 
 /**
  * START APP
  * @type {string}
  */
-const webhost = process.env.WEBHOST || "http://localhost:4000/"
-const port = process.env.PORT || 4000
-const mongo_user = process.env.MONGO_USER || "devuser";
-const mongo_pass = process.env.MONGO_PASS || "devpass";
-const mongo_host = process.env.MONGO_HOST || "cluster0-60whi.mongodb.net";
+const dev_config = require("./dev_config")
+const port = process.env.PORT || dev_config.PORT
+const imgur_client_id = process.env.IMGUR_CLIENT_ID || dev_config.IMGUR_CLIENT_ID
+const mongo_user = process.env.MONGO_USER || dev_config.MONGO_USER
+const mongo_pass = process.env.MONGO_PASS || dev_config.MONGO_PASS
+const mongo_host = process.env.MONGO_HOST || dev_config.MONGO_HOST
 const uri = "mongodb+srv://" + mongo_user + ":" + mongo_pass + "@" + mongo_host + "/test?retryWrites=true&w=majority"
 
 mongoose.connect(uri, function(err) {

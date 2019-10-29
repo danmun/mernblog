@@ -20,6 +20,7 @@ dev_endpoints.js
 .env.production.local
 /.drawdeps
 blog_data.js
+dev_config.js
 notes.txt
 TODO.txt
 
