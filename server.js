@@ -281,7 +281,25 @@ function constructAlbum(form){
  * START APP
  * @type {string}
  */
-const dev_config = require("./dev_config")
+let dev_config = {}
+const fs = require('fs')
+const dev_config_import = './dev_config'
+
+try {
+    dev_config = {
+        WEBHOST: "http://localhost:4000/",
+        PORT: 4000,
+        IMGUR_CLIENT_ID: "none",
+        MONGO_USER: "user",
+        MONGO_PASS: "pass",
+        MONGO_HOST: "mongodb.com"
+    }
+    if (fs.existsSync(dev_config_import + ".js")) {
+        dev_config = require(dev_config_import)
+    }
+} catch(err) {
+    console.log(err)
+}
 const port = process.env.PORT || dev_config.PORT
 const imgur_client_id = process.env.IMGUR_CLIENT_ID || dev_config.IMGUR_CLIENT_ID
 const mongo_user = process.env.MONGO_USER || dev_config.MONGO_USER
