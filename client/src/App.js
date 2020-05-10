@@ -224,6 +224,8 @@ class App extends React.Component{
         })
     }
 
+    // this is only called when post was actually deleted
+    // in which case, we can redirect to front page
     closeDeletePost(post){
         // TODO maybe do something with the post argument, e.g. display success/error message
         this.setState({
@@ -238,6 +240,7 @@ class App extends React.Component{
                 postDeletion: false,
             }
         })
+        this.props.history.push("/")
     }
 
     closePostManager(stateChanged, editedPost){
@@ -372,7 +375,6 @@ class App extends React.Component{
     }
 
     renderBlog(){
-        console.log("rendering blog")
         let onEdit = this.state.isAdmin ? this.openEditPost : null
         let onDelete = this.state.isAdmin ? this.openDeletePost : null
         let external_visit = this.props.location.pathname.includes("post") && !this.state.slideState.itemToShow
@@ -380,7 +382,14 @@ class App extends React.Component{
         // if post is requesed from an externally clicked link (e.g. someone gave me a link and I click it)
         // then display just the post, otherwise display the feed!!
         if(external_visit){
-            return(<About isAdmin={this.state.isAdmin}/>)
+            // dynamic route, let it handle via the router so we can easily access :id
+            return(
+                <Route path='/post/:id' render={() => {
+                    return(<Post onEdit={onEdit}
+                          onDelete={onDelete}
+                          readPost={this.viewPostAndUpdateSlide}/>)
+                }}/>
+            )
         }else{
             return(
                 <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={{maxWidth: "96vw"}}>

@@ -70,6 +70,23 @@ app.get('/feed', async function (req, res) {
     }
 });
 
+app.get('/post', async function (req, res) {
+    const post = await Post.findOne({_id: req.query.id})
+    if(post){
+        try {
+            res.send(post);
+        } catch (err) {
+            res.status(500).send(err);
+        }
+    }else{
+        try {
+            res.status(404).send({error: "This post no longer exists."})
+        } catch (err) {
+            res.status(500).send(err);
+        }
+    }
+});
+
 app.get('/about', async function (req, res) {
     const about = await About.find({})
     try {
