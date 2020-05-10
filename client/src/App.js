@@ -380,7 +380,7 @@ class App extends React.Component{
         // if post is requesed from an externally clicked link (e.g. someone gave me a link and I click it)
         // then display just the post, otherwise display the feed!!
         if(external_visit){
-            return(<PostDummy/>)
+            return(<About isAdmin={this.state.isAdmin}/>)
         }else{
             return(
                 <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={{maxWidth: "96vw"}}>
