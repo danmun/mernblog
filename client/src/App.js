@@ -10,9 +10,6 @@ import {toggleCarousel} from "./utils";
 import Feed from './Feed'
 import Post from './Post'
 import Gallery from "./Gallery";
-import ResponsiveDrawer from "./ResponsiveDrawer";
-import Sidebar from "./Sidebar";
-import NavBar from "./NavBar";
 import AdminModal from "./AdminModal";
 import CreateAlbum from "./CreateAlbum";
 import { withStyles } from '@material-ui/core/styles';
