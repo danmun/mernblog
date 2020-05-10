@@ -483,14 +483,14 @@ class App extends React.Component{
 
     render(){
         const { classes } = this.props
-        let {pageToShow, mobileOpen, modal } = this.state;
+        let {pageToShow, mobileOpen, modal, isAdmin} = this.state;
         return(
             <div className={classes.root}>
                 <CssBaseline/>
 
                 {/* zIndex lowered from 1200 to 1000 so that the LightBox can display images full screen*/}
                 <div style={{zIndex: 1000}}>
-                    <Menu navigator={this.navigator} adminNav={this.state.isAdmin ? this.renderAdminNav() : null}/>
+                    <Menu navigator={this.navigator} adminNav={isAdmin ? this.renderAdminNav() : null}/>
                 </div>
 
 
@@ -523,7 +523,9 @@ class App extends React.Component{
                     <Switch>
                         {/* order of Routes ARE IMPORTANT*/}
                         <Route exact path='/about' render={this.renderAbout} key={this.props.location.pathname}/>
-                        <Route exact path='/login' render={this.renderLogin} key={this.props.location.pathname}/>
+                        {!isAdmin &&
+                            <Route exact path='/login' render={this.renderLogin} key={this.props.location.pathname}/>
+                        }
                         <Route path='/gallery' render={this.renderGallery}/>
                         <Route path='/' render={this.renderBlog}/>
                     </Switch>
