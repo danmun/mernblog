@@ -7,7 +7,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-
+import {withRouter} from 'react-router-dom'
 
 // TODO: it might be bad practice to rely on props in the render of a class based component as props
 //  might not be up to date...
@@ -77,25 +77,33 @@ class PhotoViewer extends React.Component{
                 nextSrc={images[(photoIndex + 1) % images.length]}
                 prevSrc={images[(photoIndex + images.length - 1) % images.length]}
                 onCloseRequest={() => this.setState({ isOpen: false })}
-                onMovePrevRequest={() =>
-                    this.setState({
-                        photoIndex: (photoIndex + images.length - 1) % images.length,
-                    })
-                }
-                onMoveNextRequest={() =>
-                    this.setState({
-                        photoIndex: (photoIndex + 1) % images.length,
-                    })
-                }
+                onMovePrevRequest={() => this.updateStateAndUrl("prev", images, photoIndex)}
+                onMoveNextRequest={() => this.updateStateAndUrl("next", images, photoIndex)}
             />);
     }
 
+    updateStateAndUrl(newDirection, images, index){
+        console.log(images[index])
+        let photoIndex = index % images.length
+        if(newDirection === "prev"){
+            photoIndex = (index + images.length - 1) % images.length
+        }else if(newDirection === "next"){
+            photoIndex = (index + 1) % images.length
+        }
+        this.setState({
+            photoIndex: photoIndex
+        })
+        this.props.history.push("/gallery/" + images[index])
+    }
+
     toggleLightbox(id){
+        console.log("toggled")
         if(this.state.isOpen){
             return;
         }
         this.setState({isOpen: true, photoIndex: id})
+        this.props.history.push("/gallery/" + this.props.album.photos[id])
     }
 }
 
-export default PhotoViewer;
+export default withRouter(PhotoViewer);
