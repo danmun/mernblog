@@ -80,7 +80,7 @@ class Gallery extends React.Component{
                     </SlideContainer>
 
                     <SlideContainer>
-                        {albumToShow != null ?
+                        {albumToShow ?
                             <PhotoViewer album={albumToShow}>
                                 <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                                     <Button onClick={() => this.props.viewAlbum("prev", albumToShow)} size="small">

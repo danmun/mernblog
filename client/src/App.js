@@ -22,6 +22,10 @@ import SlideContainer from "./SlideContainer";
 import Grid from '@material-ui/core/Grid';
 import Login from "./Login";
 import About from "./About";
+import Menu from "./Menu";
+import {Switch, withRouter, Route} from 'react-router-dom'
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+import Fucking from "./Fucking";
 
 export const PAGES = {
     FEED: 1,
@@ -58,13 +62,14 @@ const initialModal = {
     editingPost: null,
 }
 
-// TODO: rename pageToShow to currentPage
 const initialSlideState = {
     slideIndex: 0,
     slideNavi: null,
     slideCount: 3,
     itemToShow: null
 }
+
+const routes = ["/", "/post"];
 
 class App extends React.Component{
     constructor(props){
@@ -74,11 +79,10 @@ class App extends React.Component{
         //  e.g. modal = {open, title, galleryCreation, postCreation, editingPost}
         this.state = {
             isAdmin: false, // for visual purpose only (e.g. show/not show admin bar), further auth done on API calls
-            pageToShow: PAGES.FEED,
-            mobileOpen: false,
             refreshFeed: false,
             modal: initialModal,
             slideState: initialSlideState,
+            showCarousel: false
         }
 
         this.checkLoggedIn = this.checkLoggedIn.bind(this);
@@ -102,8 +106,6 @@ class App extends React.Component{
         this.openCreateAlbum = this.openCreateAlbum.bind(this);
         this.submitAlbum = this.submitAlbum.bind(this);
 
-        this.setPageToShow = this.setPageToShow.bind(this);
-        this.setMobile = this.setMobile.bind(this);
         this.setRefreshFeed = this.setRefreshFeed.bind(this);
 
         this.renderBlog = this.renderBlog.bind(this);
@@ -111,10 +113,18 @@ class App extends React.Component{
         this.renderAbout = this.renderAbout.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
         this.renderAdminNav = this.renderAdminNav.bind(this);
+
+        this.post_ = this.post_.bind(this);
+        this.feed_ = this.feed_.bind(this);
     }
 
     componentDidMount() {
         this.checkLoggedIn()
+        setTimeout(() => {
+            this.setState({
+                showCarousel: true,
+            });
+        }, 0);
     }
 
     checkLoggedIn(){
@@ -162,8 +172,42 @@ class App extends React.Component{
     }
 
     readAndUpdateSlide(newDirection, post){
+        console.log("read entered")
         let slideState = this.readPost(newDirection, post)
-        this.setState({slideState: slideState})
+        // we use this history (url) manipulation because the sliding animation is only cool if the post is already existing in memory and we can
+        // display it immediately as the carousel is starting to slide...
+        // if we don't have the post object's content stored in the feed, then we have to fetch it by going to a url
+        // (actually navigating to a url) and loading it from the server then displaying it, but this will make the sliding
+        // animation uncool
+
+        // document.location.hash = `/post?id=${post._id}`
+
+        // unfortunately, none of the stuff I tried works :(
+        // console.log("this thing")
+        // if(newDirection === "prev"){
+        //     this.props.history.push("/")
+        // }
+        // if(newDirection === "next"){
+        //     console.log("this happened")
+        //     window.history.replaceState(null, null, `#/post/${post._id}`);
+        // }
+
+        // this.setState({slideState: slideState})
+
+        const {location, history} = this.props
+        const currentScreen = routes.indexOf(location.pathname);
+
+        if(newDirection === "prev"){
+            history.push({
+                pathname: routes[(currentScreen - 1) % routes.length],
+                state: { previousScreen: currentScreen, post: post}
+            })
+        }else if(newDirection === "next"){
+            history.push({
+                pathname: routes[(currentScreen + 1) % routes.length],
+                state: { previousScreen: currentScreen, post: post }
+            })
+        }
     }
 
     openCreatePost(){
@@ -310,49 +354,31 @@ class App extends React.Component{
         })
     }
 
-    setPageToShow(newPage){
-        if(newPage === PAGES.LOGIN && this.state.isAdmin){
-            this.setState({mobileOpen: false})
-            return
-        }
-
-        let {slideState, pageToShow} = this.state
-        // if click on link for the same page that we are already on
-        if(newPage === pageToShow){
-            // and the carousel is on the second slide
-            if(slideState.slideIndex === 1){
-                // we just want to slide back to the first slide with a render
-                // e.g. from page 1, slide 2 to slide 1 - Feed page, post slide to list of posts slide
-                let newSlideState = this.readPost("prev", this.state.slideState.itemToShow)
-                this.setState({slideState: newSlideState, mobileOpen: false})
-            }else{
-                // otherwise do nothing because we're already on the first slide of the requested page
-                // e.g. page 1, slide 1 - Feed page, list of posts slide
-                this.setState({mobileOpen: false})
-            }
-        }else{
-            // if switching to another page, do a render to make new page appear
-            this.setState({ pageToShow: newPage, slideState: initialSlideState, mobileOpen: false})
-        }
-    }
-
-    setMobile(open){
-        this.setState({ mobileOpen: open})
-    }
-
     setRefreshFeed(flag){
         this.setState({refreshFeed: flag})
     }
 
-    renderBlog(){
+    // NOTE: the issue is, we used to use SlideContainer, but that was removed after refactoring to use
+    // the blog with routes and transitions!!!
+    // that's why the CSS is so messed up
+
+    // right now, the transition works partially with the router, the post transitions fine but the feed jerks up
+    // when sliding from and to it
+
+    // suggestions:
+    //      - back up the current feed_() and post_() functions
+    //      - paste the divs and Grid setup from SlideContainer to feed_() and post_() as appropriate
+    //          - check the original carousel code on GitHub master!
+    // even better suggestion: redo the entire app in SemanticUI... materialui sucks
+
+    feed_(){
+        let width = 100 - appBarHeight
         let onEdit = this.state.isAdmin ? this.openEditPost : null
         let onDelete = this.state.isAdmin ? this.openDeletePost : null
-
         return(
-            <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={{maxWidth: "96vw"}}>
-
+            <div style={{maxWidth: "96vw"}}>
                 <SlideContainer>
-                    {/* this padding should match with padding in post/gallery (to avoid slider at bottom) */}
+                    {/*style={{minWidth: "85%", position: "absolute"}}*/}
                     <Grid item className={"hyphenate"} style={{width: "100%"}}>
                         {/* TODO: change readPost={} to onRead={}*/}
                         <Feed refresh={this.state.refreshFeed}
@@ -362,19 +388,72 @@ class App extends React.Component{
                               onDelete={onDelete}/>
                     </Grid>
                 </SlideContainer>
+            </div>
+        )
+    }
 
+    post_(){
+        let onEdit = this.state.isAdmin ? this.openEditPost : null
+        let onDelete = this.state.isAdmin ? this.openDeletePost : null
+        const {post} = this.props.location.state
+        return(
+            <div style={{maxWidth: "96vw"}}>
                 <SlideContainer>
-                    <Grid item className={"hyphenate"} style={{width: "100%"}}>
-                        {/* slideState.itemToShow && <Post ... /> does not work here because itemToShow becomes 0
-                        if first post is selected, and 0 is not a truthy value,
-                        so the first post will never be shown */}
-                        {this.state.slideState.itemToShow != null ? <Post onEdit={onEdit}
-                                                               onDelete={onDelete}
-                                                               readPost={this.readAndUpdateSlide}
-                                                               post={this.state.slideState.itemToShow}/> : <div></div>}
-                    </Grid>
+                <Grid item className={"hyphenate"} style={{width: "100%"}}>
+                    {/* slideState.itemToShow && <Post ... /> does not work here because itemToShow becomes 0
+                    if first post is selected, and 0 is not a truthy value,
+                    so the first post will never be shown */}
+                    <Post onEdit={onEdit}
+                          onDelete={onDelete}
+                          readPost={this.readAndUpdateSlide}
+                          post={post}/>
+                </Grid>
                 </SlideContainer>
-            </SwipeableViews>
+            </div>
+        )
+    }
+
+    renderBlog(){
+        const {location} = this.props
+        const currentScreen = routes.indexOf(location.pathname);
+        const { state } = location;
+        const previousScreen = state ? state.previousScreen : 0;
+        const animationClassNames =
+            currentScreen > previousScreen ? "slide-forward" : "slide-backward";
+        return (
+            <TransitionGroup
+                childFactory={child =>
+                    React.cloneElement(child, {
+                        classNames: animationClassNames
+                    })
+                }
+            >
+                <CSSTransition
+                    key={location.key}
+                    classNames={animationClassNames}
+                    timeout={1000}
+                >
+                    <Switch location={location}>
+                        <Route path="/" render={this.feed_} exact />
+                        <Route path="/post" render={this.post_} />
+                    </Switch>
+                </CSSTransition>
+            </TransitionGroup>
+        );
+    }
+    __renderBlog(){
+        let onEdit = this.state.isAdmin ? this.openEditPost : null
+        let onDelete = this.state.isAdmin ? this.openDeletePost : null
+
+        return(
+            <TransitionGroup>
+                <CSSTransition key={this.props.location.key} classNames={"slide"} timeout={1000}>
+                    <Switch location={this.props.location}>
+                        <Route exact path="/" render={this.feed_}/>
+                        <Route path="/post" render={this.post_} />
+                    </Switch>
+                </CSSTransition>
+            </TransitionGroup>
         )
     }
 
@@ -436,27 +515,24 @@ class App extends React.Component{
 
     render(){
         const { classes } = this.props
-        let {pageToShow, mobileOpen, modal } = this.state;
+        let { modal } = this.state;
         return(
             <div className={classes.root}>
                 <CssBaseline/>
 
                 {/* zIndex lowered from 1200 to 1000 so that the LightBox can display images full screen*/}
                 <div style={{zIndex: 1000}}>
-                    <NavBar handleDrawerToggle={() => this.setMobile(true)}>
-                        {this.state.isAdmin && this.renderAdminNav()}
-                    </NavBar>
-
-                    <ResponsiveDrawer mobileOpen={mobileOpen} dispose={() => this.setMobile(false)}>
-                        <Sidebar setPageToShow={this.setPageToShow}/>
-                    </ResponsiveDrawer>
+                    <Menu adminNav={this.state.isAdmin ? this.renderAdminNav() : null}/>
                 </div>
 
                 <main className={classes.content}>
-                    {pageToShow === 1 && this.renderBlog()}
-                    {pageToShow === 2 && this.renderGallery()}
-                    {pageToShow === 3 && this.renderAbout()}
-                    {pageToShow === 4 && this.renderLogin()}
+                    <Switch>
+                        <Route exact path='/gallery' render={this.renderGallery} key={this.props.location.pathname}/>
+                        <Route exact path='/about' render={this.renderAbout} key={this.props.location.pathname}/>
+                        <Route exact path='/login' render={this.renderLogin} key={this.props.location.pathname}/>
+                        {/* upon removing key={this.props.location.pathname} from the / path, the sliding works with carousel */}
+                        <Route path='/' render={this.renderBlog}/>
+                    </Switch>
                 </main>
 
                 <div>
@@ -472,4 +548,4 @@ class App extends React.Component{
     }
 }
 
-export default withStyles(styles)(App);
+export default withStyles(styles)(withRouter(App));

@@ -112,7 +112,7 @@ class Feed extends React.Component{
                 </React.Fragment>)
         }else{
             return(
-                <React.Fragment>
+                <div>
                     {this.state.posts.map((post, posti) => {
                         return <div key={"post" + posti + "_" + post.createdOn}>
                             <Card>
@@ -157,7 +157,7 @@ class Feed extends React.Component{
                             <br />
                         </div>
                     })}
-                </React.Fragment>
+                </div>
             )
         }
     }

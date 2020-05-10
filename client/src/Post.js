@@ -23,6 +23,8 @@ const useStyles = makeStyles(theme => ({
 function Post (props) {
     let post = props.post
     let content = htmlToDraft(post.html)
+    // this works fine here, but it's impossible to change it back to #/ when we try to go back to the feed
+    //    window.history.replaceState(null, null, `#/post/${post._id}`);
 
     let editorState = EditorState.createWithContent(ContentState.createFromBlockArray(content.contentBlocks))
 
@@ -37,7 +39,7 @@ function Post (props) {
     let createdOn = new Date(post.createdOn).toLocaleString()
     let editedOn = post.displayEditDate ? (post.editedOn ? new Date(post.editedOn).toLocaleString() : null) : null
     return(
-        <React.Fragment> {/* this padding should match with padding in app.js' swipeableview */}
+        <div> {/* this padding should match with padding in app.js' swipeableview */}
             <Grid container spacing={1}>
                 {/* TODO: ideally the post itself should not contain any buttons, should be passed as children*/}
                 {props.readPost &&
@@ -92,7 +94,7 @@ function Post (props) {
                     </Paper>
                 </Grid>
             </Grid>
-        </React.Fragment>
+        </div>
         )
 }
 

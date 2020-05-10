@@ -1,5 +1,7 @@
 import React from 'react';
+import {withRouter, Link} from 'react-router-dom'
 import {drawerWidth, appBarHeight} from './NavBar';
+import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import PersonIcon from '@material-ui/icons/Person';
 import Grid from '@material-ui/core/Grid';
@@ -9,11 +11,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import HelpIcon from '@material-ui/icons/Help';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import LibraryBookIcon from '@material-ui/icons/LibraryBooks';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import {PAGES} from './App'
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles(theme => ({
     toolbar: {
@@ -46,22 +46,30 @@ function Sidebar(props) {
             {/* container for menu/navigation items */}
             <Grid container spacing={0} direction="row">
                 <Grid item xs={12}>
-                    <List>
-                        <ListItem button onClick={() => props.setPageToShow(PAGES.FEED)}>
-                            <ListItemIcon><LibraryBookIcon /></ListItemIcon>
-                            <ListItemText primary="Blog" />
-                        </ListItem>
 
-                        <ListItem button onClick={() => props.setPageToShow(PAGES.GALLERY)}>
-                            <ListItemIcon><PhotoLibraryIcon /></ListItemIcon>
-                            <ListItemText primary="Gallery" />
-                        </ListItem>
+                    <MenuList>
+                        <MenuItem component={Link} to={"/"}>
+                            <ListItemIcon>
+                                <LibraryBookIcon/>
+                            </ListItemIcon>
+                            <Typography variant="inherit">Blog</Typography>
+                        </MenuItem>
+                        <MenuItem component={Link} to={"/gallery"}>
+                            <ListItemIcon>
+                                <PhotoLibraryIcon/>
+                            </ListItemIcon>
+                            <Typography variant="inherit">Gallery</Typography>
+                        </MenuItem>
+                        <MenuItem component={Link} to={"/about"}>
+                            <ListItemIcon>
+                                <HelpIcon/>
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap>
+                                About
+                            </Typography>
+                        </MenuItem>
+                    </MenuList>
 
-                        <ListItem button onClick={() => props.setPageToShow(PAGES.ABOUT)}>
-                            <ListItemIcon><HelpIcon /></ListItemIcon>
-                            <ListItemText primary="About" />
-                        </ListItem>
-                    </List>
                 </Grid>
             </Grid>
 
@@ -72,11 +80,11 @@ function Sidebar(props) {
             <Grid container alignItems="center" justify="center" spacing={0} direction="column" >
                 {/* xs is NOT THE RIGHT WAY to center the items, but `alignItems` and `justify` don't work! */}
                 <Grid item xs={12}>
-                    <Avatar className={classes.bigAvatar} onClick={() => props.setPageToShow(PAGES.LOGIN)}><PersonIcon/></Avatar>
+                    <Avatar component={Link} to={"/login"} className={classes.bigAvatar}><PersonIcon/></Avatar>
                 </Grid>
             </Grid>
         </React.Fragment>
     );
 }
 
-export default Sidebar;
+export default withRouter(Sidebar);
