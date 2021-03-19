@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import DeletePostIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-// import {useMediaQuery} from 'react-responsive'
 import htmlToDraft from "html-to-draftjs";
 import {ContentState, EditorState} from "draft-js";
 import {Editor} from "react-draft-wysiwyg";
@@ -14,8 +13,6 @@ import Spinner from "./Spinner";
 import {withRouter} from 'react-router-dom'
 import { withStyles } from "@material-ui/core/styles"
 import AlertBox, {variants} from "./AlertBox";
-import Container from "@material-ui/core/Container";
-
 
 // const useStyles = makeStyles(theme => ({
 //     heading: {
@@ -57,10 +54,7 @@ class Post extends React.Component {
     }
 
     componentDidMount() {
-        let post = this.props.post
-        if(post){
-            this.initPost(post)
-        }else{
+        if(!this.props.post){
             fetch('/post?id=' + this.props.match.params.id,
                 {
                     credentials: 'include'
@@ -70,7 +64,7 @@ class Post extends React.Component {
                     if(res.error){
                         this.setState({error: res.error})
                     }else{
-                        this.initPost(res)
+                        this.setState(this.initPost(res))
                     }
                 }).catch(err => {
                     // console.error(err);
@@ -94,14 +88,16 @@ class Post extends React.Component {
         let title = post.title
         let createdOn = new Date(post.createdOn).toLocaleString()
         let editedOn = post.displayEditDate ? (post.editedOn ? new Date(post.editedOn).toLocaleString() : null) : null
-        this.setState({post, editorState, title, createdOn, editedOn})
+
+        return {post, editorState, title, createdOn, editedOn}
     }
 
     renderEditIcon(){
+        const post = this.props.post ? this.props.post : this.state.post
         return(
             <IconButton
                 edge="start"
-                onClick={() => this.props.onEdit(this.state.post)}
+                onClick={() => this.props.onEdit(post)}
                 style={{color: "dodgerblue", padding: "7px"}}
             >
                 <EditIcon />
@@ -111,10 +107,11 @@ class Post extends React.Component {
 
     // can't use this.props.post because it might be null (e.g. if it came from a shared URL)
     renderDeleteIcon(){
+        const post = this.props.post ? this.props.post : this.state.post
         return(
             <IconButton
                 edge="start"
-                onClick={() => this.props.onDelete(this.state.post)}
+                onClick={() => this.props.onDelete(post)}
                 style={{color: "red", padding: "7px"}}
             >
                 <DeletePostIcon />
@@ -122,8 +119,7 @@ class Post extends React.Component {
         )
     }
 
-    showPost(){
-        const {editorState, editedOn, createdOn} = this.state
+    showPost(editor){
         const { classes } = this.props;
         return(
             <React.Fragment> {/* this padding should match with padding in app.js' swipeableview */}
@@ -131,7 +127,7 @@ class Post extends React.Component {
                     {/* TODO: ideally the post itself should not contain any buttons, should be passed as children*/}
                     {this.props.readPost &&
                     <Grid item xs={1} style={{display: "flex"}}>
-                        <Button onClick={() => this.props.readPost("prev", this.state.post)} style={{"textAlign": "center", "minHeight": "100%", "minWidth": "100%"}} className={classes.headingButton} variant="outlined">
+                        <Button onClick={() => this.props.readPost("prev", editor.post)} style={{"textAlign": "center", "minHeight": "100%", "minWidth": "100%"}} className={classes.headingButton} variant="outlined">
                             <ArrowBack />
                         </Button>
                     </Grid>
@@ -141,17 +137,17 @@ class Post extends React.Component {
                             <Grid container spacing={1} direction="row" justify="space-between" alignItems="center">
                                 <Grid item>
                                     <Typography variant="h5" component="h3">
-                                        {this.state.title}
+                                        {editor.title}
                                     </Typography>
                                     {/* if createdOn exists, show it*/}
-                                    {createdOn &&
+                                    {editor.createdOn &&
                                     <Typography component="p">
-                                        {createdOn}
+                                        {editor.createdOn}
                                     </Typography>
                                     }
-                                    {editedOn &&
+                                    {editor.editedOn &&
                                     <Typography component="p" style={{color: "#bdbdbd"}}>
-                                        {"Edited: " + editedOn}
+                                        {"Edited: " + editor.editedOn}
                                     </Typography>
                                     }
                                 </Grid>
@@ -172,7 +168,7 @@ class Post extends React.Component {
                             <Typography style={{whiteSpace: 'pre-wrap', marginLeft: "15%", marginRight: "15%"}} component="div">
                                 <Editor
                                     editorClassName="wysiwyg-editor-readOnly"
-                                    editorState={editorState}
+                                    editorState={editor.editorState}
                                     readOnly={true}
                                     toolbarHidden={true}
                                     style={{overflow: "visible", position: "relative"}}
@@ -186,14 +182,17 @@ class Post extends React.Component {
     }
 
     render() {
+        const {post} = this.props
+        // if page loaded via link, fetch it and use state, otherwise load the passed post (coming from feed)
+        const editor = post ? this.initPost(post) : this.state
         return (
             <React.Fragment>
-                {this.state.error ?
+                {editor.error ?
                         <div style={{textAlign: "center"}}>
-                            <AlertBox open={true} variant={variants.error} message={this.state.error}/>
+                            <AlertBox open={true} variant={variants.error} message={editor.error}/>
                         </div>
                     :
-                    this.state.editorState ? this.showPost() : <Spinner/>
+                    editor.editorState ? this.showPost(editor) : <Spinner/>
                 }
             </React.Fragment>
         );
