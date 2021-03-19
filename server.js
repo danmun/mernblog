@@ -58,6 +58,13 @@ app.get('/isAdmin', withAuth, checkIsAdmin);
 
 app.get('/logout', withAuth, logout);
 
+app.get('/robots.txt', function (req, res, next) {
+    res.type('text/plain')
+    const perms = process.env.DEPLOYMENT_ENV === "live" ? "Allow: /" : "Disallow: /"
+    const robotsTxt = "User-agent: *\n" + perms
+    res.send(robotsTxt);
+});
+
 /**
  * Get the feed.
  */
