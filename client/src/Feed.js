@@ -126,7 +126,7 @@ class Feed extends React.Component{
                                     <Typography variant="h5" component="h2">
                                         {post.title}
                                     </Typography>
-                                    <Typography variant="body2" component="div" style={{paddingLeft: "5vw", paddingRight: "20vw"}}>
+                                    <Typography variant="body2" component="div" style={{paddingTop: "2vh", paddingLeft: "5vw", paddingRight: "20vw"}}>
 
                                         {/*{this.truncateTextTo(2, post.plaintext)}*/}
                                         {this.shortenTextTo(120, post.plaintext)}
