@@ -411,10 +411,10 @@ class App extends React.Component{
                             {/* slideState.itemToShow && <Post ... /> does not work here because itemToShow becomes 0
                         if first post is selected, and 0 is not a truthy value,
                         so the first post will never be shown */}
-                            {this.state.slideState.itemToShow != null ? <Post onEdit={onEdit}
-                                                                              onDelete={onDelete}
-                                                                              readPost={this.viewPostAndUpdateSlide}
-                                                                              post={this.state.slideState.itemToShow}/> : <div></div>}
+                            {this.state.slideState.itemToShow && <Post onEdit={onEdit}
+                                                                       onDelete={onDelete}
+                                                                       readPost={this.viewPostAndUpdateSlide}
+                                                                       post={this.state.slideState.itemToShow}/>}
                         </Grid>
                     </SlideContainer>
                 </SwipeableViews>
