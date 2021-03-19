@@ -322,7 +322,8 @@ const imgur_client_id = process.env.IMGUR_CLIENT_ID || dev_config.IMGUR_CLIENT_I
 const mongo_user = process.env.MONGO_USER || dev_config.MONGO_USER
 const mongo_pass = process.env.MONGO_PASS || dev_config.MONGO_PASS
 const mongo_host = process.env.MONGO_HOST || dev_config.MONGO_HOST
-const uri = "mongodb+srv://" + mongo_user + ":" + mongo_pass + "@" + mongo_host + "/test?retryWrites=true&w=majority"
+const uri = "mongodb+srv://" + mongo_user + ":" + mongo_pass + "@" + mongo_host + "/test?retryWrites=true"
+// &w=majority
 
 mongoose.connect(uri, function(err) {
     if (err) return console.log(err);
