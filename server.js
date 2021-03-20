@@ -46,10 +46,6 @@ app.use(express.static(path.join(__dirname, "photos")))
 app.use(cookieParser());
 app.set('json spaces', 2);
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
-
 //TODO: change res.statusCode === 200 to req.loggedin
 
 app.post('/login', login);
@@ -264,6 +260,12 @@ app.get('/getImgurClientId', withAuth, function (req, res, next) {
         res.send(STRINGS.IMGUR_ID_REQUEST_AUTH_FAILURE)
     }
 })
+
+// should always be last route in this file
+// so that it catches non-api routes (e.g. request to load the spa)
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 function constructPost(form){
     return(
