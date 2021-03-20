@@ -13,6 +13,7 @@ import Spinner from "./Spinner";
 import {withRouter} from 'react-router-dom'
 import { withStyles } from "@material-ui/core/styles"
 import AlertBox, {variants} from "./AlertBox";
+import {fetchPost} from "./api/posts";
 
 // const useStyles = makeStyles(theme => ({
 //     heading: {
@@ -55,20 +56,13 @@ class Post extends React.Component {
 
     componentDidMount() {
         if(!this.props.post){
-            fetch('/post?id=' + this.props.match.params.id,
-                {
-                    credentials: 'include'
-                }).then(raw => {
-                    return raw.json()
-                }).then(res => {
-                    if(res.error){
-                        this.setState({error: res.error})
-                    }else{
-                        this.setState(this.initPost(res))
-                    }
-                }).catch(err => {
-                    // console.error(err);
-                });
+            fetchPost(this.props.match.params.id).then(json => {
+                if(json.error){
+                    this.setState({error: json.error})
+                }else{
+                    this.setState(this.initPost(json))
+                }
+            })
         }
     }
 

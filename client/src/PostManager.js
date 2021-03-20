@@ -2,6 +2,7 @@ import React from "react";
 import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import PostManagerForm from "./PostManagerForm";
+import {getImgurClientId} from "./api/auth";
 
 // TODO: rename to PostEditor and PostEditorForm
 class PostManager extends React.Component{
@@ -10,7 +11,6 @@ class PostManager extends React.Component{
         this.handleSubmit = this.handleSubmit.bind(this);
         this.uploadImageCallback = this.uploadImageCallback.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
-        this.getImgurClientId = this.getImgurClientId.bind(this);
         this.getPhotosFromRawContent = this.getPhotosFromRawContent.bind(this);
     }
 
@@ -120,7 +120,7 @@ class PostManager extends React.Component{
      */
     async uploadImageCallback(file) {
         console.log(1)
-        let clientId = await this.getImgurClientId()
+        let clientId = await getImgurClientId()
         return this.uploadImage(clientId, file)
     }
 
@@ -146,20 +146,6 @@ class PostManager extends React.Component{
                 });
             }
         );
-    }
-
-     async getImgurClientId(){
-        return fetch('/getImgurClientId',
-            {credentials: 'include'})
-            .then(raw => {
-                return raw.json()
-            }).then(res => {
-                return res.imgur_client_id
-            })
-            .catch(err => {
-                console.error(err);
-                return err
-            });
     }
 
     render(){

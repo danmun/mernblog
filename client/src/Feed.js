@@ -5,6 +5,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import {CardContent, CardActions, Card, Button, Typography,
     IconButton, Grid} from '@material-ui/core'
 import Spinner from "./Spinner";
+import {fetchFeed} from "./api/feed";
 
 class Feed extends React.Component{
     constructor(props){
@@ -15,6 +16,7 @@ class Feed extends React.Component{
             posts: [],
         }
 
+        this.fetch = this.fetch.bind(this);
         this.showFeed = this.showFeed.bind(this);
         this.renderEditIcon = this.renderEditIcon.bind(this);
         this.renderDeleteIcon = this.renderDeleteIcon.bind(this);
@@ -49,27 +51,23 @@ class Feed extends React.Component{
     }
 
     componentDidMount() {
-        this.fetchFeed()
+        this.fetch()
 
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState, snapshot) {
         if(this.props.refresh){
-            this.fetchFeed()
+            this.fetch()
         }
     }
 
-    fetchFeed(){
-        fetch(`/feed`)
-        // We get the API response and receive data in JSON format...
-            .then(response => response.json())
-            // return response.json() would go here but we already did that in the args above
-            .then(json =>
-                this.setState({
-                    posts: json,
-                    loadingPosts: false
-                }, this.props.onRefresh) // after updating state, signal end of refresh to main controller (App.js)
-            )
+    fetch(){
+        fetchFeed().then(json => {
+            this.setState({
+                posts: json,
+                loadingPosts: false
+            }, this.props.onRefresh) // after updating state, signal end of refresh to main controller (App.js)
+        })
         // this.props.onRefresh()
         // Catch any errors we hit and update the app
         // .catch(error => this.setState({ error, loadingPosts: false }));

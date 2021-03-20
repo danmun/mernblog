@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import AlertBox, {variants} from "./AlertBox";
+import {login} from "./api/auth";
 
 // TODO: add back commented parts later, they enhance security and convenience
 const useStyles = makeStyles(theme => ({
@@ -139,26 +140,14 @@ export default function Login(props) {
     );
 }
 
-function authenticate(handleLogin, setAlertBox, form){
-    fetch('/login', {
-        method: 'POST',
-        body: JSON.stringify(form),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(res => {
-        if (res.status === 200) {
-            handleLogin()
-        } else {
-            // show error message
-            setAlertBox({
-                open: true,
-                variant: variants.error,
-                message: "Incorrect login credentials!"
-            })
-        }
-    }).catch(err => {
-        // show error message
-        console.log(err)
-    });
+async function authenticate(handleLogin, setAlertBox, form){
+    if(await login(form)){
+        handleLogin()
+    }else{
+        setAlertBox({
+            open: true,
+            variant: variants.error,
+            message: "Incorrect login credentials!"
+        })
+    }
 }

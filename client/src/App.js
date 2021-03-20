@@ -21,7 +21,8 @@ import Login from "./Login";
 import About from "./About";
 import {Switch, withRouter, Route} from 'react-router-dom'
 import Menu from "./Menu";
-import PostDummy from "./PostDummy";
+import {checkLoggedIn, logout} from "./api/auth";
+import {createPost, editPost} from "./api/posts";
 
 export const PAGES = {
     FEED: 1,
@@ -88,7 +89,6 @@ class App extends React.Component{
             slideState: initialSlideState,
         }
 
-        this.checkLoggedIn = this.checkLoggedIn.bind(this);
         this.logout = this.logout.bind(this);
 
         this.readPost = this.readPost.bind(this);
@@ -122,45 +122,28 @@ class App extends React.Component{
     }
 
     componentDidMount() {
-        this.checkLoggedIn()
-    }
-
-    checkLoggedIn(){
-        fetch('/isAdmin',
-            {
-                credentials: 'include'
-            })
-            .then(raw => {
-                return raw.json()
-            }).then(res => {
-                this.setState({isAdmin: res.isAdmin})
-            })
-            .catch(err => {
-                // console.error(err);
-            });
+        checkLoggedIn().then(isAdmin => {
+            this.setState({isAdmin: isAdmin})
+        })
     }
 
     logout(){
         // TODO: add logout success/fail message/alertbox
         // if user saved token from the cookie previously outside browser, they can still use it to access their session
         // would be nice to be able to invalidate the token server side
-        fetch('/logout',
-            {
-                credentials: 'include'
-            })
-            .then(res => {
-                if (res.status === 200) {
-                    this.setState({
-                        isAdmin: false,
-                        pageToShow: PAGES.FEED,
-                        refreshFeed: true,
-                        slideState: initialSlideState
-                    })
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        // this is logout() in auth.js (success is its return value)
+        logout().then(success => {
+            if(success){
+                this.setState({
+                    isAdmin: false,
+                    pageToShow: PAGES.FEED,
+                    refreshFeed: true,
+                    slideState: initialSlideState
+                })
+            }else{
+                // error during logout
+            }
+        })
     }
 
     readPost(newDirection, post){
@@ -267,33 +250,16 @@ class App extends React.Component{
     }
 
     submitNewPost(post){
-        console.log("Submitting newly created post ...")
-        fetch('/post', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(post)
-        }).then(function(response) {
-            return response;
-        }).then(function(data) {
-            // idk why this is needed
-        });
-
-        this.closePostManager(true, null) // signal to setRefreshFeed
+        createPost(post).then(json => {
+            this.closePostManager(true, null) // signal to setRefreshFeed
+        })
     }
 
     submitEditedPost(post){
-        let that = this
-        console.log("Submitting edited post ...")
-        fetch('/edit?id=' + post.id, {
-            method: 'PUT',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(post)
-        }).then(function(raw) {
-            return raw.json();
-        }).then(function(res) {
-            // we need to call onDone here because the DB operation for /edit doesnt have async environment like /post
-            return that.closePostManager(true, res.post) // signal to setRefreshFeed
-        });
+        const that = this
+        editPost(post).then(json => {
+            return that.closePostManager(true, json.post);
+        })
     }
 
     onPostManagerDone(post){
