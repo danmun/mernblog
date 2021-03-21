@@ -5,3 +5,9 @@ export async function fetchGallery(){
         .then(response => response.json())
         .then(json => json)
 }
+
+export async function fetchAlbum(id){
+    return fetch(`${baseUrl}/gallery/album?id=${id}`)
+        .then(response => response.json())
+        .then(json => json)
+}

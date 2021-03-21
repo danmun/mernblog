@@ -8,6 +8,10 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import {withRouter} from 'react-router-dom'
+import {fetchAlbum} from "./api/gallery";
+import Spinner from "./Spinner";
+
+const IMG_URL_BASE = "/gallery/album?img="
 
 // TODO: it might be bad practice to rely on props in the render of a class based component as props
 //  might not be up to date...
@@ -16,6 +20,7 @@ class PhotoViewer extends React.Component{
         super(props);
         
         this.state = {
+            album: null,
             photoIndex: 0,
             isOpen: false,
         }
@@ -24,19 +29,39 @@ class PhotoViewer extends React.Component{
         this.createLightbox = this.createLightbox.bind(this);
         this.createAlbumTile = this.createAlbumTile.bind(this);
     }
+
+    componentDidMount() {
+        if(!this.props.album){
+            fetchAlbum(this.props.match.params.id).then(json => {
+                if(json.error){
+                    this.setState({error: json.error})
+                }else{
+                    this.setState({album: json})
+                }
+            })
+        }
+    }
+
+    initAlbum(album){
+        if(!album) return null
+        return this.createLightbox(album.photos, this.state.photoIndex)
+    }
     
     render(){
-        let album = this.props.album
-        let images = album.photos
-        const { photoIndex, isOpen } = this.state;
+        let album = this.props.album ? this.props.album : this.state.album
 
-        let viewer = this.createLightbox(images, photoIndex)
+        if(!album){
+            return(<Spinner/>)
+        }
+
+        const viewerComponent = this.initAlbum(album)
+        const {isOpen} = this.state
 
         return(
             <React.Fragment>
-                <Grid item>{isOpen && viewer}</Grid>
+                <Grid item>{isOpen && viewerComponent}</Grid>
                 <Grid item>{this.createAlbumTile(album, this.props.children)}</Grid>
-                {images.map((photo, photoi) => {
+                {album.photos.map((photo, photoi) => {
                     return <Grid key={photo} item>
                                 <Photo photo={photo} showPhoto={() => this.toggleLightbox(photoi)}/>
                            </Grid>

@@ -23,6 +23,11 @@ import {Switch, withRouter, Route} from 'react-router-dom'
 import Menu from "./Menu";
 import {checkLoggedIn, logout} from "./api/auth";
 import {createPost, editPost} from "./api/posts";
+import PhotoViewer from "./PhotoViewer";
+import Button from "@material-ui/core/Button";
+import ArrowBack from "@material-ui/icons/ArrowBack";
+import CircularProgressButton from "./CircularProgressButton";
+import {Icon} from "@material-ui/core";
 
 export const PAGES = {
     FEED: 1,
@@ -389,13 +394,37 @@ class App extends React.Component{
     }
 
     renderGallery(){
-        return(
-            <SlideContainer>
-                <Grid item style={{width: "100%"}}>
-                    <Gallery slideIndex={this.state.slideState.slideIndex} albumToShow={this.state.slideState.itemToShow} viewAlbum={this.viewAlbumAndUpdateSlide}/>
-                </Grid>
-            </SlideContainer>
-        )
+        let external_visit = this.props.location.pathname.includes("gallery/album") && !this.state.slideState.itemToShow
+        if(external_visit){
+            // this is dirty and so is the same thing we did for Post routing, refactor ASAP
+            return(
+                <Route path='/gallery/album/:id' render={() => {
+                    return(
+                        <SlideContainer>
+                            <PhotoViewer>
+                                <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                                    <Button onClick={() => this.viewAlbumAndUpdateSlide("prev", null)} size="small">
+                                        <ArrowBack/>
+                                    </Button>
+                                    <CircularProgressButton onClick={() => console.log("pressed download")}>
+                                        Download
+                                        <Icon>save</Icon>
+                                    </CircularProgressButton>
+                                </div>
+                            </PhotoViewer>
+                        </SlideContainer>
+                    )
+                }}/>
+            )
+        }else{
+            return(
+                <SlideContainer>
+                    <Grid item style={{width: "100%"}}>
+                        <Gallery slideIndex={this.state.slideState.slideIndex} albumToShow={this.state.slideState.itemToShow} viewAlbum={this.viewAlbumAndUpdateSlide}/>
+                    </Grid>
+                </SlideContainer>
+            )
+        }
     }
 
     renderAbout(){
