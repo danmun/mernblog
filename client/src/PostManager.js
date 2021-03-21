@@ -119,24 +119,22 @@ class PostManager extends React.Component{
      * @returns {Promise<any>}
      */
     async uploadImageCallback(file) {
-        console.log(1)
         let clientId = await getImgurClientId()
         return this.uploadImage(clientId, file)
     }
 
+    // this might return 429 on localhost, imgur no longer allows uploads from localhost
+    // https://stackoverflow.com/a/66715914
     uploadImage(imgurClientId, file){
         return new Promise(
             (resolve, reject) => {
-                console.log(7)
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', 'https://api.imgur.com/3/image');
                 xhr.setRequestHeader('Authorization', 'Client-ID ' + imgurClientId);
                 const data = new FormData();
                 data.append('image', file);
                 xhr.send(data);
-                console.log(8)
                 xhr.addEventListener('load', () => {
-                    console.log(9)
                     const response = JSON.parse(xhr.responseText);
                     resolve(response);
                 });
