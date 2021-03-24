@@ -49,7 +49,6 @@ class PhotoViewer extends React.Component{
     
     render(){
         let album = this.props.album ? this.props.album : this.state.album
-
         if(!album){
             return(<Spinner/>)
         }
@@ -101,14 +100,13 @@ class PhotoViewer extends React.Component{
                 mainSrc={images[photoIndex]}
                 nextSrc={images[(photoIndex + 1) % images.length]}
                 prevSrc={images[(photoIndex + images.length - 1) % images.length]}
-                onCloseRequest={() => this.setState({ isOpen: false })}
+                onCloseRequest={() => this.toggleLightbox(0)}
                 onMovePrevRequest={() => this.updateStateAndUrl("prev", images, photoIndex)}
                 onMoveNextRequest={() => this.updateStateAndUrl("next", images, photoIndex)}
             />);
     }
 
     updateStateAndUrl(newDirection, images, index){
-        console.log(images[index])
         let photoIndex = index % images.length
         if(newDirection === "prev"){
             photoIndex = (index + images.length - 1) % images.length
@@ -118,16 +116,32 @@ class PhotoViewer extends React.Component{
         this.setState({
             photoIndex: photoIndex
         })
-        this.props.history.push("/gallery/" + images[index])
+        // we can push just the id here since the parent will already be the album ID
+        // gallery/album/<albumId>/<photoIndex>
+        this.props.history.push(`${photoIndex}`)
     }
 
     toggleLightbox(id){
-        console.log("toggled")
         if(this.state.isOpen){
-            return;
+            this.setState({isOpen: false, photoIndex: id})
+            // TODO: this will be problematic once we implement external visits for image itself
+            //  (see notes on goBack() in App.js)
+            this.props.history.goBack()
+        }else{
+            // .push appends the given path relative to the parent route
+            // e.g. current route /gallery/album/123/ then parent route is /123/
+            //      then .push("5") will take us to /gallery/album/123/5
+            // if trailing slash is missing from the URL, the parent route is considered to be the next route ending in a slash
+            // e.g. current route /gallery/album/123 then parent route is /album/
+            //      then .push("5") will take us to /gallery/album/5
+            // solution (A) React: always push the full path instead of just the ID of the image (/gallery/album/123/5)
+            // solution (B) Node: push only ID of image here, but redirect non-trailing slash requests to trailing slash page from node (via 301)
+            let album = this.props.album ? this.props.album : this.state.album
+            // solution (A)
+            const path = `/gallery/album/${album._id}/${id}`
+            this.setState({isOpen: true, photoIndex: id})
+            this.props.history.push(path)
         }
-        this.setState({isOpen: true, photoIndex: id})
-        this.props.history.push("/gallery/" + this.props.album.photos[id])
     }
 }
 

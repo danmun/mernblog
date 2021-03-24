@@ -107,11 +107,10 @@ apiRouter.get('/gallery/album', withAuth, async function (req, res) {
     // res.statusCode === 200 is our current way of checking if user is logged in (see withAuth)
     // refactor this mechanism IMMEDIATELY as it is intuitive, illogical, and causes unnecessary 401s!!!
     // e.g. in withAuth, put the user object into res
-    let properties = res.statusCode === 200 ? {_id: req.query.id} : {hidden: false, _id: req.query.id}
-    let album = await Album.findOne(properties)
+    let query = res.statusCode === 200 ? {_id: req.query.id} : {hidden: false, _id: req.query.id}
+    let album = await Album.findOne(query)
     try {
         // TODO: if !album, send not found (implement a generic 404 mechanism)
-        console.log("sending", album)
         res.send(album);
     } catch (err) {
         res.status(500).send(err);

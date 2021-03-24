@@ -163,6 +163,7 @@ class App extends React.Component{
         if(newDirection === "next"){
             this.props.history.push({pathname: `/post/` + `${post._id}`})
         }else if(newDirection === "prev"){
+            // don't use goBack(), if the user came via a URL, goBack() will literally return to the last page the user visited
             this.props.history.push({pathname: `/`})
         }
     }
@@ -171,8 +172,9 @@ class App extends React.Component{
         let slideState = this.readPost(newDirection, post)
         this.setState({slideState: slideState})
         if(newDirection === "next"){
-            this.props.history.push({pathname: `/gallery/album/` + `${post._id}`})
+            this.props.history.push({pathname: `/gallery/album/${post._id}/`})
         }else if(newDirection === "prev"){
+            // don't use goBack(), if the user came via a URL, goBack() will literally return to the last page the user visited
             this.props.history.push({pathname: `/gallery`})
         }
     }
@@ -398,7 +400,7 @@ class App extends React.Component{
         if(external_visit){
             // this is dirty and so is the same thing we did for Post routing, refactor ASAP
             return(
-                <Route path='/gallery/album/:id' render={() => {
+                <Route path='/gallery/album/:id/' render={() => {
                     return(
                         <SlideContainer>
                             <PhotoViewer>
