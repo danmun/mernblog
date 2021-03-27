@@ -16,7 +16,7 @@
     "html-to-draftjs": "^1.4.0",
     "html-to-react": "^1.4.1",
     "material-ui": "^0.20.2",
-    "mongoose": "^5.7.1",
+    "mongoose": "^5.7.5",
     "nodemon": "^1.19.2",
     "react": "^16.9.0",
     "react-addons-css-transition-group": "^15.6.2",
