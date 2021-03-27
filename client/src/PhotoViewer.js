@@ -12,6 +12,7 @@ import {fetchAlbum} from "./api/gallery";
 import Spinner from "./Spinner";
 
 const IMG_URL_BASE = "/gallery/album?img="
+const ALBUM_URL_BASE = "/gallery/album/"
 
 // TODO: it might be bad practice to rely on props in the render of a class based component as props
 //  might not be up to date...
@@ -122,11 +123,12 @@ class PhotoViewer extends React.Component{
     }
 
     toggleLightbox(id){
+        let album = this.props.album ? this.props.album : this.state.album
         if(this.state.isOpen){
             this.setState({isOpen: false, photoIndex: id})
             // TODO: this will be problematic once we implement external visits for image itself
             //  (see notes on goBack() in App.js)
-            this.props.history.goBack()
+            this.props.history.push(`${ALBUM_URL_BASE}${album._id}`)
         }else{
             // .push appends the given path relative to the parent route
             // e.g. current route /gallery/album/123/ then parent route is /123/
@@ -136,11 +138,9 @@ class PhotoViewer extends React.Component{
             //      then .push("5") will take us to /gallery/album/5
             // solution (A) React: always push the full path instead of just the ID of the image (/gallery/album/123/5)
             // solution (B) Node: push only ID of image here, but redirect non-trailing slash requests to trailing slash page from node (via 301)
-            let album = this.props.album ? this.props.album : this.state.album
-            // solution (A)
-            const path = `/gallery/album/${album._id}/${id}`
             this.setState({isOpen: true, photoIndex: id})
-            this.props.history.push(path)
+            // solution (A)
+            this.props.history.push(`${ALBUM_URL_BASE}${album._id}/${id}`)
         }
     }
 }
