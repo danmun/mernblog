@@ -4,22 +4,17 @@ const Post = require('./models/PostSchema').Post;
 const About = require('./models/PostSchema').About;
 const Album = require('./models/AlbumSchema');
 const STRINGS = require('./locale/en').STRINGS
-const withAuth = require('./middleware').withAuth;
+const enforceAuth = require('./middleware').enforceAuth;
+const checkAuth = require('./middleware').checkAuth;
 const logout = require('./middleware').logout;
 const login = require('./middleware').login;
-const checkIsAdmin = require('./middleware').checkIsAdmin;
 
 let dev_config = {}
 const fs = require('fs')
 const dev_config_import = './dev_config'
 try {
     dev_config = {
-        WEBHOST: "http://localhost:4000/",
-        PORT: 4000,
         IMGUR_CLIENT_ID: "none",
-        MONGO_USER: "user",
-        MONGO_PASS: "pass",
-        MONGO_HOST: "mongodb.com"
     }
     if (fs.existsSync(dev_config_import + ".js")) {
         dev_config = require(dev_config_import)
@@ -61,9 +56,13 @@ function constructAlbum(form){
 
 apiRouter.post('/login', login);
 
-apiRouter.get('/isAdmin', withAuth, checkIsAdmin);
+apiRouter.get('/isAdmin', checkAuth, (req, res) => {
+    res.send({
+        "isAdmin": !!req.username
+    })
+});
 
-apiRouter.get('/logout', withAuth, logout);
+apiRouter.get('/logout', enforceAuth, logout);
 
 /**
  * Get the feed.
@@ -103,11 +102,10 @@ apiRouter.get('/about', async function (req, res) {
     }
 });
 
-apiRouter.get('/gallery/album', withAuth, async function (req, res) {
-    // res.statusCode === 200 is our current way of checking if user is logged in (see withAuth)
-    // refactor this mechanism IMMEDIATELY as it is intuitive, illogical, and causes unnecessary 401s!!!
-    // e.g. in withAuth, put the user object into res
-    let query = res.statusCode === 200 ? {_id: req.query.id} : {hidden: false, _id: req.query.id}
+apiRouter.get('/gallery/album', checkAuth, async function (req, res) {
+    // if user is not logged in, only send the album if it's not hidden
+    // req.username comes from the checkAuth middleware
+    let query = req.username ? {_id: req.query.id} : {hidden: false, _id: req.query.id}
     let album = await Album.findOne(query)
     try {
         // TODO: if !album, send not found (implement a generic 404 mechanism)
@@ -117,10 +115,11 @@ apiRouter.get('/gallery/album', withAuth, async function (req, res) {
     }
 });
 
-apiRouter.get('/gallery', withAuth, async function (req, res) {
+apiRouter.get('/gallery', checkAuth, async function (req, res) {
     // if not logged in, don't send hidden albums
-    let albums = res.statusCode === 200 ? await Album.find({}).sort({createdOn: -1}) :
-        await Album.find({hidden: false}).sort({createdOn: -1});
+    const query = req.username ? {} : {hidden: false}
+    const sort = {createdOn: -1}
+    let albums = await Album.find(query).sort(sort);
     try {
         res.send(albums);
     } catch (err) {
@@ -128,162 +127,126 @@ apiRouter.get('/gallery', withAuth, async function (req, res) {
     }
 });
 
-apiRouter.post('/post', withAuth, async (req, res) => {
-    if(res.statusCode === 200){
-        // prep and save the post
-        const post = new Post(constructPost(req.body));
-        try {
-            await post.save();
-        } catch (err) {
-            res.status(500).send(err);
-            return
-        }
+apiRouter.post('/post', enforceAuth, async (req, res) => {
+    // prep and save the post
+    const post = new Post(constructPost(req.body));
+    try {
+        await post.save();
+    } catch (err) {
+        res.status(500).send(err);
+        return
+    }
 
-        // if post doesn't have any albums, we can return response to the user
-        if(req.body.album === null){
-            res.send(STRINGS.NEWPOST_SUCCESS);
-            return
-        }
+    // if post doesn't have any albums, we can return response to the user
+    if(req.body.album === null){
+        res.send(STRINGS.NEWPOST_SUCCESS);
+        return
+    }
 
-        let albumDetails = constructAlbum(req.body)
-        albumDetails.post = post._id
-        const album = new Album(albumDetails)
-        try{
-            await album.save();
-            res.send(STRINGS.NEWPOST_SUCCESS);
-        } catch (err){
-            res.status(500).send(err);
-        }
-    }else if(res.statusCode === 401){
-        res.status(401).send(STRINGS.NEWPOST_AUTH_FAILURE)
-    }else{
-        res.send()
+    let albumDetails = constructAlbum(req.body)
+    albumDetails.post = post._id
+    const album = new Album(albumDetails)
+    try{
+        await album.save();
+        res.send(STRINGS.NEWPOST_SUCCESS);
+    } catch (err){
+        res.status(500).send(err);
     }
 });
 
-apiRouter.post('/postAbout', withAuth, async (req, res) => {
-    if(res.statusCode === 200){
-        let about = constructPost(req.body)
-        const post = new About(about);
-        try {
-            await post.save();
-            res.send({about: about});
-        } catch (err) {
-            res.status(500).send(err);
-        }
-    }else if(res.statusCode === 401){
-        res.status(401).send(STRINGS.NEWABOUT_AUTH_FAILURE)
-    }else{
-        res.send()
+apiRouter.post('/postAbout', enforceAuth, async (req, res) => {
+    let about = constructPost(req.body)
+    const post = new About(about);
+    try {
+        await post.save();
+        res.send({about: about});
+    } catch (err) {
+        res.status(500).send(err);
     }
 });
 
-apiRouter.put('/edit', withAuth, async (req, res) => {
-    if(res.statusCode === 200){
-        const postId = req.query.id
-        const newPost = req.body
-        delete newPost['id'];
-        newPost.editedOn = Date.now()
+apiRouter.put('/edit', enforceAuth, async (req, res) => {
+    const postId = req.query.id
+    const newPost = req.body
+    delete newPost['id'];
+    newPost.editedOn = Date.now()
 
-        // TODO: if photos are added or removed to the post using THIS endpoint,
-        //  it should NOT affect the originally created album.
-        //  Editing albums should be started from the Album page/endpoint.
-        Post.findById(postId, function(err, post) {
-            if (!err) {
-                try {
-                    post.title = newPost.title
-                    post.html = newPost.html
-                    post.plaintext = newPost.plaintext
-                    post.tags = newPost.tags
-                    post.editedOn = newPost.editedOn
-                    post.displayEditDate = newPost.displayEditDate
+    // TODO: if photos are added or removed to the post using THIS endpoint,
+    //  it should NOT affect the originally created album.
+    //  Editing albums should be started from the Album page/endpoint.
+    Post.findById(postId, function(err, post) {
+        if (!err) {
+            try {
+                post.title = newPost.title
+                post.html = newPost.html
+                post.plaintext = newPost.plaintext
+                post.tags = newPost.tags
+                post.editedOn = newPost.editedOn
+                post.displayEditDate = newPost.displayEditDate
 
-                    post.save()
-                    res.send({
-                        status: STRINGS.EDITPOST_SUCCESS,
-                        post: post
-                    });
-                } catch (err) {
-                    console.log(err)
-                    res.status(500).send(err);
-                }
-            }else{
-                res.send(STRINGS.EDITPOST_FAILURE);
-            }
-        })
-    }else if(res.statusCode === 401){
-        res.status(401).send(STRING.EDITPOST_AUTH_FAILURE)
-    }else{
-        res.send()
-    }
-});
-
-apiRouter.put('/editAbout', withAuth, async (req, res) => {
-    if(res.statusCode === 200){
-        const postId = req.query.id
-        const newPost = req.body
-        delete newPost['id'];
-        newPost.editedOn = Date.now()
-
-        About.findById(postId, function(err, post) {
-            if (!err) {
-                try {
-                    post.title = newPost.title
-                    post.html = newPost.html
-                    post.plaintext = newPost.plaintext
-                    post.tags = newPost.tags
-                    post.editedOn = newPost.editedOn
-
-                    post.save()
-                    res.send({
-                        about: post
-                    });
-                } catch (err) {
-                    console.log(err)
-                    res.status(500).send(err);
-                }
-            }else{
-                res.send(STRINGS.EDITABOUT_FAILURE);
-            }
-        })
-    }else if(res.statusCode === 401){
-        res.status(401).send(STRINGS.EDITABOUT_AUTH_FAILURE)
-    }else{
-        res.send()
-    }
-});
-
-apiRouter.delete('/delete', withAuth, async (req, res) => {
-    if(res.statusCode === 200){
-        const postId = req.query.id
-
-        Post.remove({ _id: postId }, function(err) {
-            if (!err) {
+                post.save()
                 res.send({
-                    status: STRINGS.DELETEPOST_SUCCESS,
+                    status: STRINGS.EDITPOST_SUCCESS,
+                    post: post
                 });
-            }
-            else {
+            } catch (err) {
                 console.log(err)
                 res.status(500).send(err);
             }
-        });
-    }else if(res.statusCode === 401){
-        res.status(401).send(STRINGS.DELETEPOST_AUTH_FAILURE)
-    }else{
-        res.send()
-    }
+        }else{
+            res.send(STRINGS.EDITPOST_FAILURE);
+        }
+    })
+});
+
+apiRouter.put('/editAbout', enforceAuth, async (req, res) => {
+    const postId = req.query.id
+    const newPost = req.body
+    delete newPost['id'];
+    newPost.editedOn = Date.now()
+
+    About.findById(postId, function(err, post) {
+        if (!err) {
+            try {
+                post.title = newPost.title
+                post.html = newPost.html
+                post.plaintext = newPost.plaintext
+                post.tags = newPost.tags
+                post.editedOn = newPost.editedOn
+
+                post.save()
+                res.send({
+                    about: post
+                });
+            } catch (err) {
+                console.log(err)
+                res.status(500).send(err);
+            }
+        }else{
+            res.send(STRINGS.EDITABOUT_FAILURE);
+        }
+    })
+});
+
+apiRouter.delete('/delete', enforceAuth, async (req, res) => {
+    const postId = req.query.id
+    Post.remove({ _id: postId }, function(err) {
+        if (!err) {
+            res.send({
+                status: STRINGS.DELETEPOST_SUCCESS,
+            });
+        } else {
+            console.log(err)
+            res.status(500).send(err);
+        }
+    });
 });
 
 // todo: query imgur client id while logged in, then upload image
-apiRouter.get('/getImgurClientId', withAuth, function (req, res, next) {
-    if(res.statusCode === 200){
-        res.send({
-            imgur_client_id: imgur_client_id
-        })
-    }else{
-        res.send(STRINGS.IMGUR_ID_REQUEST_AUTH_FAILURE)
-    }
+apiRouter.get('/getImgurClientId', enforceAuth, function (req, res, next) {
+    res.send({
+        imgur_client_id: imgur_client_id
+    })
 })
 
 module.exports = apiRouter

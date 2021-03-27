@@ -5,7 +5,7 @@ const STRINGS = require('./locale/en').STRINGS
 //  users created in production will fail auth in development
 const secret = process.env.SECRET || "not_so_secret"
 
-const logout = function(req, res) {
+const logout = (req, res) => {
     if(res.statusCode === 401){
         res.status(401).send(STRINGS.LOGOUT_FAILURE);
     }else{
@@ -14,7 +14,7 @@ const logout = function(req, res) {
 }
 
 //TODO: change res.statusCode === 200 to req.loggedin
-const login = function(req, res) {
+const login = (req, res) => {
     const { username, password } = req.body;
     User.findOne({ username }, function(err, user) {
         if (err) {
@@ -53,47 +53,58 @@ const login = function(req, res) {
     });
 }
 
-const checkIsAdmin = function(req, res) {
-    let isAdmin = false
-    if(res.statusCode === 200){
-        isAdmin = true
-    }
-    res.status(200).send({
-        "isAdmin": isAdmin,
+// mechanisms could be renamed to withUser + withAuth instead of checkAuth + enforceAuth
+
+// calls back with user obj if user is logged in
+const checkAuth = (req, res, next) => {
+    verifyToken(parseToken(req), function(username){
+        req.username = username ? username : null
+        next()
     })
 }
 
 // DONE: for some reason, cookie is not valid after page reload --
 //  REASON: variable secret was redefined as something else in this file
-const withAuth = function(req, res, next) {
-    const token =
-        req.body.token ||
-        req.query.token ||
-        req.headers['x-access-token'] ||
-        req.cookies.token
 
-    if (!token) {
-        // missing token
-        res.status(401);
-        next();
-    } else {
-        jwt.verify(token, secret, function(err, decoded) {
-            if (err) {
-                // invalid token
-                res.status(401)
-                next();
-            } else {
-                res.status(200)
-                req.username = decoded.username;
-                next();
-            }
-        });
+// enforces authentication on the incoming request
+// will halt the request chain and respond to the client with 401 if unauthenticated
+const enforceAuth = (req, res, next) => {
+    verifyToken(parseToken(req), function(username){
+        if(username){
+            next()
+        }else{
+            res.status(401).send()
+        }
+    })
+}
+
+// verifies the given token and calls back with the user encoded in the token
+const verifyToken = (token, callback) => {
+    if(!token){
+        callback(null);
+        return;
     }
+    jwt.verify(token, secret, function(err, decoded) {
+        if (err) {
+            // invalid token
+            callback(null);
+        } else {
+            callback(decoded.username);
+        }
+    });
+}
+
+
+const parseToken = (request) => {
+    return request.body.token ||
+        request.query.token ||
+        request.headers['x-access-token'] ||
+        request.cookies.token
 }
 
 module.exports = {
-    withAuth: withAuth,
+    enforceAuth: enforceAuth,
+    checkAuth: checkAuth,
     logout: logout,
-    login: login,
-    checkIsAdmin: checkIsAdmin
+    login: login
 }
