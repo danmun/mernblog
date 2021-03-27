@@ -11,7 +11,6 @@ import {withRouter} from 'react-router-dom'
 import {fetchAlbum} from "./api/gallery";
 import Spinner from "./Spinner";
 
-const IMG_URL_BASE = "/gallery/album?img="
 const ALBUM_URL_BASE = "/gallery/album/"
 
 // TODO: it might be bad practice to rely on props in the render of a class based component as props
@@ -32,12 +31,21 @@ class PhotoViewer extends React.Component{
     }
 
     componentDidMount() {
+        // if no album via props, is an external visit e.g. via URL of album or img
         if(!this.props.album){
-            fetchAlbum(this.props.match.params.id).then(json => {
+            const {albumId, imgIdx} = this.props.match.params
+                fetchAlbum(albumId).then(json => {
                 if(json.error){
                     this.setState({error: json.error})
                 }else{
-                    this.setState({album: json})
+                    const state = {album: json}
+                    // if the img index was also in URL, this is an external visit for an image
+                    // so we need to display it in the album
+                    if(imgIdx){
+                        state.isOpen = true
+                        state.photoIndex = imgIdx
+                    }
+                    this.setState(state)
                 }
             })
         }

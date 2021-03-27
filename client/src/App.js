@@ -400,7 +400,8 @@ class App extends React.Component{
         if(external_visit){
             // this is dirty and so is the same thing we did for Post routing, refactor ASAP
             return(
-                <Route path='/gallery/album/:id/' render={() => {
+                // note the optional /imdIdx route denoted by question mark
+                <Route path='/gallery/album/:albumId/:imgIdx?' render={() => {
                     return(
                         <SlideContainer>
                             <PhotoViewer>
