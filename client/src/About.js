@@ -5,6 +5,7 @@ import AdminModal from "./AdminModal";
 import IconButton from '@material-ui/core/IconButton';
 import AddPostIcon from '@material-ui/icons/AddCircle';
 import Spinner from "./Spinner";
+import {editAbout, fetchAbout, newAbout} from "./api/about";
 
 function About(props) {
     let isAdmin = props.isAdmin
@@ -21,7 +22,12 @@ function About(props) {
     })
 
     useEffect(() => {
-        fetchAbout(setAbout);
+        fetchAbout().then(json => {
+            setAbout({
+                loading: false,
+                post: json.about
+            })
+        })
     },[])
 
     let onDone = function(post){
@@ -85,42 +91,15 @@ function showAbout(isAdmin, about, modal, setModal){
 }
 
 function submitNewAbout(post, setAbout){
-    fetch('/postAbout', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(post)
-    }).then(function(raw) {
-        return raw.json();
-    }).then(function(res) {
-        setAbout({post: res.about})
-    });
+    newAbout(post).then(json => {
+        setAbout({post: json.about})
+    })
 }
 
 function submitEditedAbout(post, setAbout){
-    fetch('/editAbout?id=' + post.id, {
-        method: 'PUT',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(post)
-    }).then(function(raw) {
-        return raw.json();
-    }).then(function(res) {
-        setAbout({post: res.about})
-    });
-}
-
-function fetchAbout(setAbout){
-    fetch('/about')
-        .then(raw => {
-            return raw.json()
-        }).then(res => {
-            setAbout({
-                loading: false,
-                post: res.about
-            })
-        })
-        .catch(err => {
-            // console.error(err);
-        });
+    editAbout(post).then(json => {
+        setAbout({post: json.about})
+    })
 }
 
 function openPostManager(about, modal, setModal){

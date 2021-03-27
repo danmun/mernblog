@@ -9,6 +9,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import Spinner from "./Spinner";
 import CircularProgressButton from "./CircularProgressButton";
 import {Icon} from "@material-ui/core";
+import {fetchGallery} from "./api/gallery";
 
 const springConfig = {
     duration: "1s",
@@ -27,26 +28,22 @@ class Gallery extends React.Component{
         }
         
         this.createAlbum = this.createAlbum.bind(this);
-        this.fetchGallery = this.fetchGallery.bind(this);
+        this.fetch = this.fetch.bind(this);
         this.showGallery = this.showGallery.bind(this);
         this.downloadAlbum = this.downloadAlbum.bind(this);
     }
     
     componentDidMount() {
-        this.fetchGallery()
+        this.fetch()
     }
 
-    fetchGallery(){
-        fetch(`/gallery`)
-        // We get the API response and receive data in JSON format...
-            .then(response => response.json())
-            // return response.json() would go here but we already did that in the args above
-            .then(json =>
-                this.setState({
-                    albums: json,
-                    loading: false
-                }) // after updating state, signal end of refresh to main controller (App.js)
-            )
+    fetch(){
+        fetchGallery().then(json => {
+            this.setState({
+                albums: json,
+                loading: false
+            })
+        })
     }
 
     createAlbum(viewAlbum, album){

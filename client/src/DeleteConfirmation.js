@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import {TextField} from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import {deletePost} from "./api/posts";
 
 class DeleteConfirmation extends React.Component{
     constructor(props){
@@ -19,17 +20,10 @@ class DeleteConfirmation extends React.Component{
     handleSubmit(post){
         let that = this
         // TODO: normalise the getter for the post ID (in this class we use ._id but in PostManager we use .id ...)
-        fetch('/delete?id=' + post._id, {
-            method: 'DELETE',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(post)
-        }).then(function(response) {
+        deletePost(post).then(json => {
+            // maybe best to check if json.status === 200 etc...
             that.props.onConfirm(post)
-            // can convert raw response obj to json
-            return response;
-        }).then(function(data) {
-            // and receive the json here (that was sent from nodejs route)
-        });
+        })
     }
     
     render(){

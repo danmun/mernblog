@@ -10,9 +10,6 @@ import {toggleCarousel} from "./utils";
 import Feed from './Feed'
 import Post from './Post'
 import Gallery from "./Gallery";
-import ResponsiveDrawer from "./ResponsiveDrawer";
-import Sidebar from "./Sidebar";
-import NavBar from "./NavBar";
 import AdminModal from "./AdminModal";
 import CreateAlbum from "./CreateAlbum";
 import { withStyles } from '@material-ui/core/styles';
@@ -22,12 +19,28 @@ import SlideContainer from "./SlideContainer";
 import Grid from '@material-ui/core/Grid';
 import Login from "./Login";
 import About from "./About";
+import {Switch, withRouter, Route} from 'react-router-dom'
+import Menu from "./Menu";
+import {checkLoggedIn, logout} from "./api/auth";
+import {createPost, editPost} from "./api/posts";
+import PhotoViewer from "./PhotoViewer";
+import Button from "@material-ui/core/Button";
+import ArrowBack from "@material-ui/icons/ArrowBack";
+import CircularProgressButton from "./CircularProgressButton";
+import {Icon} from "@material-ui/core";
 
 export const PAGES = {
     FEED: 1,
     GALLERY: 2,
     ABOUT: 3,
     LOGIN: 4
+}
+
+export const PAGES_URLS = {
+    1: "/",
+    2: "/gallery",
+    3: "/about",
+    4: "/login"
 }
 
 const appBarHeight = 35;
@@ -81,11 +94,11 @@ class App extends React.Component{
             slideState: initialSlideState,
         }
 
-        this.checkLoggedIn = this.checkLoggedIn.bind(this);
         this.logout = this.logout.bind(this);
 
         this.readPost = this.readPost.bind(this);
-        this.readAndUpdateSlide = this.readAndUpdateSlide.bind(this);
+        this.viewAlbumAndUpdateSlide = this.viewAlbumAndUpdateSlide.bind(this);
+        this.viewPostAndUpdateSlide = this.viewPostAndUpdateSlide.bind(this);
 
         this.openCreatePost = this.openCreatePost.bind(this);
         this.openEditPost = this.openEditPost.bind(this);
@@ -102,7 +115,7 @@ class App extends React.Component{
         this.openCreateAlbum = this.openCreateAlbum.bind(this);
         this.submitAlbum = this.submitAlbum.bind(this);
 
-        this.setPageToShow = this.setPageToShow.bind(this);
+        this.navigator = this.navigator.bind(this);
         this.setMobile = this.setMobile.bind(this);
         this.setRefreshFeed = this.setRefreshFeed.bind(this);
 
@@ -114,45 +127,28 @@ class App extends React.Component{
     }
 
     componentDidMount() {
-        this.checkLoggedIn()
-    }
-
-    checkLoggedIn(){
-        fetch('/isAdmin',
-            {
-                credentials: 'include'
-            })
-            .then(raw => {
-                return raw.json()
-            }).then(res => {
-                this.setState({isAdmin: res.isAdmin})
-            })
-            .catch(err => {
-                // console.error(err);
-            });
+        checkLoggedIn().then(isAdmin => {
+            this.setState({isAdmin: isAdmin})
+        })
     }
 
     logout(){
         // TODO: add logout success/fail message/alertbox
         // if user saved token from the cookie previously outside browser, they can still use it to access their session
         // would be nice to be able to invalidate the token server side
-        fetch('/logout',
-            {
-                credentials: 'include'
-            })
-            .then(res => {
-                if (res.status === 200) {
-                    this.setState({
-                        isAdmin: false,
-                        pageToShow: PAGES.FEED,
-                        refreshFeed: true,
-                        slideState: initialSlideState
-                    })
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        // this is logout() in auth.js (success is its return value)
+        logout().then(success => {
+            if(success){
+                this.setState({
+                    isAdmin: false,
+                    pageToShow: PAGES.FEED,
+                    refreshFeed: true,
+                    slideState: initialSlideState
+                })
+            }else{
+                // error during logout
+            }
+        })
     }
 
     readPost(newDirection, post){
@@ -161,9 +157,26 @@ class App extends React.Component{
         return slideState
     }
 
-    readAndUpdateSlide(newDirection, post){
+    viewPostAndUpdateSlide(newDirection, post){
         let slideState = this.readPost(newDirection, post)
         this.setState({slideState: slideState})
+        if(newDirection === "next"){
+            this.props.history.push({pathname: `/post/` + `${post._id}`})
+        }else if(newDirection === "prev"){
+            // don't use goBack(), if the user came via a URL, goBack() will literally return to the last page the user visited
+            this.props.history.push({pathname: `/`})
+        }
+    }
+
+    viewAlbumAndUpdateSlide(newDirection, post){
+        let slideState = this.readPost(newDirection, post)
+        this.setState({slideState: slideState})
+        if(newDirection === "next"){
+            this.props.history.push({pathname: `/gallery/album/${post._id}/`})
+        }else if(newDirection === "prev"){
+            // don't use goBack(), if the user came via a URL, goBack() will literally return to the last page the user visited
+            this.props.history.push({pathname: `/gallery`})
+        }
     }
 
     openCreatePost(){
@@ -201,6 +214,8 @@ class App extends React.Component{
         })
     }
 
+    // this is only called when post was actually deleted
+    // in which case, we can redirect to front page
     closeDeletePost(post){
         // TODO maybe do something with the post argument, e.g. display success/error message
         this.setState({
@@ -215,6 +230,7 @@ class App extends React.Component{
                 postDeletion: false,
             }
         })
+        this.props.history.push("/")
     }
 
     closePostManager(stateChanged, editedPost){
@@ -241,33 +257,16 @@ class App extends React.Component{
     }
 
     submitNewPost(post){
-        console.log("Submitting newly created post ...")
-        fetch('/post', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(post)
-        }).then(function(response) {
-            return response;
-        }).then(function(data) {
-            // idk why this is needed
-        });
-
-        this.closePostManager(true, null) // signal to setRefreshFeed
+        createPost(post).then(json => {
+            this.closePostManager(true, null) // signal to setRefreshFeed
+        })
     }
 
     submitEditedPost(post){
-        let that = this
-        console.log("Submitting edited post ...")
-        fetch('/edit?id=' + post.id, {
-            method: 'PUT',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(post)
-        }).then(function(raw) {
-            return raw.json();
-        }).then(function(res) {
-            // we need to call onDone here because the DB operation for /edit doesnt have async environment like /post
-            return that.closePostManager(true, res.post) // signal to setRefreshFeed
-        });
+        const that = this
+        editPost(post).then(json => {
+            return that.closePostManager(true, json.post);
+        })
     }
 
     onPostManagerDone(post){
@@ -310,7 +309,11 @@ class App extends React.Component{
         })
     }
 
-    setPageToShow(newPage){
+    // can this be done in each of the routes? instead of one monolithic navigator?
+    // e.g. in the function that is passed as render in the route, e.g. in renderBlog, renderGallery, etc...
+    navigator(newPage){
+        // could change push to ".replace" see if it makes a difference
+        this.props.history.push({pathname: PAGES_URLS[newPage]})
         if(newPage === PAGES.LOGIN && this.state.isAdmin){
             this.setState({mobileOpen: false})
             return
@@ -347,45 +350,84 @@ class App extends React.Component{
     renderBlog(){
         let onEdit = this.state.isAdmin ? this.openEditPost : null
         let onDelete = this.state.isAdmin ? this.openDeletePost : null
+        let external_visit = this.props.location.pathname.includes("post") && !this.state.slideState.itemToShow
 
-        return(
-            <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={{maxWidth: "96vw"}}>
+        // if post is requesed from an externally clicked link (e.g. someone gave me a link and I click it)
+        // then display just the post, otherwise display the feed!!
+        if(external_visit){
+            // dynamic route, let it handle via the router so we can easily access :id
+            return(
+                <Route path='/post/:id' render={() => {
+                    return(<Post onEdit={onEdit}
+                          onDelete={onDelete}
+                          readPost={this.viewPostAndUpdateSlide}/>)
+                }}/>
+            )
+        }else{
+            return(
+                <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={{maxWidth: "96vw"}}>
 
-                <SlideContainer>
-                    {/* this padding should match with padding in post/gallery (to avoid slider at bottom) */}
-                    <Grid item className={"hyphenate"} style={{width: "100%"}}>
-                        {/* TODO: change readPost={} to onRead={}*/}
-                        <Feed refresh={this.state.refreshFeed}
-                              onRefresh={() => this.setRefreshFeed(false)}
-                              readPost={this.readAndUpdateSlide}
-                              onEdit={onEdit}
-                              onDelete={onDelete}/>
-                    </Grid>
-                </SlideContainer>
+                    <SlideContainer>
+                        {/* this padding should match with padding in post/gallery (to avoid slider at bottom) */}
+                        <Grid item className={"hyphenate"} style={{width: "100%"}}>
+                            {/* TODO: change readPost={} to onRead={}*/}
+                            <Feed refresh={this.state.refreshFeed}
+                                  onRefresh={() => this.setRefreshFeed(false)}
+                                  readPost={this.viewPostAndUpdateSlide}
+                                  onEdit={onEdit}
+                                  onDelete={onDelete}/>
+                        </Grid>
+                    </SlideContainer>
 
-                <SlideContainer>
-                    <Grid item className={"hyphenate"} style={{width: "100%"}}>
-                        {/* slideState.itemToShow && <Post ... /> does not work here because itemToShow becomes 0
+                    <SlideContainer>
+                        <Grid item className={"hyphenate"} style={{width: "100%"}}>
+                            {/* slideState.itemToShow && <Post ... /> does not work here because itemToShow becomes 0
                         if first post is selected, and 0 is not a truthy value,
                         so the first post will never be shown */}
-                        {this.state.slideState.itemToShow != null ? <Post onEdit={onEdit}
-                                                               onDelete={onDelete}
-                                                               readPost={this.readAndUpdateSlide}
-                                                               post={this.state.slideState.itemToShow}/> : <div></div>}
-                    </Grid>
-                </SlideContainer>
-            </SwipeableViews>
-        )
+                            {this.state.slideState.itemToShow && <Post onEdit={onEdit}
+                                                                       onDelete={onDelete}
+                                                                       readPost={this.viewPostAndUpdateSlide}
+                                                                       post={this.state.slideState.itemToShow}/>}
+                        </Grid>
+                    </SlideContainer>
+                </SwipeableViews>
+            )
+        }
     }
 
     renderGallery(){
-        return(
-            <SlideContainer>
-                <Grid item style={{width: "100%"}}>
-                    <Gallery slideIndex={this.state.slideState.slideIndex} albumToShow={this.state.slideState.itemToShow} viewAlbum={this.readAndUpdateSlide}/>
-                </Grid>
-            </SlideContainer>
-        )
+        let external_visit = this.props.location.pathname.includes("gallery/album") && !this.state.slideState.itemToShow
+        if(external_visit){
+            // this is dirty and so is the same thing we did for Post routing, refactor ASAP
+            return(
+                // note the optional /imdIdx route denoted by question mark
+                <Route path='/gallery/album/:albumId/:imgIdx?' render={() => {
+                    return(
+                        <SlideContainer>
+                            <PhotoViewer>
+                                <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                                    <Button onClick={() => this.viewAlbumAndUpdateSlide("prev", null)} size="small">
+                                        <ArrowBack/>
+                                    </Button>
+                                    <CircularProgressButton onClick={() => console.log("pressed download")}>
+                                        Download
+                                        <Icon>save</Icon>
+                                    </CircularProgressButton>
+                                </div>
+                            </PhotoViewer>
+                        </SlideContainer>
+                    )
+                }}/>
+            )
+        }else{
+            return(
+                <SlideContainer>
+                    <Grid item style={{width: "100%"}}>
+                        <Gallery slideIndex={this.state.slideState.slideIndex} albumToShow={this.state.slideState.itemToShow} viewAlbum={this.viewAlbumAndUpdateSlide}/>
+                    </Grid>
+                </SlideContainer>
+            )
+        }
     }
 
     renderAbout(){
@@ -399,7 +441,10 @@ class App extends React.Component{
     }
 
     renderLogin(){
-        return(<Login handleLogin={() => this.setState({isAdmin: true, pageToShow: PAGES.FEED})
+        return(<Login handleLogin={() => {
+            this.setState({isAdmin: true, pageToShow: PAGES.FEED})
+            this.props.history.push("/")
+        }
         }/>)
     }
 
@@ -436,27 +481,52 @@ class App extends React.Component{
 
     render(){
         const { classes } = this.props
-        let {pageToShow, mobileOpen, modal } = this.state;
+        let {pageToShow, mobileOpen, modal, isAdmin} = this.state;
         return(
             <div className={classes.root}>
                 <CssBaseline/>
 
                 {/* zIndex lowered from 1200 to 1000 so that the LightBox can display images full screen*/}
                 <div style={{zIndex: 1000}}>
-                    <NavBar handleDrawerToggle={() => this.setMobile(true)}>
-                        {this.state.isAdmin && this.renderAdminNav()}
-                    </NavBar>
-
-                    <ResponsiveDrawer mobileOpen={mobileOpen} dispose={() => this.setMobile(false)}>
-                        <Sidebar setPageToShow={this.setPageToShow}/>
-                    </ResponsiveDrawer>
+                    <Menu navigator={this.navigator} adminNav={isAdmin ? this.renderAdminNav() : null}/>
                 </div>
 
+
+                {/**
+                 If the state-based, manually URL-d navigation is kept instead of a purely route-based navigation, it is really difficult
+                 to also involve route-based content. For example, if a post is manually URL-d after it's clicked on,
+                 there isn't actually a route handler which displays that post, it's only displaying based on state.
+                 However, if we then want to add a route handler to handle that same URL in case the request comes
+                 from a shared link click, it is currently impossible.
+
+                 (e.g. I copy URL from blog post and give it to someone, they paste it in their browser and go to it
+                        issues:
+                            - there is no route handler which could be set up to catch this pasted post URL AND catch the
+                              non-pasted (locally navigated) post URL too if needed
+                            - there is no slideState or itemToShow as soon as they click away from the post)
+                            - there is no place to put the Switch component, the URLs made by the .replace() function
+                              are fake, the app is still on the root URL (/)
+                 **/}
+
+                {/**
+                    have to do the following:
+                    - have a separate function for each feature carousel, e.g. gallery carousel, feed carousel
+                    - have them handle the carousel routing manually instead of router (to enable smooth sliding animation)
+                 **/}
                 <main className={classes.content}>
-                    {pageToShow === 1 && this.renderBlog()}
-                    {pageToShow === 2 && this.renderGallery()}
-                    {pageToShow === 3 && this.renderAbout()}
-                    {pageToShow === 4 && this.renderLogin()}
+                    {/*{pageToShow === PAGES.FEED && this.renderBlog()}*/}
+                    {/*{pageToShow === PAGES.GALLERY && this.renderGallery()}*/}
+                    {/*{pageToShow === PAGES.ABOUT && this.renderAbout()}*/}
+                    {/*{pageToShow === PAGES.LOGIN && this.renderLogin()}*/}
+                    <Switch>
+                        {/* order of Routes ARE IMPORTANT*/}
+                        <Route exact path='/about' render={this.renderAbout} key={this.props.location.pathname}/>
+                        {!isAdmin &&
+                            <Route exact path='/login' render={this.renderLogin} key={this.props.location.pathname}/>
+                        }
+                        <Route path='/gallery' render={this.renderGallery}/>
+                        <Route path='/' render={this.renderBlog}/>
+                    </Switch>
                 </main>
 
                 <div>
@@ -472,4 +542,4 @@ class App extends React.Component{
     }
 }
 
-export default withStyles(styles)(App);
+export default withStyles(styles)(withRouter(App));
