@@ -53,6 +53,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(1),
         marginTop: `${appBarHeight}px`,
+        minHeight: "90vh"
     },
 });
 
