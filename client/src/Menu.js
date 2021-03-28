@@ -7,6 +7,12 @@ import Sidebar from "./Sidebar";
 function Menu(props) {
     const [mobile, setMobile] = useState(false)
     const {adminNav} = props
+
+    const handleNav = (page) => {
+        setMobile(false)
+        props.navigator(page)
+    }
+
     return (
         <React.Fragment>
             <NavBar handleDrawerToggle={() => setMobile(true)}>
@@ -14,7 +20,7 @@ function Menu(props) {
             </NavBar>
 
             <ResponsiveDrawer mobileOpen={mobile} dispose={() => setMobile(false)}>
-                <Sidebar navigator={props.navigator}/>
+                <Sidebar navigator={handleNav}/>
             </ResponsiveDrawer>
         </React.Fragment>
     );

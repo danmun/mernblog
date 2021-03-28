@@ -1,7 +1,6 @@
 import React from 'react';
 import {withRouter, Link} from 'react-router-dom'
 import {drawerWidth, appBarHeight} from './NavBar';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import PersonIcon from '@material-ui/icons/Person';
 import Grid from '@material-ui/core/Grid';
@@ -36,7 +35,8 @@ const useStyles = makeStyles(theme => ({
 
 function Sidebar(props) {
     const classes = useStyles();
-
+    const {navigator} = props
+    
     return (
         <React.Fragment>
             <div className={classes.toolbar} style={{display: "flex", alignItems: "center", flexDirection: "row", justifyContent: "center"}}>
@@ -49,17 +49,17 @@ function Sidebar(props) {
             <Grid container spacing={0} direction="row">
                 <Grid item xs={12}>
                     <List>
-                        <ListItem button onClick={() => props.navigator(PAGES.FEED)}>
+                        <ListItem button onClick={() => navigator(PAGES.FEED)}>
                             <ListItemIcon><LibraryBookIcon /></ListItemIcon>
                             <ListItemText primary="Blog" />
                         </ListItem>
 
-                        <ListItem button onClick={() => props.navigator(PAGES.GALLERY)}>
+                        <ListItem button onClick={() => navigator(PAGES.GALLERY)}>
                             <ListItemIcon><PhotoLibraryIcon /></ListItemIcon>
                             <ListItemText primary="Gallery" />
                         </ListItem>
 
-                        <ListItem button onClick={() => props.navigator(PAGES.ABOUT)}>
+                        <ListItem button onClick={() => navigator(PAGES.ABOUT)}>
                             <ListItemIcon><HelpIcon /></ListItemIcon>
                             <ListItemText primary="About" />
                         </ListItem>
@@ -74,7 +74,7 @@ function Sidebar(props) {
             <Grid container alignItems="center" justify="center" spacing={0} direction="column" >
                 {/* xs is NOT THE RIGHT WAY to center the items, but `alignItems` and `justify` don't work! */}
                 <Grid item xs={12}>
-                    <Avatar className={classes.bigAvatar} onClick={() => props.navigator(PAGES.LOGIN)}><PersonIcon/></Avatar>
+                    <Avatar className={classes.bigAvatar} onClick={() => navigator(PAGES.LOGIN)}><PersonIcon/></Avatar>
                 </Grid>
             </Grid>
         </React.Fragment>
