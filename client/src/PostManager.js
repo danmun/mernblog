@@ -136,6 +136,9 @@ class PostManager extends React.Component{
                 xhr.send(data);
                 xhr.addEventListener('load', () => {
                     const response = JSON.parse(xhr.responseText);
+                    // trying to find out how we could store text to state first then upload all together during handleSubmit
+                    // for this to work, need to return something to the editor's img tool via uploadImageCallback
+                    console.log("Imgur response is", response)
                     resolve(response);
                 });
                 xhr.addEventListener('error', () => {
