@@ -136,9 +136,6 @@ class PostManager extends React.Component{
                 xhr.send(data);
                 xhr.addEventListener('load', () => {
                     const response = JSON.parse(xhr.responseText);
-                    // trying to find out how we could store text to state first then upload all together during handleSubmit
-                    // for this to work, need to return something to the editor's img tool via uploadImageCallback
-                    console.log("Imgur response is", response)
                     resolve(response);
                 });
                 xhr.addEventListener('error', () => {
@@ -150,6 +147,9 @@ class PostManager extends React.Component{
     }
 
     render(){
+        // unfortunately the image tool of the editor library uses the link of the image to display it in the little image
+        // box during editing... even if we choose the file option instead of the link option, it will wait for the file
+        // to be uploaded (by uploadImageCallback) then take the link from the Imgur API response to display the image
         return(
             <PostManagerForm onSubmit={this.handleSubmit} uploadImageCallback={this.uploadImageCallback} editingPost={this.props.editingPost}/>
         );
