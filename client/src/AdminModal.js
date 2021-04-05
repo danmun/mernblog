@@ -24,7 +24,7 @@ export default function AdminModal(props) {
     return (
         <div>
             <Modal
-                style={{display:'flex', alignItems:'center', justifyContent:'center', margin: "auto", width: "80vw"}}
+                style={style.modalElement}
                 disableBackdropClick={true}
                 disableEscapeKeyDown={true}
                 aria-labelledby="transition-modal-title"
@@ -45,21 +45,16 @@ export default function AdminModal(props) {
                             direction="column"
                             justify="space-between"
                             alignItems="center"
-                            style={{width: "100%"}}
+                            style={style.modal.container}
                         >
-                            <Grid item style={{width: "100%"}}>
-                                <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent:"space-between"}}>
+                            <Grid item style={style.modal.title.grid}>
+                                <div style={style.modal.title.container}>
                                     <div>
                                         <h2>{props.title}</h2>
                                     </div>
                                     <div>
                                         <IconButton
-                                            style={{
-                                                padding: "7px",
-                                                marginLeft: "0px",
-                                                position: "relative",
-                                                top: "12px"
-                                            }}
+                                            style={style.modal.title.button}
                                             edge="start"
                                             onClick={props.dispose}
                                             // className={classes.menuButton}
@@ -76,4 +71,36 @@ export default function AdminModal(props) {
             </Modal>
         </div>
     );
+}
+
+const style = {
+    modalElement: {
+        display:'flex',
+        alignItems:'center',
+        justifyContent:'center',
+        margin: "auto",
+        width: "80vw",
+    },
+    modal: {
+        container: {
+            width: "100%"
+        },
+        title: {
+            grid: {
+                width: "100%"
+            },
+            container: {
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent:"space-between"
+            },
+            button: {
+                padding: "7px",
+                marginLeft: "0px",
+                position: "relative",
+                top: "12px"
+            }
+        }
+    }
 }

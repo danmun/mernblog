@@ -147,6 +147,9 @@ class PostManager extends React.Component{
     }
 
     render(){
+        // unfortunately the image tool of the editor library uses the link of the image to display it in the little image
+        // box during editing... even if we choose the file option instead of the link option, it will wait for the file
+        // to be uploaded (by uploadImageCallback) then take the link from the Imgur API response to display the image
         return(
             <PostManagerForm onSubmit={this.handleSubmit} uploadImageCallback={this.uploadImageCallback} editingPost={this.props.editingPost}/>
         );

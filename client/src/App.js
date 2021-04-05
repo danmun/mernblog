@@ -53,6 +53,7 @@ const styles = theme => ({
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(1),
         marginTop: `${appBarHeight}px`,
+        minHeight: "90vh"
     },
 });
 
@@ -481,7 +482,7 @@ class App extends React.Component{
 
     render(){
         const { classes } = this.props
-        let {pageToShow, mobileOpen, modal, isAdmin} = this.state;
+        let {modal, isAdmin} = this.state;
         return(
             <div className={classes.root}>
                 <CssBaseline/>
@@ -514,10 +515,6 @@ class App extends React.Component{
                     - have them handle the carousel routing manually instead of router (to enable smooth sliding animation)
                  **/}
                 <main className={classes.content}>
-                    {/*{pageToShow === PAGES.FEED && this.renderBlog()}*/}
-                    {/*{pageToShow === PAGES.GALLERY && this.renderGallery()}*/}
-                    {/*{pageToShow === PAGES.ABOUT && this.renderAbout()}*/}
-                    {/*{pageToShow === PAGES.LOGIN && this.renderLogin()}*/}
                     <Switch>
                         {/* order of Routes ARE IMPORTANT*/}
                         <Route exact path='/about' render={this.renderAbout} key={this.props.location.pathname}/>
