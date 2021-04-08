@@ -25,10 +25,10 @@ try {
 
 const imgur_client_id = process.env.IMGUR_CLIENT_ID || dev_config.IMGUR_CLIENT_ID
 
-function constructPost(form){
+function constructPost(user, form){
     return(
         {
-            user: 1, // TODO: change this to logged in user. . .
+            user: user._id,
             title: form.title,
             html: form.html,
             plaintext: form.plaintext,
@@ -40,11 +40,11 @@ function constructPost(form){
     )
 }
 
-function constructAlbum(form){
+function constructAlbum(user, form){
     let albumDetails = form.album
     return(
         {
-            user: 1,
+            user: user._id,
             title: albumDetails.title ? albumDetails.title : new Date(form.date).toLocaleString(),
             photos: albumDetails.photos,
             thumb: albumDetails.photos[0], //first photo can be thumb
@@ -127,9 +127,11 @@ apiRouter.get('/gallery', checkAuth, async function (req, res) {
     }
 });
 
+// enforceAuth guarantees that req.user exists,
+// otherwise it would throw a 401 and this async function would not execute
 apiRouter.post('/post', enforceAuth, async (req, res) => {
     // prep and save the post
-    const post = new Post(constructPost(req.body));
+    const post = new Post(constructPost(req.user, req.body));
     try {
         await post.save();
     } catch (err) {
@@ -155,7 +157,7 @@ apiRouter.post('/post', enforceAuth, async (req, res) => {
 });
 
 apiRouter.post('/postAbout', enforceAuth, async (req, res) => {
-    let about = constructPost(req.body)
+    let about = constructPost(req.user, req.body)
     const post = new About(about);
     try {
         await post.save();

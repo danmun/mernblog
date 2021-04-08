@@ -70,8 +70,9 @@ const checkAuth = (req, res, next) => {
 // enforces authentication on the incoming request
 // will halt the request chain and respond to the client with 401 if unauthenticated
 const enforceAuth = (req, res, next) => {
-    verifyToken(parseToken(req), function(username){
-        if(username){
+    verifyToken(parseToken(req), function(user){
+        if(user){
+            req.user = user
             next()
         }else{
             res.status(401).send()
@@ -90,7 +91,9 @@ const verifyToken = (token, callback) => {
             // invalid token
             callback(null);
         } else {
-            callback(decoded.username);
+            const {_id, username} = decoded
+            const user = {_id, username}
+            callback(user);
         }
     });
 }
