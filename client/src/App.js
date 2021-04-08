@@ -1,10 +1,6 @@
 import React from 'react';
 import './style/App.css'
 import CssBaseline from '@material-ui/core/CssBaseline';
-import IconButton from '@material-ui/core/IconButton';
-import AddAlbumIcon from '@material-ui/icons/AddPhotoAlternate';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import AddPostIcon from '@material-ui/icons/AddCircle';
 import SwipeableViews from 'react-swipeable-views';
 import {toggleCarousel} from "./utils";
 import Feed from './Feed'
@@ -124,7 +120,6 @@ class App extends React.Component{
         this.renderGallery = this.renderGallery.bind(this);
         this.renderAbout = this.renderAbout.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
-        this.renderAdminNav = this.renderAdminNav.bind(this);
     }
 
     componentDidMount() {
@@ -449,37 +444,6 @@ class App extends React.Component{
         }/>)
     }
 
-    renderAdminNav(){
-        return(
-            <React.Fragment>
-                <IconButton
-                    aria-label="open drawer"
-                    edge="start"
-                    onClick={() => this.openCreatePost()}
-                    style={{color: "green"}}
-                >
-                    <AddPostIcon/>
-                </IconButton>
-                <IconButton
-                    aria-label="open drawer"
-                    edge="start"
-                    onClick={() => this.openCreateAlbum()}
-                    style={{color: "green"}}
-                >
-                    <AddAlbumIcon />
-                </IconButton>
-                <IconButton
-                    aria-label="open drawer"
-                    edge="start"
-                    onClick={() => this.logout()}
-                    style={{color: "black"}}
-                >
-                    <ExitToAppIcon />
-                </IconButton>
-            </React.Fragment>
-        )
-    }
-
     render(){
         const { classes } = this.props
         let {modal, isAdmin} = this.state;
@@ -489,7 +453,10 @@ class App extends React.Component{
 
                 {/* zIndex lowered from 1200 to 1000 so that the LightBox can display images full screen*/}
                 <div style={{zIndex: 1000}}>
-                    <Menu navigator={this.navigator} adminNav={isAdmin ? this.renderAdminNav() : null}/>
+                    <Menu navigator={this.navigator}
+                          logout={isAdmin && this.logout}
+                          createPost={isAdmin && this.openCreatePost}
+                          createAlbum={isAdmin && this.openCreateAlbum}/>
                 </div>
 
 
