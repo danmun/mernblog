@@ -1,7 +1,7 @@
 let mongoose = require('mongoose');
 let PostSchema = new mongoose.Schema({
     user: {
-        type: Number, // the user id whom the app belongs to, could be remodelled later
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         trim: true
     },
