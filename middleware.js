@@ -17,7 +17,7 @@ const logout = (req, res) => {
 const login = (req, res) => {
     const { username, password } = req.body;
     User.findOne({ username }, function(err, user) {
-        const userId = user._id
+        const _id = user._id
         if (err) {
             console.error(err);
             res.status(500)
@@ -43,7 +43,7 @@ const login = (req, res) => {
                         });
                 } else {
                     // Issue token
-                    const payload = { username, userId };
+                    const payload = { username, _id };
                     const token = jwt.sign(payload, secret, {
                         expiresIn: '1h'
                     });
