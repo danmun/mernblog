@@ -51,7 +51,7 @@ class PostManagerForm extends React.Component {
     constructor(props){
         super(props);
 
-        let editingPostId = null
+        let postId = null
         let editorState = null
         let selectedDate = Date.now()
         let selectedDateChecked = false
@@ -62,20 +62,20 @@ class PostManagerForm extends React.Component {
         let title = ""
         let tags = ""
 
-        if(props.editingPost != null){
+        if(props.post != null){
             showDisplayEditDate = true
-            editingPostId = props.editingPost._id
-            displayEditDateChecked = props.editingPost.displayEditDate
-            let content = htmlToDraft(props.editingPost.html)
+            postId = props.post._id
+            displayEditDateChecked = props.post.displayEditDate
+            let content = htmlToDraft(props.post.html)
             if(content){
                 editorState = EditorState.createWithContent(ContentState.createFromBlockArray(content.contentBlocks))
             }
-            title = props.editingPost.title
-            tags = "#" + props.editingPost.tags.join("#")
+            title = props.post.title
+            tags = "#" + props.post.tags.join("#")
         }
 
         this.state = {
-            editingPostId: editingPostId,
+            postId: postId,
             title: title, // textfield value
             showDisplayEditDate: showDisplayEditDate,
             displayEditDateChecked: displayEditDateChecked,

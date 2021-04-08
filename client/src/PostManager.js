@@ -3,12 +3,14 @@ import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import PostManagerForm from "./PostManagerForm";
 import {getImgurClientId} from "./api/auth";
+import {createPost, editPost} from "./api/posts";
 
 // TODO: rename to PostEditor and PostEditorForm
 class PostManager extends React.Component{
     constructor(props){
         super(props)
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.submit = this.submit.bind(this);
         this.uploadImageCallback = this.uploadImageCallback.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
         this.getPhotosFromRawContent = this.getPhotosFromRawContent.bind(this);
@@ -17,7 +19,7 @@ class PostManager extends React.Component{
     // TODO/FIXME: if post edited from post view, then return to feed, the feed still shows the old version of the post
     // TODO: onSubmit, if edited content same as before, don't submit, just exit the modal
     handleSubmit(form){
-        let {editorState, editingPostId, title,
+        let {editorState, postId, title,
             albumTitle, createAlbumChecked, displayEditDateChecked,
             selectedDate, selectedDateChecked, tags} = form
 
@@ -72,7 +74,7 @@ class PostManager extends React.Component{
         }
 
         let post = {
-            id: editingPostId,
+            id: postId,
             html: html,
             plaintext: plaintext,
             title: title,
@@ -82,7 +84,20 @@ class PostManager extends React.Component{
             tags: tags.split("#").filter(item => item) // split string of tags into hashtagless array
         }
 
-        this.props.onDone(post)
+        this.submit(post)
+    }
+
+    submit(post){
+        const {onSubmit} = this.props
+        if(post.id === null || post.id.trim().length === 0){
+            createPost(post).then(json => {
+                return onSubmit(true, null) // signal to setRefreshFeed
+            })
+        }else{
+            editPost(post).then(json => {
+                return onSubmit(true, json.post);
+            })
+        }
     }
 
     getPhotosFromRawContent(rawContent){
@@ -151,7 +166,7 @@ class PostManager extends React.Component{
         // box during editing... even if we choose the file option instead of the link option, it will wait for the file
         // to be uploaded (by uploadImageCallback) then take the link from the Imgur API response to display the image
         return(
-            <PostManagerForm onSubmit={this.handleSubmit} uploadImageCallback={this.uploadImageCallback} editingPost={this.props.editingPost}/>
+            <PostManagerForm onSubmit={this.handleSubmit} uploadImageCallback={this.uploadImageCallback} post={this.props.post}/>
         );
     }
 }

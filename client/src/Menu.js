@@ -6,15 +6,25 @@ import IconButton from "@material-ui/core/IconButton";
 import AddPostIcon from "@material-ui/icons/AddCircle";
 import AddAlbumIcon from "@material-ui/icons/AddPhotoAlternate";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import {logout} from "./api/auth";
 
-//props: adminNav
 function Menu(props) {
     const [mobile, setMobile] = useState(false)
-    const {createPost, createAlbum, logout} = props
+    const {createPost, createAlbum, onLogout} = props
 
     const handleNav = (page) => {
         setMobile(false)
         props.navigator(page)
+    }
+
+    const doLogout = () => {
+        logout().then(success => {
+            if(success){
+                onLogout()
+            }else{
+                // error during logout
+            }
+        })
     }
 
     return (
@@ -41,11 +51,11 @@ function Menu(props) {
                         <AddAlbumIcon />
                     </IconButton>
                     }
-                    {logout &&
+                    {onLogout &&
                     <IconButton
                         aria-label="open drawer"
                         edge="start"
-                        onClick={logout}
+                        onClick={doLogout}
                         style={{color: "black"}}
                     >
                         <ExitToAppIcon />

@@ -17,8 +17,7 @@ import Login from "./Login";
 import About from "./About";
 import {Switch, withRouter, Route} from 'react-router-dom'
 import Menu from "./Menu";
-import {checkLoggedIn, logout} from "./api/auth";
-import {createPost, editPost} from "./api/posts";
+import {checkLoggedIn} from "./api/auth";
 import PhotoViewer from "./PhotoViewer";
 import Button from "@material-ui/core/Button";
 import ArrowBack from "@material-ui/icons/ArrowBack";
@@ -65,7 +64,7 @@ const initialModal = {
     galleryCreation: false,
     postCreation: false,
     postDeletion: false,
-    editingPost: null,
+    post: null,
 }
 
 // TODO: rename pageToShow to currentPage
@@ -81,7 +80,7 @@ class App extends React.Component{
         super(props);
 
         // TODO: refactor -> move modal related things to a `modal` object
-        //  e.g. modal = {open, title, galleryCreation, postCreation, editingPost}
+        //  e.g. modal = {open, title, galleryCreation, postCreation, post}
         this.state = {
             isAdmin: false, // for visual purpose only (e.g. show/not show admin bar), further auth done on API calls
             pageToShow: PAGES.FEED,
@@ -91,7 +90,7 @@ class App extends React.Component{
             slideState: initialSlideState,
         }
 
-        this.logout = this.logout.bind(this);
+        this.onLogout = this.onLogout.bind(this);
 
         this.readPost = this.readPost.bind(this);
         this.viewAlbumAndUpdateSlide = this.viewAlbumAndUpdateSlide.bind(this);
@@ -103,11 +102,6 @@ class App extends React.Component{
         this.openPostManager = this.openPostManager.bind(this);
         this.closeDeletePost = this.closeDeletePost.bind(this);
         this.closePostManager = this.closePostManager.bind(this);
-
-        this.submitNewPost = this.submitNewPost.bind(this);
-        this.submitEditedPost = this.submitEditedPost.bind(this);
-        
-        this.onPostManagerDone = this.onPostManagerDone.bind(this);
 
         this.openCreateAlbum = this.openCreateAlbum.bind(this);
         this.submitAlbum = this.submitAlbum.bind(this);
@@ -128,23 +122,17 @@ class App extends React.Component{
         })
     }
 
-    logout(){
+    onLogout(){
+        this.setState({
+            isAdmin: false,
+            pageToShow: PAGES.FEED,
+            refreshFeed: true,
+            slideState: initialSlideState
+        })
         // TODO: add logout success/fail message/alertbox
         // if user saved token from the cookie previously outside browser, they can still use it to access their session
         // would be nice to be able to invalidate the token server side
         // this is logout() in auth.js (success is its return value)
-        logout().then(success => {
-            if(success){
-                this.setState({
-                    isAdmin: false,
-                    pageToShow: PAGES.FEED,
-                    refreshFeed: true,
-                    slideState: initialSlideState
-                })
-            }else{
-                // error during logout
-            }
-        })
     }
 
     readPost(newDirection, post){
@@ -193,7 +181,7 @@ class App extends React.Component{
                 galleryCreation: false,
                 postCreation: false,
                 postDeletion: true,
-                editingPost: post,
+                post: post,
             }
         })
     }
@@ -205,7 +193,7 @@ class App extends React.Component{
                 title: title,
                 galleryCreation: false,
                 postCreation: true,
-                editingPost: post
+                post: post
             }
         })
     }
@@ -220,7 +208,7 @@ class App extends React.Component{
             modal: {
                 open: false,
                 title: "",
-                editingPost: null,
+                post: null,
                 galleryCreation: false,
                 postCreation: false,
                 postDeletion: false,
@@ -246,31 +234,10 @@ class App extends React.Component{
                 open: false,
                 postCreation: false,
                 galleryCreation: false,
-                editingPost: null,
+                post: null,
             },
             slideState: slideState
         })
-    }
-
-    submitNewPost(post){
-        createPost(post).then(json => {
-            this.closePostManager(true, null) // signal to setRefreshFeed
-        })
-    }
-
-    submitEditedPost(post){
-        const that = this
-        editPost(post).then(json => {
-            return that.closePostManager(true, json.post);
-        })
-    }
-
-    onPostManagerDone(post){
-        if(post.id === null || post.id.trim().length === 0){
-            this.submitNewPost(post)
-        }else{
-            this.submitEditedPost(post)
-        }
     }
 
     openCreateAlbum(){
@@ -298,7 +265,7 @@ class App extends React.Component{
             modal: {
                 open: false,
                 title: "",
-                editingPost: null,
+                post: null,
                 galleryCreation: false,
                 postCreation: false,
             }
@@ -454,7 +421,7 @@ class App extends React.Component{
                 {/* zIndex lowered from 1200 to 1000 so that the LightBox can display images full screen*/}
                 <div style={{zIndex: 1000}}>
                     <Menu navigator={this.navigator}
-                          logout={isAdmin && this.logout}
+                          onLogout={isAdmin && this.onLogout}
                           createPost={isAdmin && this.openCreatePost}
                           createAlbum={isAdmin && this.openCreateAlbum}/>
                 </div>
@@ -495,10 +462,10 @@ class App extends React.Component{
 
                 <div>
                     <AdminModal title={modal.title} open={modal.open} dispose={() => this.closePostManager(false, null)}>
-                        {modal.postCreation && <PostManager onDone={this.onPostManagerDone} editingPost={modal.editingPost}/>}
+                        {modal.postCreation && <PostManager onSubmit={this.closePostManager} post={modal.post}/>}
                         {modal.galleryCreation && <CreateAlbum onCreate={this.submitAlbum}/>}
                         {/*{modal.galleryCreation && <PhotoPreviewPane onCreate={this.submitAlbum}/>}*/}
-                        {modal.postDeletion && <DeleteConfirmation onConfirm={this.closeDeletePost} toDelete={modal.editingPost}/>}
+                        {modal.postDeletion && <DeleteConfirmation onConfirm={this.closeDeletePost} toDelete={modal.post}/>}
                     </AdminModal>
                 </div>
             </div>
