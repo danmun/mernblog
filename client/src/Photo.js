@@ -1,8 +1,8 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardMedia from '@material-ui/core/CardMedia';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardMedia from "@material-ui/core/CardMedia";
 
 export default function Photo(props) {
     const classes = useStyles();
@@ -23,7 +23,7 @@ export default function Photo(props) {
 const useStyles = makeStyles({
     card: {
         maxWidth: 350,
-        minWidth: 280
+        minWidth: 280,
     },
 
     media: {

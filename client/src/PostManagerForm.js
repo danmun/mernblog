@@ -1,30 +1,38 @@
-import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import './style/editor.css'
-import 'date-fns'
-import React from 'react';
-import {Editor} from 'react-draft-wysiwyg';
-import { EditorState } from 'draft-js';
-import { ContentState } from 'draft-js';
-import htmlToDraft from 'html-to-draftjs';
-import DateFnsUtils from '@date-io/date-fns';
-import { TextField, Grid, Button, Icon, Hidden, Checkbox, FormControlLabel} from "@material-ui/core";
-import {MuiPickersUtilsProvider, DateTimePicker} from '@material-ui/pickers'
+import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "./style/editor.css";
+import "date-fns";
+import React from "react";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState } from "draft-js";
+import { ContentState } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+    TextField,
+    Grid,
+    Button,
+    Icon,
+    Hidden,
+    Checkbox,
+    FormControlLabel,
+} from "@material-ui/core";
+import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 import SwipeableViews from "react-swipeable-views";
 import SlideContainer from "./SlideContainer";
-import {toggleCarousel} from "./utils";
+import { toggleCarousel } from "./utils";
 import HorizontalStepper from "./HorizontalStepper";
 
 const springConfig = {
     duration: "1s",
     easeFunction: "cubic-bezier(0.1, 0.35, 0.2, 1)",
     delay: "0.1s", // so that the `Read Post` button shows its animation
-}
+};
 
 const initialSlideState = {
     slideIndex: 0,
     slideNavi: null,
     slideCount: 4,
-}
+};
 
 // currently two problems:
 // TODO: image upload popup messes its position up on upload
@@ -32,7 +40,6 @@ const initialSlideState = {
 //       for modal: style={{display:'flex', alignItems:'center', justifyContent:'center', margin: "auto"}}
 //       in editor.css if(mobile height < 600): .wysiwyg-editor -> min-height: 30vh;and max-height: 30vh;
 //       else 50vh
-
 
 // TODO: if full screen
 //          display everything in one page without any slides with full editor functionality
@@ -44,34 +51,34 @@ const initialSlideState = {
 // NOTE: we could go back to materialui modal i guess...
 //  since we can now have a responsive solution (slides) regardless of modal type...
 
-
 // TODO: onSubmit must compare old content with new content, if same, must not update page/feed/etc...
 class PostManagerForm extends React.Component {
-
-    constructor(props){
+    constructor(props) {
         super(props);
 
-        let postId = null
-        let editorState = null
-        let selectedDate = Date.now()
-        let selectedDateChecked = false
-        let createAlbumChecked = false
-        let displayEditDateChecked = false
-        let showDisplayEditDate = false
-        let albumTitle = null
-        let title = ""
-        let tags = ""
+        let postId = null;
+        let editorState = null;
+        let selectedDate = Date.now();
+        let selectedDateChecked = false;
+        let createAlbumChecked = false;
+        let displayEditDateChecked = false;
+        let showDisplayEditDate = false;
+        let albumTitle = null;
+        let title = "";
+        let tags = "";
 
-        if(props.post != null){
-            showDisplayEditDate = true
-            postId = props.post._id
-            displayEditDateChecked = props.post.displayEditDate
-            let content = htmlToDraft(props.post.html)
-            if(content){
-                editorState = EditorState.createWithContent(ContentState.createFromBlockArray(content.contentBlocks))
+        if (props.post != null) {
+            showDisplayEditDate = true;
+            postId = props.post._id;
+            displayEditDateChecked = props.post.displayEditDate;
+            let content = htmlToDraft(props.post.html);
+            if (content) {
+                editorState = EditorState.createWithContent(
+                    ContentState.createFromBlockArray(content.contentBlocks)
+                );
             }
-            title = props.post.title
-            tags = "#" + props.post.tags.join("#")
+            title = props.post.title;
+            tags = "#" + props.post.tags.join("#");
         }
 
         this.state = {
@@ -85,8 +92,8 @@ class PostManagerForm extends React.Component {
             albumTitle: albumTitle,
             tags: tags, // textfield value
             editorState: editorState, // contentState -> convert this to Markdown or HTML for saving to DB
-            slideState: initialSlideState
-        }
+            slideState: initialSlideState,
+        };
 
         this.hashtagOnBlur = this.hashtagOnBlur.bind(this);
         this.hashtagOnFocus = this.hashtagOnFocus.bind(this);
@@ -95,7 +102,7 @@ class PostManagerForm extends React.Component {
         this.albumTitleOnType = this.albumTitleOnType.bind(this);
         this.onEditorStateChange = this.onEditorStateChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
-        this.handleDateChangeChecked= this.handleDateChangeChecked.bind(this);
+        this.handleDateChangeChecked = this.handleDateChangeChecked.bind(this);
         this.handleShowDisplayEditDate = this.handleShowDisplayEditDate.bind(this);
         this.handleCreateAlbumChecked = this.handleCreateAlbumChecked.bind(this);
 
@@ -103,6 +110,7 @@ class PostManagerForm extends React.Component {
 
         this.titleComponent = this.titleComponent.bind(this);
         this.editorComponent = this.editorComponent.bind(this);
+        this.editorToolbarProps = this.editorToolbarProps.bind(this);
         this.tagsComponent = this.tagsComponent.bind(this);
         this.extrasComponent = this.extrasComponent.bind(this);
 
@@ -111,86 +119,89 @@ class PostManagerForm extends React.Component {
     }
 
     handleDateChange(date) {
-        this.setState({selectedDate: date});
-    };
-
-    handleDateChangeChecked(event){
-        let flag = event.target.checked
-        this.setState({selectedDateChecked: flag})
+        this.setState({ selectedDate: date });
     }
 
-    handleShowDisplayEditDate(event){
-        let flag = event.target.checked
-        this.setState({displayEditDateChecked: flag})
+    handleDateChangeChecked(event) {
+        let flag = event.target.checked;
+        this.setState({ selectedDateChecked: flag });
     }
 
-    handleCreateAlbumChecked(event){
-        let flag = event.target.checked
-        this.setState({createAlbumChecked: flag})
+    handleShowDisplayEditDate(event) {
+        let flag = event.target.checked;
+        this.setState({ displayEditDateChecked: flag });
     }
 
-    hashtagOnType(event){
-        let text = event.target.value
-        let currentChar = text[text.length - 1]
-        let previousNonSpaceChar = text[text.length - 2]
+    handleCreateAlbumChecked(event) {
+        let flag = event.target.checked;
+        this.setState({ createAlbumChecked: flag });
+    }
+
+    hashtagOnType(event) {
+        let text = event.target.value;
+        let currentChar = text[text.length - 1];
+        let previousNonSpaceChar = text[text.length - 2];
 
         // if initial hashtag is deleted, field will be empty, append new initial hashtag if user starts typing
-        if(this.state.tags === ""){
-            this.setState({tags: "#" + text})
-        }else if(currentChar === " " && previousNonSpaceChar === "#"){
-            return
-        }else if(text === " "){
-            this.setState({tags: "#"})
-        }else if(text.endsWith(" ")){
-            this.setState({tags: text + "#"})
-        }else{
-            this.setState({tags: text})
-        }
-
-    }
-
-    hashtagOnBlur(event){
-        let text = event.target.value
-        if(text.endsWith("#")){
-            let newText = text.substr(0, text.length - 1).trim()
-            this.setState({tags: newText})
+        if (this.state.tags === "") {
+            this.setState({ tags: "#" + text });
+        } else if (currentChar === " " && previousNonSpaceChar === "#") {
+            return;
+        } else if (text === " ") {
+            this.setState({ tags: "#" });
+        } else if (text.endsWith(" ")) {
+            this.setState({ tags: text + "#" });
+        } else {
+            this.setState({ tags: text });
         }
     }
 
-     hashtagOnFocus(event){
-        if(!this.state.tags.endsWith(" #")){
-            let tag = "#"
-            if(this.state.tags.length === 0){
-                this.setState({tags: tag})
-            }else{
-                this.setState({tags: this.state.tags + " #"})
+    hashtagOnBlur(event) {
+        let text = event.target.value;
+        if (text.endsWith("#")) {
+            let newText = text.substr(0, text.length - 1).trim();
+            this.setState({ tags: newText });
+        }
+    }
+
+    hashtagOnFocus(event) {
+        if (!this.state.tags.endsWith(" #")) {
+            let tag = "#";
+            if (this.state.tags.length === 0) {
+                this.setState({ tags: tag });
+            } else {
+                this.setState({ tags: this.state.tags + " #" });
             }
         }
     }
 
-    onEditorStateChange(editorState){
+    onEditorStateChange(editorState) {
         this.setState({
             editorState,
         });
     }
 
-    titleOnType(event){
-        let text = event.target.value
-        this.setState({title: text})
+    titleOnType(event) {
+        let text = event.target.value;
+        this.setState({ title: text });
     }
 
-    albumTitleOnType(event){
-        let text = event.target.value
-        this.setState({albumTitle: text})
+    albumTitleOnType(event) {
+        let text = event.target.value;
+        this.setState({ albumTitle: text });
     }
 
-    changeSlide(direction){
-        let newSlideState = toggleCarousel(direction, this.state.slideState.slideIndex, this.state.slideState.slideCount)
-        this.setState({slideState: newSlideState})
+    changeSlide(direction) {
+        let newSlideState = toggleCarousel(
+            direction,
+            this.state.slideState.slideIndex,
+            this.state.slideState.slideCount
+        );
+        this.setState({ slideState: newSlideState });
     }
 
-    titleComponent(){
-        return(
+    titleComponent() {
+        return (
             <TextField
                 style={styles.main.title.self}
                 id="outlined-with-placeholder"
@@ -202,40 +213,55 @@ class PostManagerForm extends React.Component {
                 inputProps={styles.main.title.inputProps}
                 onChange={this.titleOnType}
             />
-        )
+        );
     }
 
-    editorComponent(classes){
+    editorToolbarProps(imgTool) {
+        return {
+            options: [
+                "inline",
+                "blockType",
+                "fontSize",
+                "fontFamily",
+                "list",
+                "textAlign",
+                "colorPicker",
+                "link",
+                "image",
+                "history",
+            ],
+            inline: { inDropdown: true },
+            list: { inDropdown: true },
+            textAlign: { inDropdown: true },
+            link: { inDropdown: true },
+            history: { inDropdown: true },
+            image: imgTool,
+        }
+    }
+
+    editorComponent(classes) {
         let imageTool = {
             popupClassName: classes.imagePopup,
             uploadCallback: this.props.uploadImageCallback,
             previewImage: true,
             alt: {
                 present: true,
-                mandatory: false
-            }
-        }
-        return(
+                mandatory: false,
+            },
+        };
+        return (
             <Editor
                 editorClassName={classes.editor}
                 // toolbarClassName="wysiwyg-toolbar"
                 editorState={this.state.editorState}
                 onEditorStateChange={this.onEditorStateChange}
-                toolbar={{
-                    options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'image', 'history'],
-                    inline: { inDropdown: true },
-                    list: { inDropdown: true },
-                    textAlign: { inDropdown: true },
-                    link: { inDropdown: true },
-                    history: { inDropdown: true },
-                    image: imageTool,
-                }}
+                toolbar={this.editorToolbarProps(imageTool)}
             />
-        )
+        );
     }
 
-    tagsComponent(){
-        return(
+    tagsComponent() {
+        return (
             <TextField
                 style={styles.main.tags.self}
                 id="outlined-with-placeholder"
@@ -248,11 +274,11 @@ class PostManagerForm extends React.Component {
                 onBlur={this.hashtagOnBlur}
                 onFocus={this.hashtagOnFocus}
             />
-        )
+        );
     }
 
-    extrasComponent(){
-        return(
+    extrasComponent() {
+        return (
             <div>
                 <div style={styles.extras.date.picker.container}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -324,20 +350,24 @@ class PostManagerForm extends React.Component {
                     />
                 </div>
             </div>
-        )
+        );
     }
 
-    renderResponsive(){
+    renderResponsive() {
         const classes = {
             imagePopup: "wysiwyg-editor-image-popup-responsive",
-            editor: "wysiwyg-editor-responsive"
-        }
+            editor: "wysiwyg-editor-responsive",
+        };
 
-        return(
+        return (
             <div>
                 <div>
-                    <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={styles.responsive.container}>
-
+                    <SwipeableViews
+                        disabled
+                        springConfig={springConfig}
+                        index={this.state.slideState.slideIndex}
+                        style={styles.responsive.container}
+                    >
                         <SlideContainer>
                             <Grid item style={styles.responsive.title}>
                                 {this.titleComponent()}
@@ -359,27 +389,28 @@ class PostManagerForm extends React.Component {
                                 {this.extrasComponent()}
                             </Grid>
                         </SlideContainer>
-
                     </SwipeableViews>
                 </div>
 
                 <div style={styles.responsive.stepper}>
-                    <HorizontalStepper steps={["Title", "Content", "Options"]}
-                                       onBack={() => this.changeSlide("prev")}
-                                       onNext={() => this.changeSlide("next")}
-                                       onSubmit={() => this.props.onSubmit(this.state)}/>
+                    <HorizontalStepper
+                        steps={["Title", "Content", "Options"]}
+                        onBack={() => this.changeSlide("prev")}
+                        onNext={() => this.changeSlide("next")}
+                        onSubmit={() => this.props.onSubmit(this.state)}
+                    />
                 </div>
             </div>
-        )
+        );
     }
 
-    renderStandard(){
+    renderStandard() {
         const classes = {
             imagePopup: "wysiwyg-editor-image-popup",
-            editor: "wysiwyg-editor"
-        }
+            editor: "wysiwyg-editor",
+        };
 
-        return(
+        return (
             <React.Fragment>
                 <Grid item style={styles.nonResponsive.containers}>
                     {this.titleComponent()}
@@ -398,17 +429,22 @@ class PostManagerForm extends React.Component {
                 </Grid>
 
                 <Grid item style={styles.nonResponsive.containers}>
-                    <Button onClick={() => this.props.onSubmit(this.state)} variant="contained" color="primary" style={styles.nonResponsive.button}>
+                    <Button
+                        onClick={() => this.props.onSubmit(this.state)}
+                        variant="contained"
+                        color="primary"
+                        style={styles.nonResponsive.button}
+                    >
                         Post
                         <Icon>send</Icon>
                     </Button>
                 </Grid>
             </React.Fragment>
-        )
+        );
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <React.Fragment>
                 <Hidden smUp implementation="js">
                     {this.renderResponsive()}
@@ -417,123 +453,122 @@ class PostManagerForm extends React.Component {
                     {this.renderStandard()}
                 </Hidden>
             </React.Fragment>
-        )
-
+        );
     }
 }
 
 const styles = {
     responsive: {
         container: {
-            maxWidth: "96vw"
+            maxWidth: "96vw",
         },
         title: {
             width: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems:"center"
+            alignItems: "center",
         },
         editor: {
             width: "100%",
-            overflow: "visible"
+            overflow: "visible",
         },
         tags: {
-            width: "100%"
+            width: "100%",
         },
         extras: {
             width: "100%",
-            textAlign: "center"
+            textAlign: "center",
         },
         stepper: {
             width: "100%",
-            textAlign: "center"
-        }
+            textAlign: "center",
+        },
     },
     nonResponsive: {
         containers: {
-            width: "100%"
+            width: "100%",
         },
         button: {
-            width: "100%"
-        }
+            width: "100%",
+        },
     },
     main: {
         title: {
             self: {
-                width: "100%"
+                width: "100%",
             },
             inputProps: {
-                maxLength: "120"
-            }
+                maxLength: "120",
+            },
         },
         tags: {
             self: {
-                width: "100%"
+                width: "100%",
             },
             inputProps: {
-                maxLength: "120"
-            }
-        }
+                maxLength: "120",
+            },
+        },
     },
     extras: {
         date: {
             picker: {
                 container: {
                     display: "inline-block",
-                    verticalAlign: "middle"
+                    verticalAlign: "middle",
                 },
                 keyboardButtonProps: {
-                    'aria-label': 'change date',
-                }
+                    "aria-label": "change date",
+                },
             },
             checkbox: {
                 container: {
                     display: "inline-block",
                     verticalAlign: "middle",
-                    marginLeft: 20
+                    marginLeft: 20,
                 },
                 inputProps: {
-                    'aria-label': 'secondary checkbox',
-                }
-            }
+                    "aria-label": "secondary checkbox",
+                },
+            },
         },
         album: {
             title: {
                 container: {
                     display: "inline-block",
-                    verticalAlign: "middle"
+                    verticalAlign: "middle",
                 },
                 inputField: {
                     self: {
-                        width: "100%"
+                        width: "100%",
                     },
                     inputProps: {
-                        maxLength: "120"
-                    }
+                        maxLength: "120",
+                    },
                 },
             },
             checkbox: {
                 container: {
                     display: "inline-block",
                     verticalAlign: "middle",
-                    marginLeft: 20
+                    marginLeft: 20,
                 },
                 inputProps: {
-                    'aria-label': 'secondary checkbox',
-                }
-            }
+                    "aria-label": "secondary checkbox",
+                },
+            },
         },
         editDisplay: {
             container: {
                 display: "inline-block",
                 verticalAlign: "middle",
-                marginLeft: 20
+                marginLeft: 20,
             },
             inputProps: {
-                'aria-label': 'secondary checkbox',
-            }
-        }
-    }
-}
+                "aria-label": "secondary checkbox",
+            },
+        },
+    },
+};
 
 export default PostManagerForm;

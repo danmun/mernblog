@@ -1,7 +1,7 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { green } from '@material-ui/core/colors';
-import {Button, CircularProgress} from '@material-ui/core';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { green } from "@material-ui/core/colors";
+import { Button, CircularProgress } from "@material-ui/core";
 
 export default function CircularProgressButton(props) {
     const classes = useStyles();
@@ -9,14 +9,14 @@ export default function CircularProgressButton(props) {
 
     const handleButtonClick = (onClick) => {
         if (!loading) {
-            setLoading(true)
-            onClick(setDone)
+            setLoading(true);
+            onClick(setDone);
         }
     };
 
     const setDone = () => {
         setLoading(false);
-    }
+    };
 
     return (
         <div className={classes.root}>
@@ -29,26 +29,28 @@ export default function CircularProgressButton(props) {
                 >
                     {props.children}
                 </Button>
-                {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                {loading && (
+                    <CircularProgress size={24} className={classes.buttonProgress}/>
+                )}
             </div>
         </div>
     );
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
     },
     wrapper: {
         margin: theme.spacing(1),
-        position: 'relative',
+        position: "relative",
     },
     buttonProgress: {
         color: green[500],
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
+        position: "absolute",
+        top: "50%",
+        left: "50%",
         marginTop: -12,
         marginLeft: -12,
     },

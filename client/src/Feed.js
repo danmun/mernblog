@@ -1,20 +1,27 @@
 import React from "react";
-import TextTruncate from 'react-text-truncate';
-import DeletePostIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import {CardContent, CardActions, Card, Button, Typography,
-    IconButton, Grid} from '@material-ui/core'
+import TextTruncate from "react-text-truncate";
+import DeletePostIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import {
+    CardContent,
+    CardActions,
+    Card,
+    Button,
+    Typography,
+    IconButton,
+    Grid,
+} from "@material-ui/core";
 import Spinner from "./Spinner";
-import {fetchFeed} from "./api/feed";
+import { fetchFeed } from "./api/feed";
 
-class Feed extends React.Component{
-    constructor(props){
+class Feed extends React.Component {
+    constructor(props) {
         super(props);
 
         this.state = {
             loadingPosts: true,
             posts: [],
-        }
+        };
 
         this.fetch = this.fetch.bind(this);
         this.showFeed = this.showFeed.bind(this);
@@ -34,11 +41,11 @@ class Feed extends React.Component{
     shouldComponentUpdate(nextProps, nextState) {
         // if we return false, componentdidupdate will not trigger, thus, feed will not update
         // if we return true, componentdidupdate will trigger, feed will update but the preview text will become jerky
-        if(this.props.refresh !== nextProps.refresh){
-            return true
+        if (this.props.refresh !== nextProps.refresh) {
+            return true;
         }
 
-        if(this.refs.truncatedText){
+        if (this.refs.truncatedText) {
             this.refs.truncatedText.onResize();
             return false;
             // https://stackoverflow.com/a/50995875
@@ -51,30 +58,32 @@ class Feed extends React.Component{
     }
 
     componentDidMount() {
-        this.fetch()
-
+        this.fetch();
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.refresh){
-            this.fetch()
+        if (this.props.refresh) {
+            this.fetch();
         }
     }
 
-    fetch(){
-        fetchFeed().then(json => {
-            this.setState({
-                posts: json,
-                loadingPosts: false
-            }, this.props.onRefresh) // after updating state, signal end of refresh to main controller (App.js)
-        })
+    fetch() {
+        fetchFeed().then((json) => {
+            this.setState(
+                {
+                    posts: json,
+                    loadingPosts: false,
+                },
+                this.props.onRefresh
+            ); // after updating state, signal end of refresh to main controller (App.js)
+        });
         // this.props.onRefresh()
         // Catch any errors we hit and update the app
         // .catch(error => this.setState({ error, loadingPosts: false }));
     }
 
-    renderEditIcon(post){
-        return(
+    renderEditIcon(post) {
+        return (
             <IconButton
                 aria-label="open drawer"
                 edge="start"
@@ -83,11 +92,11 @@ class Feed extends React.Component{
             >
                 <EditIcon />
             </IconButton>
-        )
+        );
     }
 
-    renderDeleteIcon(post){
-        return(
+    renderDeleteIcon(post) {
+        return (
             <IconButton
                 aria-label="open drawer"
                 edge="start"
@@ -96,76 +105,76 @@ class Feed extends React.Component{
             >
                 <DeletePostIcon />
             </IconButton>
-        )
+        );
     }
 
-    showFeed(){
-        let posts = this.state.posts
-        if(posts.length === 0){
-            return(
+    showFeed() {
+        let posts = this.state.posts;
+        if (posts.length === 0) {
+            return (
                 <React.Fragment>
                     <div style={styles.emptyList}>
                         There are no posts to display.
                     </div>
-                </React.Fragment>)
-        }else{
-            return(
+                </React.Fragment>
+            );
+        } else {
+            return (
                 <React.Fragment>
                     {this.state.posts.map((post, posti) => {
-                        return <div key={"post" + posti + "_" + post.createdOn}>
-                            <Card>
-                                <CardContent>
-                                    <Typography
-                                        color="textSecondary"
-                                        gutterBottom
-                                    >
-                                        {new Date(post.createdOn).toLocaleString()}
-                                    </Typography>
-                                    <Typography variant="h5" component="h2">
-                                        {post.title}
-                                    </Typography>
-                                    <Typography variant="body2" component="div" style={styles.previewText}>
-
-                                        {/*{this.truncateTextTo(2, post.plaintext)}*/}
-                                        {this.shortenTextTo(120, post.plaintext)}
-
-                                    </Typography>
-                                    <br />
-                                    <Typography color="textSecondary">
-                                        {"#" + post.tags.join(" #")}
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Grid
-                                        container
-                                        direction="row"
-                                        justify="space-between"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>
-                                            <Button size="small" onClick={() => this.props.readPost("next", post)}>Read post</Button>
+                        return (
+                            <div key={"post" + posti + "_" + post.createdOn}>
+                                <Card>
+                                    <CardContent>
+                                        <Typography color="textSecondary" gutterBottom>
+                                            {new Date(post.createdOn).toLocaleString()}
+                                        </Typography>
+                                        <Typography variant="h5" component="h2">
+                                            {post.title}
+                                        </Typography>
+                                        <Typography variant="body2" component="div" style={styles.previewText}>
+                                            {/*{this.truncateTextTo(2, post.plaintext)}*/}
+                                            {this.shortenTextTo(120, post.plaintext)}
+                                        </Typography>
+                                        <br />
+                                        <Typography color="textSecondary">
+                                            {"#" + post.tags.join(" #")}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Grid container direction="row" justify="space-between" alignItems="center">
+                                            <Grid item>
+                                                <Button
+                                                    size="small"
+                                                    onClick={() => this.props.readPost("next", post)}
+                                                >
+                                                    Read post
+                                                </Button>
+                                            </Grid>
+                                            <Grid item>
+                                                {this.props.onEdit && this.renderEditIcon(post)}
+                                                {this.props.onDelete && this.renderDeleteIcon(post)}
+                                            </Grid>
                                         </Grid>
-                                        <Grid item>
-                                            {this.props.onEdit && this.renderEditIcon(post)}
-                                            {this.props.onDelete && this.renderDeleteIcon(post)}
-                                        </Grid>
-                                    </Grid>
-                                </CardActions>
-                            </Card>
-                            <br />
-                        </div>
+                                    </CardActions>
+                                </Card>
+                                <br />
+                            </div>
+                        );
                     })}
                 </React.Fragment>
-            )
+            );
         }
     }
 
-    shortenTextTo(length, text){
-        return text.length > length ? text.substring(0, length - 3) + "..." : text.substring(0, length);
+    shortenTextTo(length, text) {
+        return text.length > length
+            ? text.substring(0, length - 3) + "..."
+            : text.substring(0, length);
     }
 
-    truncateTextTo(lines, text){
-        return(
+    truncateTextTo(lines, text) {
+        return (
             <TextTruncate
                 ref="truncatedText"
                 line={lines}
@@ -173,35 +182,38 @@ class Feed extends React.Component{
                 text={text}
                 // textTruncateChild={<a href="#">Read on</a>}
             />
-        )
+        );
     }
 
-    render(){
-        let {loadingPosts} = this.state
-        return(
+    render() {
+        let { loadingPosts } = this.state;
+        return (
             <React.Fragment>
-                {loadingPosts ? <Spinner/> : this.showFeed()}
-            </React.Fragment>)
+                {loadingPosts ? <Spinner /> : this.showFeed()}
+            </React.Fragment>
+        );
     }
 }
 
 const styles = {
     emptyList: {
-        textAlign: "center"
+        textAlign: "center",
     },
     icons: {
         edit: {
-            color: "dodgerblue", padding: "7px"
+            color: "dodgerblue",
+            padding: "7px",
         },
         delete: {
-            color: "red", padding: "7px"
-        }
+            color: "red",
+            padding: "7px",
+        },
     },
     previewText: {
         paddingTop: "2vh",
         paddingLeft: "5vw",
-        paddingRight: "20vw"
-    }
-}
+        paddingRight: "20vw",
+    },
+};
 
 export default Feed;

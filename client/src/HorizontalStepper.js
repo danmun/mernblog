@@ -1,29 +1,29 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import {Button, Icon, StepLabel, Step, Stepper} from '@material-ui/core'
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import { Button, Icon, StepLabel, Step, Stepper } from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%'
+        width: "100%",
     },
     button: {
         marginRight: theme.spacing(1),
-    }
+    },
 }));
 
 export default function HorizontalStepper(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
-    const steps = props.steps
+    const steps = props.steps;
 
     const handleNext = () => {
-        if(props.onNext) props.onNext()
-        setActiveStep(prevActiveStep => prevActiveStep + 1);
+        if (props.onNext) props.onNext();
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     const handleBack = () => {
-        if(props.onBack) props.onBack()
-        setActiveStep(prevActiveStep => prevActiveStep - 1);
+        if (props.onBack) props.onBack();
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
     return (
@@ -44,20 +44,21 @@ export default function HorizontalStepper(props) {
                     variant="contained"
                     disabled={activeStep === 0}
                     onClick={handleBack}
-                    className={classes.button}>
-
+                    className={classes.button}
+                >
                     Back
                 </Button>
 
-                {activeStep === steps.length - 1 ? renderSubmitButton(props.onSubmit, classes) : renderNextButton(handleNext, classes)}
-
+                {activeStep === steps.length - 1
+                    ? renderSubmitButton(props.onSubmit, classes)
+                    : renderNextButton(handleNext, classes)}
             </div>
         </div>
     );
 }
 
-function renderNextButton(handleNext, classes){
-    return(
+function renderNextButton(handleNext, classes) {
+    return (
         <Button
             variant="contained"
             color="primary"
@@ -66,11 +67,11 @@ function renderNextButton(handleNext, classes){
         >
             Next
         </Button>
-    )
+    );
 }
 
-function renderSubmitButton(onSubmit, classes){
-    return(
+function renderSubmitButton(onSubmit, classes) {
+    return (
         <Button
             variant="contained"
             color="primary"
@@ -80,15 +81,15 @@ function renderSubmitButton(onSubmit, classes){
             Submit
             <Icon>send</Icon>
         </Button>
-    )
+    );
 }
 
 const styles = {
     button: {
         back: {
             container: {
-                textAlign: "center"
-            }
-        }
-    }
-}
+                textAlign: "center",
+            },
+        },
+    },
+};

@@ -1,58 +1,59 @@
 /*
 Styles for displaying the content within a live post editor.
 */
-.wysiwyg-editor{
+.wysiwyg-editor {
     min-height: 40vh;
     max-height: 40vh;
     min-width: 70vw;
     max-width: 70vw;
     overflow-y: scroll;
-    border: 1px solid #F1F1F1;
+    border: 1px solid #f1f1f1;
     cursor: text;
     padding-left: 10vw;
     padding-right: 10vw;
 }
 
-.wysiwyg-editor-responsive{
+.wysiwyg-editor-responsive {
     min-height: 40vh;
     max-height: 40vh;
     min-width: auto;
     max-width: 95vw;
     overflow-y: scroll;
-    border: 1px solid #F1F1F1;
+    border: 1px solid #f1f1f1;
     cursor: text;
     padding-left: 4vw;
     padding-right: 4vw;
 }
 
 /*.wysiwyg-toolbar{*/
-    /*max-width: 82vw;*/
+/*max-width: 82vw;*/
 /*}*/
 
 /*
 TODO: use mediaquery to make maxwidth bigger for smaller devices
 */
-.wysiwyg-editor img, .wysiwyg-editor-responsive img{
+.wysiwyg-editor img,
+.wysiwyg-editor-responsive img {
     max-width: 25vw;
 }
 
-.wysiwyg-editor-responsive img{
+.wysiwyg-editor-responsive img {
     max-width: 40vw;
 }
 
 /*
 Styles for displaying posts using a read-only editor.
 */
-.wysiwyg-editor-readOnly{
+.wysiwyg-editor-readOnly {
     position: relative;
     overflow: visible;
     padding-bottom: 5vh;
- }
+}
 
 /*
 TODO: use mediaquery to make maxwidth bigger for smaller devices
 */
-.wysiwyg-editor-readOnly img{
+.wysiwyg-editor-readOnly img {
     max-width: 25vw;
 }
 
@@ -62,7 +63,7 @@ if we set text-align: center on this span, the images will center even with a fi
 will no longer work
 */
 /*.wysiwyg-editor-readOnly .rdw-image-imagewrapper{*/
-    /*text-align: center;*/
+/*text-align: center;*/
 /*}*/
 
 /*for image resize, try:

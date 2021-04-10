@@ -1,15 +1,15 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Typography from "@material-ui/core/Typography";
 
 export default function Album(props) {
     const classes = useStyles();
-    let album = props.album
+    let album = props.album;
     return (
         <Card className={classes.card}>
             <CardActionArea>
@@ -23,7 +23,7 @@ export default function Album(props) {
             <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
                     {album.title}
-                    <br/>
+                    <br />
                     <Typography color="textSecondary">
                         {album.createdOn}
                     </Typography>
@@ -43,7 +43,7 @@ export default function Album(props) {
 const useStyles = makeStyles({
     card: {
         maxWidth: 350,
-        minWidth: 280
+        minWidth: 280,
     },
     media: {
         height: 280,

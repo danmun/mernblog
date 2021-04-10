@@ -1,28 +1,28 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+        "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+        "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+        monospace;
 }
 
 /*Blur out stuff behind modal*/
-body.modal-open div.blurrable{
-  -webkit-filter: blur(2px);
-  -moz-filter: blur(2px);
-  -o-filter: blur(2px);
-  -ms-filter: blur(2px);
-  filter: blur(2px);
+body.modal-open div.blurrable {
+    -webkit-filter: blur(2px);
+    -moz-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    filter: blur(2px);
 
-  /*TODO: host this on own server, do not rely on UNKOWN third party hosters*/
-  filter: url("https://wanderingblog.herokuapp.com/blur".svg#blur);
-  /*! TODO: replace the above !*/
+    /*TODO: host this on own server, do not rely on UNKOWN third party hosters*/
+    filter: url("https://wanderingblog.herokuapp.com/blur".svg#blur);
+    /*! TODO: replace the above !*/
 
-  filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='2');
+    filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='2');
 }

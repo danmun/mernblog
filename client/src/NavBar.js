@@ -1,16 +1,16 @@
-import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/VerticalSplit';
-import Toolbar from '@material-ui/core/Toolbar';
+import AppBar from "@material-ui/core/AppBar";
+import IconButton from "@material-ui/core/IconButton";
+import MenuIcon from "@material-ui/icons/VerticalSplit";
+import Toolbar from "@material-ui/core/Toolbar";
 import React from "react";
-import {makeStyles} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
 export const drawerWidth = 200;
 export const appBarHeight = 35;
 
-function NavBar (props) {
+function NavBar(props) {
     const classes = useStyles();
-    return(
+    return (
         // if we move the container div (add/del buttons) outside the toolbar, it will use flex, otherwise it doesnt...
         <AppBar className={classes.appBar}>
             <Toolbar className={classes.toolBar}>
@@ -27,35 +27,33 @@ function NavBar (props) {
                 </div>
 
                 {/* elements here will appear on the right side of the navbar*/}
-                <div>
-                    {props.children}
-                </div>
+                <div>{props.children}</div>
             </Toolbar>
         </AppBar>
-        )
+    );
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     toolBar: {
         width: "100%",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     appBar: {
         marginLeft: drawerWidth,
-        [theme.breakpoints.up('sm')]: {
+        [theme.breakpoints.up("sm")]: {
             width: `calc(100% - ${drawerWidth}px)`, // or 100%
         },
         height: appBarHeight,
         display: "flex",
         alignItems: "center",
         flexDirection: "row",
-        background: 'white'
+        background: "white",
     },
     menuButton: {
-        [theme.breakpoints.up('sm')]: {
-            display: 'none',
+        [theme.breakpoints.up("sm")]: {
+            display: "none",
         },
         padding: "7px",
         marginLeft: "0px",
@@ -63,8 +61,8 @@ const useStyles = makeStyles(theme => ({
         "-webkit-transform": "scale(-1, 1)",
         "-o-transform": "scale(-1, 1)",
         "-ms-transform": "scale(-1, 1)",
-        "transform": "scale(-1, 1)"
-    }
+        transform: "scale(-1, 1)",
+    },
 }));
 
 export default NavBar;

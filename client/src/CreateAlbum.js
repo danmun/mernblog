@@ -1,20 +1,20 @@
-import './style/editor.css'
+import "./style/editor.css";
 import React from "react";
-import Grid from '@material-ui/core/Grid';
-import {TextField} from "@material-ui/core";
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
+import Grid from "@material-ui/core/Grid";
+import { TextField } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import Icon from "@material-ui/core/Icon";
 
-class CreateAlbum extends React.Component{
-    constructor(props){
+class CreateAlbum extends React.Component {
+    constructor(props) {
         super(props);
 
         this.state = {
             title: "", // textfield value
             tags: "", // textfield value
             description: "",
-            images: []
-        }
+            images: [],
+        };
 
         this.hashtagOnBlur = this.hashtagOnBlur.bind(this);
         this.hashtagOnFocus = this.hashtagOnFocus.bind(this);
@@ -25,66 +25,65 @@ class CreateAlbum extends React.Component{
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    hashtagOnType(event){
-        let text = event.target.value
-        let currentChar = text[text.length - 1]
-        let previousNonSpaceChar = text[text.length - 2]
+    hashtagOnType(event) {
+        let text = event.target.value;
+        let currentChar = text[text.length - 1];
+        let previousNonSpaceChar = text[text.length - 2];
 
         // if initial hashtag is deleted, field will be empty, append new initial hashtag if user starts typing
-        if(this.state.tags === ""){
-            this.setState({tags: "#" + text})
-        }else if(currentChar === " " && previousNonSpaceChar === "#"){
-            return
-        }else if(text === " "){
-            this.setState({tags: "#"})
-        }else if(text.endsWith(" ")){
-            this.setState({tags: text + "#"})
-        }else{
-            this.setState({tags: text})
-        }
-
-    }
-
-    hashtagOnBlur (event){
-        let text = event.target.value
-        if(text.endsWith("#")){
-            let newText = text.substr(0, text.length - 1).trim()
-            this.setState({tags: newText})
+        if (this.state.tags === "") {
+            this.setState({ tags: "#" + text });
+        } else if (currentChar === " " && previousNonSpaceChar === "#") {
+            return;
+        } else if (text === " ") {
+            this.setState({ tags: "#" });
+        } else if (text.endsWith(" ")) {
+            this.setState({ tags: text + "#" });
+        } else {
+            this.setState({ tags: text });
         }
     }
 
-    hashtagOnFocus(event){
-        if(!this.state.tags.endsWith(" #")){
-            let tag = "#"
-            if(this.state.tags.length === 0){
-                this.setState({tags: tag})
-            }else{
-                this.setState({tags: this.state.tags + " #"})
+    hashtagOnBlur(event) {
+        let text = event.target.value;
+        if (text.endsWith("#")) {
+            let newText = text.substr(0, text.length - 1).trim();
+            this.setState({ tags: newText });
+        }
+    }
+
+    hashtagOnFocus(event) {
+        if (!this.state.tags.endsWith(" #")) {
+            let tag = "#";
+            if (this.state.tags.length === 0) {
+                this.setState({ tags: tag });
+            } else {
+                this.setState({ tags: this.state.tags + " #" });
             }
         }
     }
 
-    handleFileSelection(files){
-        this.setState({images: files})
+    handleFileSelection(files) {
+        this.setState({ images: files });
     }
 
-    handleSubmit(){
-        this.props.onCreate(this.state)
+    handleSubmit() {
+        this.props.onCreate(this.state);
     }
 
-    titleOnType(event){
-        let text = event.target.value
-        this.setState({title: text})
+    titleOnType(event) {
+        let text = event.target.value;
+        this.setState({ title: text });
     }
 
-    descriptionOnType(event){
-        let text = event.target.value
-        this.setState({description: text})
+    descriptionOnType(event) {
+        let text = event.target.value;
+        this.setState({ description: text });
     }
 
-    render(){
-        let {title, description, tags} = this.state
-        return(
+    render() {
+        let { title, description, tags } = this.state;
+        return (
             <React.Fragment>
                 <Grid item style={styles.title.container}>
                     <TextField
@@ -116,7 +115,14 @@ class CreateAlbum extends React.Component{
 
                 <Grid item style={styles.filesSelection.container}>
                     <div style={styles.filesSelection.inputField}>
-                        <input onChange={(event) => this.handleFileSelection(event.target.files) } type={"file"} name="album" multiple/>
+                        <input
+                            onChange={(event) =>
+                                this.handleFileSelection(event.target.files)
+                            }
+                            type={"file"}
+                            name="album"
+                            multiple
+                        />
                     </div>
                 </Grid>
 
@@ -136,7 +142,12 @@ class CreateAlbum extends React.Component{
                 </Grid>
 
                 <Grid item style={styles.submit.container}>
-                    <Button onClick={this.handleSubmit} variant="contained" color="primary" style={styles.submit.button}>
+                    <Button
+                        onClick={this.handleSubmit}
+                        variant="contained"
+                        color="primary"
+                        style={styles.submit.button}
+                    >
                         Create
                         <Icon>send</Icon>
                     </Button>
@@ -149,56 +160,55 @@ class CreateAlbum extends React.Component{
 const styles = {
     title: {
         container: {
-            width: "100%"
+            width: "100%",
         },
         inputField: {
-            width: "100%"
+            width: "100%",
         },
         inputProps: {
-            maxLength: "120"
-        }
+            maxLength: "120",
+        },
     },
     description: {
         container: {
-            width: "100%"
+            width: "100%",
         },
         inputField: {
-            width: "100%"
+            width: "100%",
         },
         inputProps: {
-            maxLength: "300"
-        }
+            maxLength: "300",
+        },
     },
     filesSelection: {
         container: {
             width: "100%",
             textAlign: "center",
-            border: "1px solid lightgrey"
+            border: "1px solid lightgrey",
         },
         inputField: {
-            padding: "20px"
-        }
+            padding: "20px",
+        },
     },
     hashtags: {
         container: {
-            width: "100%"
+            width: "100%",
         },
         inputField: {
-            width: "100%"
+            width: "100%",
         },
         inputProps: {
-            maxLength: "120"
-        }
-
+            maxLength: "120",
+        },
     },
     submit: {
         container: {
-            width: "100%"
+            width: "100%",
         },
         button: {
-            width: "100%"
-        }
-    }
-}
+            width: "100%",
+        },
+    },
+};
 
 export default CreateAlbum;

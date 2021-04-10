@@ -1,17 +1,21 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import CancelIcon from '@material-ui/icons/Cancel';
-import {Fade, Grid, IconButton, Backdrop, Modal} from '@material-ui/core';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { Fade, Grid, IconButton, Backdrop, Modal } from "@material-ui/core";
+
+const backdropProps = {
+    timeout: 500,
+}
 
 export default function AdminModal(props) {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
-    let open = props.open
+    let open = props.open;
 
-    if(open){
-        document.body.classList.add('modal-open');
-    }else{
-        document.body.classList.remove('modal-open');
+    if (open) {
+        document.body.classList.add("modal-open");
+    } else {
+        document.body.classList.remove("modal-open");
     }
     return (
         <div>
@@ -26,9 +30,7 @@ export default function AdminModal(props) {
                 onClose={props.dispose}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
+                BackdropProps={backdropProps}
             >
                 <Fade in={props.open}>
                     <div className={classes.paper}>
@@ -51,7 +53,7 @@ export default function AdminModal(props) {
                                             onClick={props.dispose}
                                             // className={classes.menuButton}
                                         >
-                                            <CancelIcon/>
+                                            <CancelIcon />
                                         </IconButton>
                                     </div>
                                 </div>
@@ -65,7 +67,7 @@ export default function AdminModal(props) {
     );
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
     paper: {
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
@@ -75,32 +77,32 @@ const useStyles = makeStyles(theme => ({
 
 const style = {
     modalElement: {
-        display:'flex',
-        alignItems:'center',
-        justifyContent:'center',
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         margin: "auto",
         width: "80vw",
     },
     modal: {
         container: {
-            width: "100%"
+            width: "100%",
         },
         title: {
             grid: {
-                width: "100%"
+                width: "100%",
             },
             container: {
                 width: "100%",
                 display: "flex",
                 flexDirection: "row",
-                justifyContent:"space-between"
+                justifyContent: "space-between",
             },
             button: {
                 padding: "7px",
                 marginLeft: "0px",
                 position: "relative",
-                top: "12px"
-            }
-        }
-    }
-}
+                top: "12px",
+            },
+        },
+    },
+};

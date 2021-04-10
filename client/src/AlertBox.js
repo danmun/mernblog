@@ -1,14 +1,14 @@
-import React from 'react';
-import clsx from 'clsx';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import ErrorIcon from '@material-ui/icons/Error';
-import InfoIcon from '@material-ui/icons/Info';
-import CloseIcon from '@material-ui/icons/Close';
-import { amber, green } from '@material-ui/core/colors';
-import IconButton from '@material-ui/core/IconButton';
-import SnackbarContent from '@material-ui/core/SnackbarContent';
-import WarningIcon from '@material-ui/icons/Warning';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import clsx from "clsx";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import ErrorIcon from "@material-ui/icons/Error";
+import InfoIcon from "@material-ui/icons/Info";
+import CloseIcon from "@material-ui/icons/Close";
+import { amber, green } from "@material-ui/core/colors";
+import IconButton from "@material-ui/core/IconButton";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
+import WarningIcon from "@material-ui/icons/Warning";
+import { makeStyles } from "@material-ui/core/styles";
 
 const variantIcon = {
     success: CheckCircleIcon,
@@ -21,8 +21,8 @@ export const variants = {
     success: "success",
     info: "info",
     warning: "warning",
-    error: "error"
-}
+    error: "error",
+};
 
 function MySnackbarContentWrapper(props) {
     const classes = useStyles1();
@@ -39,7 +39,12 @@ function MySnackbarContentWrapper(props) {
                 </span>
             }
             action={[
-                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+                <IconButton
+                    key="close"
+                    aria-label="close"
+                    color="inherit"
+                    onClick={onClose}
+                >
                     <CloseIcon className={classes.icon} />
                 </IconButton>,
             ]}
@@ -53,25 +58,25 @@ export default function AlertBox(props) {
 
     return (
         <React.Fragment>
-            {props.open &&
-            <MySnackbarContentWrapper
-                onClose={props.onClose}
-                variant={props.variant}
-                className={classes.margin}
-                message={props.message}
-            />
-            }
+            {props.open && (
+                <MySnackbarContentWrapper
+                    onClose={props.onClose}
+                    variant={props.variant}
+                    className={classes.margin}
+                    message={props.message}
+                />
+            )}
         </React.Fragment>
     );
 }
 
-const useStyles2 = makeStyles(theme => ({
+const useStyles2 = makeStyles((theme) => ({
     margin: {
         margin: theme.spacing(1),
     },
 }));
 
-const useStyles1 = makeStyles(theme => ({
+const useStyles1 = makeStyles((theme) => ({
     success: {
         backgroundColor: green[600],
     },
@@ -92,7 +97,7 @@ const useStyles1 = makeStyles(theme => ({
         marginRight: theme.spacing(1),
     },
     message: {
-        display: 'flex',
-        alignItems: 'center',
+        display: "flex",
+        alignItems: "center",
     },
 }));
