@@ -41,7 +41,7 @@ function constructPost(user, form){
 }
 
 function constructAlbum(user, form){
-    let albumDetails = form.album
+    let albumDetails = form.album;
     return(
         {
             user: user._id,
@@ -77,7 +77,7 @@ apiRouter.get('/feed', async function (req, res) {
 });
 
 apiRouter.get('/post', async function (req, res) {
-    const post = await Post.findOne({_id: req.query.id})
+    const post = await Post.findOne({_id: req.query.id});
     if(post){
         try {
             res.send(post);
@@ -94,7 +94,7 @@ apiRouter.get('/post', async function (req, res) {
 });
 
 apiRouter.get('/about', async function (req, res) {
-    const about = await About.find({})
+    const about = await About.find({});
     try {
         res.send({about: about[0]});
     } catch (err) {
@@ -105,8 +105,8 @@ apiRouter.get('/about', async function (req, res) {
 apiRouter.get('/gallery/album', checkAuth, async function (req, res) {
     // if user is not logged in, only send the album if it's not hidden
     // req.username comes from the checkAuth middleware
-    let query = req.username ? {_id: req.query.id} : {hidden: false, _id: req.query.id}
-    let album = await Album.findOne(query)
+    let query = req.username ? {_id: req.query.id} : {hidden: false, _id: req.query.id};
+    let album = await Album.findOne(query);
     try {
         // TODO: if !album, send not found (implement a generic 404 mechanism)
         res.send(album);
@@ -117,8 +117,8 @@ apiRouter.get('/gallery/album', checkAuth, async function (req, res) {
 
 apiRouter.get('/gallery', checkAuth, async function (req, res) {
     // if not logged in, don't send hidden albums
-    const query = req.username ? {} : {hidden: false}
-    const sort = {createdOn: -1}
+    const query = req.username ? {} : {hidden: false};
+    const sort = {createdOn: -1};
     let albums = await Album.find(query).sort(sort);
     try {
         res.send(albums);
@@ -136,18 +136,18 @@ apiRouter.post('/post', enforceAuth, async (req, res) => {
         await post.save();
     } catch (err) {
         res.status(500).send(err);
-        return
+        return;
     }
 
     // if post doesn't have any albums, we can return response to the user
     if(req.body.album === null){
         res.send(STRINGS.NEWPOST_SUCCESS);
-        return
+        return;
     }
 
     let albumDetails = constructAlbum(req.body)
-    albumDetails.post = post._id
-    const album = new Album(albumDetails)
+    albumDetails.post = post._id;
+    const album = new Album(albumDetails);
     try{
         await album.save();
         res.send(STRINGS.NEWPOST_SUCCESS);
@@ -157,7 +157,7 @@ apiRouter.post('/post', enforceAuth, async (req, res) => {
 });
 
 apiRouter.post('/postAbout', enforceAuth, async (req, res) => {
-    let about = constructPost(req.user, req.body)
+    let about = constructPost(req.user, req.body);
     const post = new About(about);
     try {
         await post.save();
@@ -168,10 +168,10 @@ apiRouter.post('/postAbout', enforceAuth, async (req, res) => {
 });
 
 apiRouter.put('/edit', enforceAuth, async (req, res) => {
-    const postId = req.query.id
-    const newPost = req.body
+    const postId = req.query.id;
+    const newPost = req.body;
     delete newPost['id'];
-    newPost.editedOn = Date.now()
+    newPost.editedOn = Date.now();
 
     // TODO: if photos are added or removed to the post using THIS endpoint,
     //  it should NOT affect the originally created album.
@@ -179,20 +179,20 @@ apiRouter.put('/edit', enforceAuth, async (req, res) => {
     Post.findById(postId, function(err, post) {
         if (!err) {
             try {
-                post.title = newPost.title
-                post.html = newPost.html
-                post.plaintext = newPost.plaintext
-                post.tags = newPost.tags
-                post.editedOn = newPost.editedOn
-                post.displayEditDate = newPost.displayEditDate
+                post.title = newPost.title;
+                post.html = newPost.html;
+                post.plaintext = newPost.plaintext;
+                post.tags = newPost.tags;
+                post.editedOn = newPost.editedOn;
+                post.displayEditDate = newPost.displayEditDate;
 
-                post.save()
+                post.save();
                 res.send({
                     status: STRINGS.EDITPOST_SUCCESS,
                     post: post
                 });
             } catch (err) {
-                console.log(err)
+                console.log(err);
                 res.status(500).send(err);
             }
         }else{
@@ -202,26 +202,26 @@ apiRouter.put('/edit', enforceAuth, async (req, res) => {
 });
 
 apiRouter.put('/editAbout', enforceAuth, async (req, res) => {
-    const postId = req.query.id
-    const newPost = req.body
+    const postId = req.query.id;
+    const newPost = req.body;
     delete newPost['id'];
-    newPost.editedOn = Date.now()
+    newPost.editedOn = Date.now();
 
     About.findById(postId, function(err, post) {
         if (!err) {
             try {
-                post.title = newPost.title
-                post.html = newPost.html
-                post.plaintext = newPost.plaintext
-                post.tags = newPost.tags
-                post.editedOn = newPost.editedOn
+                post.title = newPost.title;
+                post.html = newPost.html;
+                post.plaintext = newPost.plaintext;
+                post.tags = newPost.tags;
+                post.editedOn = newPost.editedOn;
 
-                post.save()
+                post.save();
                 res.send({
                     about: post
                 });
             } catch (err) {
-                console.log(err)
+                console.log(err);
                 res.status(500).send(err);
             }
         }else{
@@ -231,14 +231,14 @@ apiRouter.put('/editAbout', enforceAuth, async (req, res) => {
 });
 
 apiRouter.delete('/delete', enforceAuth, async (req, res) => {
-    const postId = req.query.id
+    const postId = req.query.id;
     Post.remove({ _id: postId }, function(err) {
         if (!err) {
             res.send({
                 status: STRINGS.DELETEPOST_SUCCESS,
             });
         } else {
-            console.log(err)
+            console.log(err);
             res.status(500).send(err);
         }
     });
@@ -251,4 +251,4 @@ apiRouter.get('/getImgurClientId', enforceAuth, function (req, res, next) {
     })
 })
 
-module.exports = apiRouter
+module.exports = apiRouter;

@@ -21,7 +21,7 @@ let compress = function(exte, files, callback){
     // @see: https://nodejs.org/api/stream.html#stream_event_end
     output.on('end', function() {
         console.log('Data has been drained');
-        callback()
+        callback();
     });
 
     // good practice to catch warnings (ie stat failures and other non-blocking errors)
@@ -52,4 +52,4 @@ let compress = function(exte, files, callback){
     archive.finalize();
 }
 
-module.exports.archiver = compress
+module.exports.archiver = compress;

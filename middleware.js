@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('./models/UserSchema');
-const STRINGS = require('./locale/en').STRINGS
+const STRINGS = require('./locale/en').STRINGS;
 // NOTE: secret is different between production and development runs;
 //  users created in production will fail auth in development
-const secret = process.env.SECRET || "not_so_secret"
+const secret = process.env.SECRET || "not_so_secret";
 
 const logout = (req, res) => {
     if(res.statusCode === 401){
@@ -17,36 +17,22 @@ const logout = (req, res) => {
 const login = (req, res) => {
     const { username, password } = req.body;
     User.findOne({ username }, function(err, user) {
-        const _id = user._id
+        const _id = user._id;
         if (err) {
             console.error(err);
-            res.status(500)
-                .json({
-                    error: STRINGS.SERVER_ERROR
-                });
+            res.status(500).json({error: STRINGS.SERVER_ERROR});
         } else if (!user) {
-            res.status(401)
-                .json({
-                    error: STRINGS.LOGIN_FAILURE
-                });
+            res.status(401).json({error: STRINGS.LOGIN_FAILURE});
         } else {
             user.isCorrectPassword(password, function(err, same) {
                 if (err) {
-                    res.status(500)
-                        .json({
-                            error: STRINGS.SERVER_ERROR
-                        });
+                    res.status(500).json({error: STRINGS.SERVER_ERROR});
                 } else if (!same) {
-                    res.status(401)
-                        .json({
-                            error: STRINGS.LOGIN_FAILURE
-                        });
+                    res.status(401).json({error: STRINGS.LOGIN_FAILURE});
                 } else {
                     // Issue token
                     const payload = { username, _id };
-                    const token = jwt.sign(payload, secret, {
-                        expiresIn: '1h'
-                    });
+                    const token = jwt.sign(payload, secret, {expiresIn: '1h'});
                     res.cookie('token', token, { httpOnly: true }).sendStatus(200);
                 }
             });
@@ -59,8 +45,8 @@ const login = (req, res) => {
 // calls back with user obj if user is logged in
 const checkAuth = (req, res, next) => {
     verifyToken(parseToken(req), function(username){
-        req.username = username ? username : null
-        next()
+        req.username = username ? username : null;
+        next();
     })
 }
 
@@ -72,10 +58,10 @@ const checkAuth = (req, res, next) => {
 const enforceAuth = (req, res, next) => {
     verifyToken(parseToken(req), function(user){
         if(user){
-            req.user = user
-            next()
+            req.user = user;
+            next();
         }else{
-            res.status(401).send()
+            res.status(401).send();
         }
     })
 }
@@ -91,8 +77,8 @@ const verifyToken = (token, callback) => {
             // invalid token
             callback(null);
         } else {
-            const {_id, username} = decoded
-            const user = {_id, username}
+            const {_id, username} = decoded;
+            const user = {_id, username};
             callback(user);
         }
     });
@@ -103,7 +89,7 @@ const parseToken = (request) => {
     return request.body.token ||
         request.query.token ||
         request.headers['x-access-token'] ||
-        request.cookies.token
+        request.cookies.token;
 }
 
 module.exports = {
