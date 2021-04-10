@@ -4,17 +4,6 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
 
-const useStyles = makeStyles({
-    card: {
-        maxWidth: 350,
-        minWidth: 280
-    },
-
-    media: {
-        height: 280,
-    },
-});
-
 export default function Photo(props) {
     const classes = useStyles();
 
@@ -30,3 +19,14 @@ export default function Photo(props) {
         </Card>
     );
 }
+
+const useStyles = makeStyles({
+    card: {
+        maxWidth: 350,
+        minWidth: 280
+    },
+
+    media: {
+        height: 280,
+    },
+});

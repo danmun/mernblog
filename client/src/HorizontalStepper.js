@@ -39,7 +39,7 @@ export default function HorizontalStepper(props) {
                     );
                 })}
             </Stepper>
-            <div style={{textAlign: "center"}}>
+            <div style={styles.button.back.container}>
                 <Button
                     variant="contained"
                     disabled={activeStep === 0}
@@ -81,4 +81,14 @@ function renderSubmitButton(onSubmit, classes){
             <Icon>send</Icon>
         </Button>
     )
+}
+
+const styles = {
+    button: {
+        back: {
+            container: {
+                textAlign: "center"
+            }
+        }
+    }
 }

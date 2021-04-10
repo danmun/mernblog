@@ -192,14 +192,14 @@ class PostManagerForm extends React.Component {
     titleComponent(){
         return(
             <TextField
-                style={{width: "100%"}}
+                style={styles.main.title.self}
                 id="outlined-with-placeholder"
                 label="Title"
                 value={this.state.title}
                 placeholder="Keep it short and baity ..."
                 margin="normal"
                 variant="outlined"
-                inputProps={{maxLength: "120"}}
+                inputProps={styles.main.title.inputProps}
                 onChange={this.titleOnType}
             />
         )
@@ -237,13 +237,13 @@ class PostManagerForm extends React.Component {
     tagsComponent(){
         return(
             <TextField
-                style={{width: "100%"}}
+                style={styles.main.tags.self}
                 id="outlined-with-placeholder"
                 label="#tags"
                 value={this.state.tags}
                 margin="normal"
                 variant="outlined"
-                inputProps={{maxLength: "120"}}
+                inputProps={styles.main.tags.inputProps}
                 onChange={this.hashtagOnType}
                 onBlur={this.hashtagOnBlur}
                 onFocus={this.hashtagOnFocus}
@@ -254,7 +254,7 @@ class PostManagerForm extends React.Component {
     extrasComponent(){
         return(
             <div>
-                <div style={{display: "inline-block", verticalAlign: "middle"}}>
+                <div style={styles.extras.date.picker.container}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <DateTimePicker
                             margin="normal"
@@ -263,13 +263,11 @@ class PostManagerForm extends React.Component {
                             value={this.state.selectedDate}
                             onChange={this.handleDateChange}
                             disabled={!this.state.selectedDateChecked}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
+                            KeyboardButtonProps={styles.extras.date.picker.keyboardButtonProps}
                         />
                     </MuiPickersUtilsProvider>
                 </div>
-                <div style={{display: "inline-block", verticalAlign: "middle", marginLeft: 20}}>
+                <div style={styles.extras.date.checkbox.container}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -277,29 +275,27 @@ class PostManagerForm extends React.Component {
                                 onChange={this.handleDateChangeChecked}
                                 value="checkedB"
                                 color="primary"
-                                inputProps={{
-                                    'aria-label': 'secondary checkbox',
-                                }}
+                                inputProps={styles.extras.date.checkbox.inputProps}
                             />
                         }
                         label="Change post date"
                     />
                 </div>
-                <div style={{display: "inline-block", verticalAlign: "middle"}}>
+                <div style={styles.extras.album.title.container}>
                     <TextField
-                        style={{width: "100%"}}
+                        style={styles.extras.album.title.inputField.self}
                         id="outlined-with-placeholder"
                         label="Album title"
                         value={this.state.albumTitle}
                         placeholder="A date or a few words"
                         margin="normal"
                         variant="outlined"
-                        inputProps={{maxLength: "120"}}
+                        inputProps={styles.extras.album.title.inputField.inputProps}
                         onChange={this.albumTitleOnType}
                         disabled={!this.state.createAlbumChecked}
                     />
                 </div>
-                <div style={{display: "inline-block", verticalAlign: "middle", marginLeft: 20}}>
+                <div style={styles.extras.album.checkbox.container}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -307,15 +303,13 @@ class PostManagerForm extends React.Component {
                                 onChange={this.handleCreateAlbumChecked}
                                 value="checkedB"
                                 color="primary"
-                                inputProps={{
-                                    'aria-label': 'secondary checkbox',
-                                }}
+                                inputProps={styles.extras.album.checkbox.inputProps}
                             />
                         }
                         label="Create album"
                     />
                 </div>
-                <div style={{display: "inline-block", verticalAlign: "middle", marginLeft: 20}}>
+                <div style={styles.extras.editDisplay.container}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -323,9 +317,7 @@ class PostManagerForm extends React.Component {
                                 onChange={this.handleShowDisplayEditDate}
                                 value="checkedB"
                                 color="primary"
-                                inputProps={{
-                                    'aria-label': 'secondary checkbox',
-                                }}
+                                inputProps={styles.extras.editDisplay.inputProps}
                             />
                         }
                         label="Display edit date on post page"
@@ -344,26 +336,26 @@ class PostManagerForm extends React.Component {
         return(
             <div>
                 <div>
-                    <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={{maxWidth: "96vw"}}>
+                    <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={styles.responsive.container}>
 
                         <SlideContainer>
-                            <Grid item style={{width: "100%", display: "flex", justifyContent: "center", alignItems:"center"}}>
+                            <Grid item style={styles.responsive.title}>
                                 {this.titleComponent()}
                             </Grid>
                         </SlideContainer>
 
                         <SlideContainer>
-                            <Grid item style={{width: "100%", overflow: "visible"}}>
+                            <Grid item style={styles.responsive.editor}>
                                 {this.editorComponent(classes)}
                             </Grid>
                         </SlideContainer>
 
                         <SlideContainer>
-                            <Grid item style={{width: "100%"}}>
+                            <Grid item style={styles.responsive.tags}>
                                 {this.tagsComponent()}
                             </Grid>
 
-                            <Grid item style={{width: "100%", textAlign: "center"}}>
+                            <Grid item style={styles.responsive.extras}>
                                 {this.extrasComponent()}
                             </Grid>
                         </SlideContainer>
@@ -371,7 +363,7 @@ class PostManagerForm extends React.Component {
                     </SwipeableViews>
                 </div>
 
-                <div style={{width: "100%", textAlign: "center"}}>
+                <div style={styles.responsive.stepper}>
                     <HorizontalStepper steps={["Title", "Content", "Options"]}
                                        onBack={() => this.changeSlide("prev")}
                                        onNext={() => this.changeSlide("next")}
@@ -389,24 +381,24 @@ class PostManagerForm extends React.Component {
 
         return(
             <React.Fragment>
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.nonResponsive.containers}>
                     {this.titleComponent()}
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.nonResponsive.containers}>
                     {this.extrasComponent()}
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.nonResponsive.containers}>
                     {this.editorComponent(classes)}
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.nonResponsive.containers}>
                     {this.tagsComponent()}
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
-                    <Button onClick={() => this.props.onSubmit(this.state)} variant="contained" color="primary" style={{width: "100%"}}>
+                <Grid item style={styles.nonResponsive.containers}>
+                    <Button onClick={() => this.props.onSubmit(this.state)} variant="contained" color="primary" style={styles.nonResponsive.button}>
                         Post
                         <Icon>send</Icon>
                     </Button>
@@ -429,4 +421,119 @@ class PostManagerForm extends React.Component {
 
     }
 }
+
+const styles = {
+    responsive: {
+        container: {
+            maxWidth: "96vw"
+        },
+        title: {
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems:"center"
+        },
+        editor: {
+            width: "100%",
+            overflow: "visible"
+        },
+        tags: {
+            width: "100%"
+        },
+        extras: {
+            width: "100%",
+            textAlign: "center"
+        },
+        stepper: {
+            width: "100%",
+            textAlign: "center"
+        }
+    },
+    nonResponsive: {
+        containers: {
+            width: "100%"
+        },
+        button: {
+            width: "100%"
+        }
+    },
+    main: {
+        title: {
+            self: {
+                width: "100%"
+            },
+            inputProps: {
+                maxLength: "120"
+            }
+        },
+        tags: {
+            self: {
+                width: "100%"
+            },
+            inputProps: {
+                maxLength: "120"
+            }
+        }
+    },
+    extras: {
+        date: {
+            picker: {
+                container: {
+                    display: "inline-block",
+                    verticalAlign: "middle"
+                },
+                keyboardButtonProps: {
+                    'aria-label': 'change date',
+                }
+            },
+            checkbox: {
+                container: {
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginLeft: 20
+                },
+                inputProps: {
+                    'aria-label': 'secondary checkbox',
+                }
+            }
+        },
+        album: {
+            title: {
+                container: {
+                    display: "inline-block",
+                    verticalAlign: "middle"
+                },
+                inputField: {
+                    self: {
+                        width: "100%"
+                    },
+                    inputProps: {
+                        maxLength: "120"
+                    }
+                },
+            },
+            checkbox: {
+                container: {
+                    display: "inline-block",
+                    verticalAlign: "middle",
+                    marginLeft: 20
+                },
+                inputProps: {
+                    'aria-label': 'secondary checkbox',
+                }
+            }
+        },
+        editDisplay: {
+            container: {
+                display: "inline-block",
+                verticalAlign: "middle",
+                marginLeft: 20
+            },
+            inputProps: {
+                'aria-label': 'secondary checkbox',
+            }
+        }
+    }
+}
+
 export default PostManagerForm;

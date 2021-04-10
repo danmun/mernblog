@@ -38,20 +38,6 @@ export const PAGES_URLS = {
     4: "/login"
 }
 
-const appBarHeight = 35;
-const styles = theme => ({
-    root: {
-        display: 'flex',
-    },
-    content: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.default,
-        padding: theme.spacing(1),
-        marginTop: `${appBarHeight}px`,
-        minHeight: "90vh"
-    },
-});
-
 const springConfig = {
     duration: "1s",
     easeFunction: "cubic-bezier(0.1, 0.35, 0.2, 1)",
@@ -328,11 +314,11 @@ class App extends React.Component{
             )
         }else{
             return(
-                <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={{maxWidth: "96vw"}}>
+                <SwipeableViews disabled springConfig={springConfig} index={this.state.slideState.slideIndex} style={styles.slides.blog.container}>
 
                     <SlideContainer>
                         {/* this padding should match with padding in post/gallery (to avoid slider at bottom) */}
-                        <Grid item className={"hyphenate"} style={{width: "100%"}}>
+                        <Grid item className={"hyphenate"} style={styles.slides.blog.feed.container}>
                             {/* TODO: change readPost={} to onRead={}*/}
                             <Feed refresh={this.state.refreshFeed}
                                   onRefresh={() => this.setRefreshFeed(false)}
@@ -343,7 +329,7 @@ class App extends React.Component{
                     </SlideContainer>
 
                     <SlideContainer>
-                        <Grid item className={"hyphenate"} style={{width: "100%"}}>
+                        <Grid item className={"hyphenate"} style={styles.slides.blog.post.container}>
                             {/* slideState.itemToShow && <Post ... /> does not work here because itemToShow becomes 0
                         if first post is selected, and 0 is not a truthy value,
                         so the first post will never be shown */}
@@ -368,7 +354,7 @@ class App extends React.Component{
                     return(
                         <SlideContainer>
                             <PhotoViewer>
-                                <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                                <div style={styles.gallery.buttons.container}>
                                     <Button onClick={() => this.viewAlbumAndUpdateSlide("prev", null)} size="small">
                                         <ArrowBack/>
                                     </Button>
@@ -385,7 +371,7 @@ class App extends React.Component{
         }else{
             return(
                 <SlideContainer>
-                    <Grid item style={{width: "100%"}}>
+                    <Grid item style={styles.slides.gallery.container}>
                         <Gallery slideIndex={this.state.slideState.slideIndex} albumToShow={this.state.slideState.itemToShow} viewAlbum={this.viewAlbumAndUpdateSlide}/>
                     </Grid>
                 </SlideContainer>
@@ -396,7 +382,7 @@ class App extends React.Component{
     renderAbout(){
         return(
             <SlideContainer>
-                <Grid item className={"hyphenate"} style={{width: "100%"}}>
+                <Grid item className={"hyphenate"} style={styles.slides.about.container}>
                     <About isAdmin={this.state.isAdmin}/>
                 </Grid>
             </SlideContainer>
@@ -419,7 +405,7 @@ class App extends React.Component{
                 <CssBaseline/>
 
                 {/* zIndex lowered from 1200 to 1000 so that the LightBox can display images full screen*/}
-                <div style={{zIndex: 1000}}>
+                <div style={styles.menu.container}>
                     <Menu navigator={this.navigator}
                           onLogout={isAdmin && this.onLogout}
                           createPost={isAdmin && this.openCreatePost}
@@ -473,4 +459,64 @@ class App extends React.Component{
     }
 }
 
-export default withStyles(styles)(withRouter(App));
+const appBarHeight = 35;
+const useStyles = theme => ({
+    root: {
+        display: 'flex',
+    },
+    content: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.default,
+        padding: theme.spacing(1),
+        marginTop: `${appBarHeight}px`,
+        minHeight: "90vh"
+    },
+});
+
+const styles = {
+    menu: {
+        container: {
+            zIndex: 1000
+        }
+    },
+    slides: {
+        blog: {
+            container: {
+                maxWidth: "96vw"
+            },
+            feed: {
+                container: {
+                    width: "100%"
+                }
+            },
+            post: {
+                container: {
+                    width: "100%"
+                }
+            }
+
+        },
+        gallery:{
+            container: {
+                width: "100%"
+            }
+        },
+        about: {
+            container: {
+                width: "100%"
+            }
+        }
+    },
+    gallery: {
+        buttons: {
+            container: {
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between"
+            }
+        }
+    }
+}
+
+export default withStyles(useStyles)(withRouter(App));

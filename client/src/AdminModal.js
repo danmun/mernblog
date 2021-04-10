@@ -3,14 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import CancelIcon from '@material-ui/icons/Cancel';
 import {Fade, Grid, IconButton, Backdrop, Modal} from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-    },
-}));
-
 export default function AdminModal(props) {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
@@ -72,6 +64,14 @@ export default function AdminModal(props) {
         </div>
     );
 }
+
+const useStyles = makeStyles(theme => ({
+    paper: {
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+    },
+}));
 
 const style = {
     modalElement: {

@@ -24,6 +24,53 @@ export const variants = {
     error: "error"
 }
 
+function MySnackbarContentWrapper(props) {
+    const classes = useStyles1();
+    const { className, message, onClose, variant, ...other } = props;
+    const Icon = variantIcon[variant];
+    return (
+        <SnackbarContent
+            className={clsx(classes[variant], className)}
+            aria-describedby="client-snackbar"
+            message={
+                <span id="client-snackbar" className={classes.message}>
+                    <Icon className={clsx(classes.icon, classes.iconVariant)} />
+                    {message}
+                </span>
+            }
+            action={[
+                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+                    <CloseIcon className={classes.icon} />
+                </IconButton>,
+            ]}
+            {...other}
+        />
+    );
+}
+
+export default function AlertBox(props) {
+    const classes = useStyles2();
+
+    return (
+        <React.Fragment>
+            {props.open &&
+            <MySnackbarContentWrapper
+                onClose={props.onClose}
+                variant={props.variant}
+                className={classes.margin}
+                message={props.message}
+            />
+            }
+        </React.Fragment>
+    );
+}
+
+const useStyles2 = makeStyles(theme => ({
+    margin: {
+        margin: theme.spacing(1),
+    },
+}));
+
 const useStyles1 = makeStyles(theme => ({
     success: {
         backgroundColor: green[600],
@@ -49,50 +96,3 @@ const useStyles1 = makeStyles(theme => ({
         alignItems: 'center',
     },
 }));
-
-function MySnackbarContentWrapper(props) {
-    const classes = useStyles1();
-    const { className, message, onClose, variant, ...other } = props;
-    const Icon = variantIcon[variant];
-    return (
-        <SnackbarContent
-            className={clsx(classes[variant], className)}
-            aria-describedby="client-snackbar"
-            message={
-                <span id="client-snackbar" className={classes.message}>
-                    <Icon className={clsx(classes.icon, classes.iconVariant)} />
-                    {message}
-                </span>
-            }
-            action={[
-                <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
-                    <CloseIcon className={classes.icon} />
-                </IconButton>,
-            ]}
-            {...other}
-        />
-    );
-}
-
-const useStyles2 = makeStyles(theme => ({
-    margin: {
-        margin: theme.spacing(1),
-    },
-}));
-
-export default function AlertBox(props) {
-    const classes = useStyles2();
-
-    return (
-        <React.Fragment>
-            {props.open &&
-            <MySnackbarContentWrapper
-                onClose={props.onClose}
-                variant={props.variant}
-                className={classes.margin}
-                message={props.message}
-            />
-            }
-        </React.Fragment>
-    );
-}

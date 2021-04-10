@@ -4,7 +4,6 @@ import {gallery} from "./data";
 import CancelIcon from '@material-ui/icons/Cancel';
 import IconButton from '@material-ui/core/IconButton';
 
-
 function PhotoPreviewPane(props) {
     const [photos, setPhotos] = useState(gallery.albums[1].photos)
     const [removedPhotos, setRemovedPhotos] = useState([])
@@ -21,66 +20,73 @@ function PhotoPreviewPane(props) {
 
     return(
         <React.Fragment>
-            <Grid item xs style={{width: "100%"}}>
-                {/*<div style={{border: "1px solid lightGrey", padding: "15px", minHeight: "40vh"}}>*/}
+            <Grid item xs style={styles.rootContainer}>
                     <Grid container
                           direction="row"
                           spacing={1}
                           alignItems="center"
                           justify="center"
-                          style={{
-                              // padding: "15px",
-                              minHeight: "50vh",
-                              maxHeight: "40vh",
-                              overflowY: "scroll",
-                              border: "1px solid lightGrey"}}>
-
-                        {photos.map((photo, photoi) => {
-                            return PhotoThumb(photo, photoi, updatePhotos)
-                        })}
-                        {photos.length === 0 && <Grid item>{"There are no more photos left in this album."}</Grid>}
-
+                          style={styles.previewPaneContainer}
+                    >
+                        {photos.length === 0 ?
+                            <Grid item>{"There are no more photos left in this album."}</Grid>
+                        :
+                            photos.map((photo, photoi) => {
+                                return PhotoThumb(photo, photoi, updatePhotos)
+                            })
+                        }
                     </Grid>
-                {/*</div>*/}
             </Grid>
         </React.Fragment>)
 }
 
 function PhotoThumb(photo, photoi, updatePhotos){
     // url('https://unsplash.it/400/500.jpg')
-    let style = {
-        backgroundImage: "url(" + photo + ")",
-        height: "90px",
-        backgroundPosition: "50% 50%",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-
-        padding: "80px",
-        margin: "10px 10px 10px 10px"
-    }
-
     return(
-        <Grid item key={photo + "_" + photoi} align="center" xs={3} style={style}>
+        <Grid item key={photo + "_" + photoi} align="center" xs={3} style={styles.thumb.container}>
                 <IconButton
                     color="secondary"
-                    style={{
-                        background: "rgba(255, 255, 255, 0.6)",
-                        position: "relative",
-                        top: "0",
-                        right: "0"
-                        // background: "red",
-                        // top: "12px",
-                        // margin: "5px"
-                    }}
-                    // edge="start"
+                    style={styles.thumb.icon}
                     onClick={() => updatePhotos(photoi)}
-                    // className={classes.menuButton}
                 >
                     <CancelIcon/>
                 </IconButton>
         </Grid>
     );
 
+}
+
+const styles = {
+    rootContainer: {
+        width: "100%"
+    },
+    previewPaneContainer: {
+        minHeight: "50vh",
+        maxHeight: "40vh",
+        overflowY: "scroll",
+        border: "1px solid lightGrey"
+    },
+    thumb:{
+        container: {
+            backgroundImage: "url(" + photo + ")",
+            height: "90px",
+            backgroundPosition: "50% 50%",
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+
+            padding: "80px",
+            margin: "10px 10px 10px 10px"
+        },
+        icon: {
+            background: "rgba(255, 255, 255, 0.6)",
+            position: "relative",
+            top: "0",
+            right: "0"
+            // background: "red",
+            // top: "12px",
+            // margin: "5px"
+        }
+    }
 }
 
 export default PhotoPreviewPane;

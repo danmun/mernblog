@@ -79,7 +79,7 @@ class Feed extends React.Component{
                 aria-label="open drawer"
                 edge="start"
                 onClick={() => this.props.onEdit(post)}
-                style={{color: "dodgerblue", padding: "7px"}}
+                style={styles.icons.edit}
             >
                 <EditIcon />
             </IconButton>
@@ -92,7 +92,7 @@ class Feed extends React.Component{
                 aria-label="open drawer"
                 edge="start"
                 onClick={() => this.props.onDelete(post)}
-                style={{color: "red", padding: "7px"}}
+                style={styles.icons.delete}
             >
                 <DeletePostIcon />
             </IconButton>
@@ -104,7 +104,7 @@ class Feed extends React.Component{
         if(posts.length === 0){
             return(
                 <React.Fragment>
-                    <div style={{textAlign: "center"}}>
+                    <div style={styles.emptyList}>
                         There are no posts to display.
                     </div>
                 </React.Fragment>)
@@ -124,7 +124,7 @@ class Feed extends React.Component{
                                     <Typography variant="h5" component="h2">
                                         {post.title}
                                     </Typography>
-                                    <Typography variant="body2" component="div" style={{paddingTop: "2vh", paddingLeft: "5vw", paddingRight: "20vw"}}>
+                                    <Typography variant="body2" component="div" style={styles.previewText}>
 
                                         {/*{this.truncateTextTo(2, post.plaintext)}*/}
                                         {this.shortenTextTo(120, post.plaintext)}
@@ -182,6 +182,25 @@ class Feed extends React.Component{
             <React.Fragment>
                 {loadingPosts ? <Spinner/> : this.showFeed()}
             </React.Fragment>)
+    }
+}
+
+const styles = {
+    emptyList: {
+        textAlign: "center"
+    },
+    icons: {
+        edit: {
+            color: "dodgerblue", padding: "7px"
+        },
+        delete: {
+            color: "red", padding: "7px"
+        }
+    },
+    previewText: {
+        paddingTop: "2vh",
+        paddingLeft: "5vw",
+        paddingRight: "20vw"
     }
 }
 

@@ -36,7 +36,7 @@ function Menu(props) {
                         aria-label="open drawer"
                         edge="start"
                         onClick={createPost}
-                        style={{color: "green"}}
+                        style={styles.colors.addPost}
                     >
                         <AddPostIcon/>
                     </IconButton>
@@ -46,7 +46,7 @@ function Menu(props) {
                         aria-label="open drawer"
                         edge="start"
                         onClick={createAlbum}
-                        style={{color: "green"}}
+                        style={styles.colors.addAlbum}
                     >
                         <AddAlbumIcon />
                     </IconButton>
@@ -56,7 +56,7 @@ function Menu(props) {
                         aria-label="open drawer"
                         edge="start"
                         onClick={doLogout}
-                        style={{color: "black"}}
+                        style={styles.colors.logout}
                     >
                         <ExitToAppIcon />
                     </IconButton>
@@ -69,6 +69,20 @@ function Menu(props) {
             </ResponsiveDrawer>
         </React.Fragment>
     );
+}
+
+const styles = {
+    colors:{
+        addPost: {
+            color: "green"
+        },
+        addAlbum: {
+            color: "green"
+        },
+        logout: {
+            color: "black"
+        }
+    }
 }
 
 export default Menu;

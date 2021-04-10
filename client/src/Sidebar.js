@@ -16,30 +16,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import {PAGES} from './App'
 
-const useStyles = makeStyles(theme => ({
-    toolbar: {
-        height: appBarHeight
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    bigAvatar: {
-        width: 100,
-        height: 100,
-    },
-    socialIcon: {
-        maxHeight: `${appBarHeight - 5}px`,
-        maxWidth: `${appBarHeight - 5}px`
-    }
-}));
-
 function Sidebar(props) {
     const classes = useStyles();
     const {navigator} = props
     
     return (
         <React.Fragment>
-            <div className={classes.toolbar} style={{display: "flex", alignItems: "center", flexDirection: "row", justifyContent: "center"}}>
+            <div className={classes.toolbar}>
                 <SocialIcon target="_blank" url="https://github.com/danmun" bgColor="#000000" className={classes.socialIcon}/>
                 <SocialIcon target="_blank" url="https://www.instagram.com/wandering.dnm/" className={classes.socialIcon}/>
             </div>
@@ -80,5 +63,28 @@ function Sidebar(props) {
         </React.Fragment>
     );
 }
+
+const styles = theme => ({
+    toolbar: {
+        height: appBarHeight,
+        display: "flex",
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "center"
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    bigAvatar: {
+        width: 100,
+        height: 100,
+    },
+    socialIcon: {
+        maxHeight: `${appBarHeight - 5}px`,
+        maxWidth: `${appBarHeight - 5}px`
+    }
+})
+
+const useStyles = makeStyles(styles);
 
 export default withRouter(Sidebar);

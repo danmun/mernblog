@@ -24,16 +24,6 @@ import {fetchPost} from "./api/posts";
 //     },
 // }));
 
-// NOTE: there is a slight styling difference between accessing a post externally (via link) and via feed
-const styles = theme => ({
-    heading: {
-        padding: theme.spacing(1, 5),
-    },
-    body: {
-        padding: theme.spacing(2, 5),
-    },
-});
-
 // props: post, onEdit, onDelete, readPost
 class Post extends React.Component {
     constructor(props) {
@@ -192,5 +182,15 @@ class Post extends React.Component {
         );
     }
 }
+
+// NOTE: there is a slight styling difference between accessing a post externally (via link) and via feed
+const styles = theme => ({
+    heading: {
+        padding: theme.spacing(1, 5),
+    },
+    body: {
+        padding: theme.spacing(2, 5),
+    },
+});
 
 export default withRouter(withStyles(styles)(Post));

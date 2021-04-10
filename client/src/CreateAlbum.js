@@ -86,63 +86,118 @@ class CreateAlbum extends React.Component{
         let {title, description, tags} = this.state
         return(
             <React.Fragment>
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.title.container}>
                     <TextField
-                        style={{width: "100%"}}
+                        style={styles.title.inputField}
                         id="outlined-with-placeholder"
                         label="Title"
                         value={title}
                         placeholder="Keep it short and catchy ..."
                         margin="normal"
                         variant="outlined"
-                        inputProps={{maxLength: "120"}}
+                        inputProps={styles.title.inputProps}
                         onChange={this.titleOnType}
                     />
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.description.container}>
                     <TextField
-                        style={{width: "100%"}}
+                        style={styles.description.inputField}
                         id="outlined-with-placeholder"
                         label="Description"
                         value={description}
                         placeholder="A few words about it ..."
                         margin="normal"
                         variant="outlined"
-                        inputProps={{maxLength: "300"}}
+                        inputProps={styles.description.inputProps}
                         onChange={this.descriptionOnType}
                     />
                 </Grid>
 
-                <Grid item style={{width: "100%", textAlign: "center", border: "1px solid lightgrey"}}>
-                    <div style={{padding: "20px"}}>
+                <Grid item style={styles.filesSelection.container}>
+                    <div style={styles.filesSelection.inputField}>
                         <input onChange={(event) => this.handleFileSelection(event.target.files) } type={"file"} name="album" multiple/>
                     </div>
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.hashtags.container}>
                     <TextField
-                        style={{width: "100%"}}
+                        style={styles.hashtags.inputField}
                         id="outlined-with-placeholder"
                         label="#tags"
                         value={tags}
                         margin="normal"
                         variant="outlined"
-                        inputProps={{maxLength: "120"}}
+                        inputProps={styles.hashtags.inputProps}
                         onChange={this.hashtagOnType}
                         onBlur={this.hashtagOnBlur}
                         onFocus={this.hashtagOnFocus}
                     />
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
-                    <Button onClick={this.handleSubmit} variant="contained" color="primary" style={{width: "100%"}}>
+                <Grid item style={styles.submit.container}>
+                    <Button onClick={this.handleSubmit} variant="contained" color="primary" style={styles.submit.button}>
                         Create
                         <Icon>send</Icon>
                     </Button>
                 </Grid>
             </React.Fragment>
         );
+    }
+}
+
+const styles = {
+    title: {
+        container: {
+            width: "100%"
+        },
+        inputField: {
+            width: "100%"
+        },
+        inputProps: {
+            maxLength: "120"
+        }
+    },
+    description: {
+        container: {
+            width: "100%"
+        },
+        inputField: {
+            width: "100%"
+        },
+        inputProps: {
+            maxLength: "300"
+        }
+    },
+    filesSelection: {
+        container: {
+            width: "100%",
+            textAlign: "center",
+            border: "1px solid lightgrey"
+        },
+        inputField: {
+            padding: "20px"
+        }
+    },
+    hashtags: {
+        container: {
+            width: "100%"
+        },
+        inputField: {
+            width: "100%"
+        },
+        inputProps: {
+            maxLength: "120"
+        }
+
+    },
+    submit: {
+        container: {
+            width: "100%"
+        },
+        button: {
+            width: "100%"
+        }
     }
 }
 

@@ -4,22 +4,13 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
-    drawer: {
-        [theme.breakpoints.up('sm')]: {
-            width: drawerWidth,
-            flexShrink: 0,
-        },
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    }
-}));
-
 function ResponsiveDrawer(props) {
     const { container } = props;
     const classes = useStyles();
     const theme = useTheme();
+    const drawerClasses = {
+        paper: classes.drawerPaper,
+    }
 
     return (
         // original z-index is 1200 for the Drawer, must be lowered for the lightbox to be fully visible
@@ -34,9 +25,7 @@ function ResponsiveDrawer(props) {
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={props.mobileOpen}
                         onClose={props.dispose}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
+                        classes={drawerClasses}
                         ModalProps={{
                             keepMounted: true, // Better open performance on mobile.
                         }}
@@ -46,9 +35,7 @@ function ResponsiveDrawer(props) {
                 </Hidden>
                 <Hidden xsDown implementation="css">
                     <Drawer
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
+                        classes={drawerClasses}
                         variant="permanent"
                         open
                     >
@@ -59,5 +46,19 @@ function ResponsiveDrawer(props) {
         </div>
     );
 }
+
+const styles = theme => ({
+    drawer: {
+        [theme.breakpoints.up('sm')]: {
+            width: drawerWidth,
+            flexShrink: 0,
+        },
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    }
+})
+
+const useStyles = makeStyles(styles);
 
 export default ResponsiveDrawer;

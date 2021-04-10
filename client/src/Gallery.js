@@ -17,7 +17,6 @@ const springConfig = {
     delay: "0.1s", // gives enough time for the user to see the `Read Post` button's animation
 }
 
-
 class Gallery extends React.Component{
     constructor(props){
         super(props);
@@ -49,7 +48,7 @@ class Gallery extends React.Component{
     createAlbum(viewAlbum, album){
         return(
             <Album viewAlbum={viewAlbum} album={album}>
-                <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+                <div style={styles.albumThumb.button.container}>
                     <Button onClick={() => viewAlbum("next", album)} size="small">
                         Explore
                     </Button>
@@ -63,13 +62,13 @@ class Gallery extends React.Component{
         if(albums.length === 0){
             return(
                 <React.Fragment>
-                    <div style={{textAlign: "center"}}>
+                    <div style={styles.emptyList}>
                         There are no albums to display.
                     </div>
                 </React.Fragment>)
         }else{
             return(
-                <SwipeableViews disabled springConfig={springConfig} index={this.props.slideIndex} style={{maxWidth: "96vw"}}>
+                <SwipeableViews disabled springConfig={springConfig} index={this.props.slideIndex} style={styles.slides.container}>
                     <SlideContainer>
                         {albums.map((album, albumi) => {
                             return <Grid key={album.thumb} item>{this.createAlbum(this.props.viewAlbum, album)}</Grid>
@@ -79,7 +78,7 @@ class Gallery extends React.Component{
                     <SlideContainer>
                         {albumToShow != null ?
                             <PhotoViewer album={albumToShow}>
-                                <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                                <div style={styles.album.buttons.container}>
                                     <Button onClick={() => this.props.viewAlbum("prev", albumToShow)} size="small">
                                         <ArrowBack/>
                                     </Button>
@@ -110,6 +109,38 @@ class Gallery extends React.Component{
             <React.Fragment>
                 {loading ? <Spinner/> : this.showGallery()}
             </React.Fragment>)
+    }
+}
+
+const styles = {
+    slides: {
+        container: {
+            maxWidth: "96vw"
+        }
+    },
+    emptyList: {
+        textAlign: "center"
+    },
+    albumThumb: {
+        button: {
+            container: {
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center"
+            }
+        }
+    },
+    album: {
+        buttons: {
+            container: {
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between"
+            }
+        }
     }
 }
 

@@ -7,16 +7,6 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles({
-    card: {
-        maxWidth: 350,
-        minWidth: 280
-    },
-    media: {
-        height: 280,
-    },
-});
-
 export default function Album(props) {
     const classes = useStyles();
     let album = props.album
@@ -49,3 +39,13 @@ export default function Album(props) {
         </Card>
     );
 }
+
+const useStyles = makeStyles({
+    card: {
+        maxWidth: 350,
+        minWidth: 280
+    },
+    media: {
+        height: 280,
+    },
+});

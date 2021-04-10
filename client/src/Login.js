@@ -10,32 +10,6 @@ import Container from '@material-ui/core/Container';
 import AlertBox, {variants} from "./AlertBox";
 import {login} from "./api/auth";
 
-// TODO: add back commented parts later, they enhance security and convenience
-const useStyles = makeStyles(theme => ({
-    '@global': {
-        body: {
-            backgroundColor: theme.palette.common.white,
-        },
-    },
-    paper: {
-        marginTop: theme.spacing(8),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%', // Fix IE 11 issue.
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
-}));
-
 export default function Login(props) {
     const classes = useStyles();
 
@@ -73,7 +47,7 @@ export default function Login(props) {
 
     return (
         // i don't know why this requires height of 85vh to get a height which fills parent
-        <Container component="main" maxWidth="xs" style={{height: "85vh"}}>
+        <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
@@ -133,7 +107,7 @@ export default function Login(props) {
                     {/*</Grid>*/}
                 </form>
             </div>
-            <div style={{textAlign: "center"}}>
+            <div>
                 <AlertBox open={alertBox.open} variant={alertBox.variant} message={alertBox.message} onClose={() => setAlertBox({...alertBox, open: false})}/>
             </div>
         </Container>
@@ -151,3 +125,29 @@ async function authenticate(handleLogin, setAlertBox, form){
         })
     }
 }
+
+// TODO: add back commented parts later, they enhance security and convenience
+const useStyles = makeStyles(theme => ({
+    '@global': {
+        body: {
+            backgroundColor: theme.palette.common.white,
+        },
+    },
+    paper: {
+        marginTop: theme.spacing(8),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.secondary.main,
+    },
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing(1),
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+}));

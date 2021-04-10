@@ -32,7 +32,7 @@ const initialSlideState = {
 
 
 // TODO: onSubmit must compare old content with new content, if same, must not update page/feed/etc...
-class PostManagerForm extends React.Component {
+class PostManagerFormWorkingSlidesBasic extends React.Component {
 
     constructor(props){
         super(props);
@@ -543,4 +543,4 @@ class PostManagerForm extends React.Component {
     //     );
     // }
 }
-export default PostManagerForm;
+export default PostManagerFormWorkingSlidesBasic;

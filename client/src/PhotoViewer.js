@@ -80,13 +80,7 @@ class PhotoViewer extends React.Component{
 
     createAlbumTile(album, children){
         return(
-            <Card style={{
-                    maxWidth: 350,
-                    minWidth: 280,
-                    height: 280,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between"}}>
+            <Card style={styles.tile.container}>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
                         {album.title}
@@ -150,6 +144,18 @@ class PhotoViewer extends React.Component{
             // solution (A)
             this.props.history.push(`${ALBUM_URL_BASE}${album._id}/${id}`)
         }
+    }
+}
+
+const styles = {
+    tile: {
+        container: {
+            maxWidth: 350,
+            minWidth: 280,
+            height: 280,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between"}
     }
 }
 

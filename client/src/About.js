@@ -58,12 +58,12 @@ function About(props) {
 
 function showAdminUI(about, modal, setModal){
     return(
-        <div style={{textAlign: "center"}}>
+        <div style={styles.admin.container}>
             <IconButton
                 aria-label="open drawer"
                 edge="start"
                 onClick={() => openPostManager(about, modal, setModal)}
-                style={{color: "green"}}
+                style={styles.admin.icon}
             >
                 <AddPostIcon/>
             </IconButton>
@@ -75,7 +75,7 @@ function showAbout(isAdmin, about, modal, setModal){
     if(!about.post){
         return(
             <React.Fragment>
-                <div style={{textAlign: "center"}}>
+                <div style={styles.emptyAbout}>
                     {"Content for the 'About' page does not exist yet."}
                 </div>
             </React.Fragment>
@@ -108,6 +108,20 @@ function openPostManager(about, modal, setModal){
         editingPost: about.post,
         open: true
     })
+}
+
+const styles = {
+    emptyAbout: {
+        textAlign: "center"
+    },
+    admin: {
+        container: {
+            textAlign: "center"
+        },
+        icon: {
+            color: "green"
+        }
+    }
 }
 
 export default About;

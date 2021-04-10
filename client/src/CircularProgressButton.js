@@ -1,27 +1,7 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import {Button, CircularProgress} from '@material-ui/core';
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    wrapper: {
-        margin: theme.spacing(1),
-        position: 'relative',
-    },
-    buttonProgress: {
-        color: green[500],
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        marginTop: -12,
-        marginLeft: -12,
-    },
-}));
 
 export default function CircularProgressButton(props) {
     const classes = useStyles();
@@ -54,3 +34,22 @@ export default function CircularProgressButton(props) {
         </div>
     );
 }
+
+const useStyles = makeStyles(theme => ({
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    wrapper: {
+        margin: theme.spacing(1),
+        position: 'relative',
+    },
+    buttonProgress: {
+        color: green[500],
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
+}));

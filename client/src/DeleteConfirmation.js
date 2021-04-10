@@ -29,10 +29,10 @@ class DeleteConfirmation extends React.Component{
     render(){
         return(
             <React.Fragment>
-                <Grid item style={{width: "100%"}}>
+                <Grid item style={styles.title.container}>
                     <TextField
                         disabled
-                        style={{width: "100%"}}
+                        style={styles.title.inputField}
                         id="outlined-disabled"
                         label="Title"
                         defaultValue={this.props.toDelete.title}
@@ -41,14 +41,33 @@ class DeleteConfirmation extends React.Component{
                     />
                 </Grid>
 
-                <Grid item style={{width: "100%"}}>
-                    <Button onClick={() => this.handleSubmit(this.props.toDelete)} variant="contained" color="secondary" style={{width: "100%"}}>
+                <Grid item style={styles.submit.container}>
+                    <Button onClick={() => this.handleSubmit(this.props.toDelete)} variant="contained" color="secondary" style={styles.submit.button}>
                         Delete
                         <DeleteIcon/>
                     </Button>
                 </Grid>
             </React.Fragment>
         );
+    }
+}
+
+const styles = {
+    title: {
+        container: {
+            width: "100%"
+        },
+        inputField: {
+            width: "100%"
+        }
+    },
+    submit: {
+        container: {
+            width: "100%"
+        },
+        button: {
+            width: "100%"
+        }
     }
 }
 
