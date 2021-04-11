@@ -7,14 +7,16 @@ import AddPostIcon from "@material-ui/icons/AddCircle";
 import Spinner from "./Spinner";
 import { editAbout, fetchAbout, createAbout } from "./api/about";
 
+const modalInitialState = {
+    open: false,
+    title: "Add an About section",
+    editingPost: null,
+}
+
 function About(props) {
     let isAdmin = props.isAdmin;
 
-    const [modal, setModal] = useState({
-        open: false,
-        title: "Add an About section",
-        editingPost: null,
-    });
+    const [modal, setModal] = useState(modalInitialState);
 
     const [about, setAbout] = useState({
         loading: true,
@@ -30,14 +32,19 @@ function About(props) {
         });
     }, []);
 
-    let onSubmit = function (refresh, post) {
-        if (post.id === null || post.id.trim().length === 0) {
-            submitNewAbout(post, setAbout);
-        } else {
-            submitEditedAbout(post, setAbout);
-        }
-        setModal({ open: false });
-    };
+    const submitCreateAbout = (post) => {
+        createAbout(post).then((json) => {
+            setAbout({ post: json.about });
+            setModal(modalInitialState);
+        });
+    }
+
+    const submitEditAbout = (post) => {
+        editAbout(post).then((json) => {
+            setAbout({ post: json.about });
+            setModal(modalInitialState);
+        });
+    }
 
     return (
         <React.Fragment>
@@ -53,7 +60,8 @@ function About(props) {
                 >
                      {/*TODO: issue: outdated usage of PostManager -- under construction*/}
                     <PostManager
-                        onSubmit={onSubmit}
+                        onCreate={submitCreateAbout}
+                        onEdit={submitEditAbout}
                         post={modal.editingPost}
                     />
                 </AdminModal>
@@ -94,18 +102,6 @@ function showAbout(isAdmin, about, modal, setModal) {
             </React.Fragment>
         );
     }
-}
-
-function submitNewAbout(post, setAbout) {
-    createAbout(post).then((json) => {
-        setAbout({ post: json.about });
-    });
-}
-
-function submitEditedAbout(post, setAbout) {
-    editAbout(post).then((json) => {
-        setAbout({ post: json.about });
-    });
 }
 
 function openPostManager(about, modal, setModal) {

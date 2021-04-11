@@ -32,7 +32,8 @@
         "react-responsive": "^8.0.1",
         "bcrypt": "^3.0.6",
         "jsonwebtoken": "^8.5.1",
-        "cookie-parser": "^1.4.4"
+        "cookie-parser": "^1.4.4",
+        "prop-types": "^15.7.2"
     },
     "scripts": {
         "start": "react-scripts start",

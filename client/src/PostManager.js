@@ -10,7 +10,6 @@ class PostManager extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.submit = this.submit.bind(this);
         this.uploadImageCallback = this.uploadImageCallback.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
         this.getPhotosFromRawContent = this.getPhotosFromRawContent.bind(this);
@@ -92,19 +91,10 @@ class PostManager extends React.Component {
             tags: tags.split("#").filter((item) => item), // split string of tags into hashtagless array
         };
 
-        this.submit(post);
-    }
-
-    submit(post) {
-        const { onSubmit } = this.props;
         if (post.id === null || post.id.trim().length === 0) {
-            createPost(post).then((json) => {
-                return onSubmit(true, null); // signal to setRefreshFeed
-            });
+            this.props.onCreate(post)
         } else {
-            editPost(post).then((json) => {
-                return onSubmit(true, json.post);
-            });
+            this.props.onEdit(post)
         }
     }
 
