@@ -145,7 +145,7 @@ apiRouter.post('/post', enforceAuth, async (req, res) => {
         return;
     }
 
-    let albumDetails = constructAlbum(req.body)
+    let albumDetails = constructAlbum(req.user, req.body)
     albumDetails.post = post._id;
     const album = new Album(albumDetails);
     try{
