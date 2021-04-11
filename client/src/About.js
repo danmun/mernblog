@@ -5,7 +5,7 @@ import AdminModal from "./AdminModal";
 import IconButton from "@material-ui/core/IconButton";
 import AddPostIcon from "@material-ui/icons/AddCircle";
 import Spinner from "./Spinner";
-import { editAbout, fetchAbout, newAbout } from "./api/about";
+import { editAbout, fetchAbout, createAbout } from "./api/about";
 
 function About(props) {
     let isAdmin = props.isAdmin;
@@ -30,7 +30,7 @@ function About(props) {
         });
     }, []);
 
-    let onDone = function (post) {
+    let onSubmit = function (refresh, post) {
         if (post.id === null || post.id.trim().length === 0) {
             submitNewAbout(post, setAbout);
         } else {
@@ -51,9 +51,10 @@ function About(props) {
                     open={modal.open}
                     dispose={() => setModal({ open: false })}
                 >
+                     {/*TODO: issue: outdated usage of PostManager -- under construction*/}
                     <PostManager
-                        onDone={onDone}
-                        editingPost={modal.editingPost}
+                        onSubmit={onSubmit}
+                        post={modal.editingPost}
                     />
                 </AdminModal>
             </div>
@@ -96,7 +97,7 @@ function showAbout(isAdmin, about, modal, setModal) {
 }
 
 function submitNewAbout(post, setAbout) {
-    newAbout(post).then((json) => {
+    createAbout(post).then((json) => {
         setAbout({ post: json.about });
     });
 }

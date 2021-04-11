@@ -16,7 +16,7 @@ export async function editAbout(post) {
         .then((json) => json);
 }
 
-export async function newAbout(post) {
+export async function createAbout(post) {
     return await fetch(`${baseUrl}/postAbout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
