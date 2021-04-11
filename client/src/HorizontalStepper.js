@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Icon, StepLabel, Step, Stepper } from "@material-ui/core";
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function HorizontalStepper(props) {
+function HorizontalStepper(props) {
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = props.steps;
@@ -93,3 +94,12 @@ const styles = {
         },
     },
 };
+
+HorizontalStepper.propTypes = {
+    steps: PropTypes.array,
+    onNext: PropTypes.func,
+    onBack: PropTypes.func,
+    onSubmit: PropTypes.func
+}
+
+export default HorizontalStepper;

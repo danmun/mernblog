@@ -1,5 +1,6 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
+import PropTypes from "prop-types";
 
 function SlideContainer(props) {
     return (
@@ -26,5 +27,9 @@ const styles = {
         maxHeight: "95vh",
     },
 };
+
+SlideContainer.propTypes = {
+    children: PropTypes.any
+}
 
 export default SlideContainer;

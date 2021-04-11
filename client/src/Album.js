@@ -6,8 +6,9 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
+import PropTypes from 'prop-types';
 
-export default function Album(props) {
+function Album(props) {
     const classes = useStyles();
     let album = props.album;
     return (
@@ -49,3 +50,9 @@ const useStyles = makeStyles({
         height: 280,
     },
 });
+
+Album.propTypes = {
+    album: PropTypes.object
+}
+
+export default Album;

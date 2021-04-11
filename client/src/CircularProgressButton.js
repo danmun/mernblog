@@ -2,8 +2,9 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { green } from "@material-ui/core/colors";
 import { Button, CircularProgress } from "@material-ui/core";
+import PropTypes from 'prop-types';
 
-export default function CircularProgressButton(props) {
+function CircularProgressButton(props) {
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
 
@@ -55,3 +56,9 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: -12,
     },
 }));
+
+CircularProgressButton.propTypes = {
+    onClick: PropTypes.func
+}
+
+export default CircularProgressButton;

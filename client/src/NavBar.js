@@ -4,6 +4,7 @@ import MenuIcon from "@material-ui/icons/VerticalSplit";
 import Toolbar from "@material-ui/core/Toolbar";
 import React from "react";
 import { makeStyles } from "@material-ui/core";
+import PropTypes from 'prop-types';
 
 export const drawerWidth = 200;
 export const appBarHeight = 35;
@@ -64,5 +65,10 @@ const useStyles = makeStyles((theme) => ({
         transform: "scale(-1, 1)",
     },
 }));
+
+NavBar.propTypes = {
+    handleDrawerToggle: PropTypes.func,
+    children: PropTypes.any
+}
 
 export default NavBar;

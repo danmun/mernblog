@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { withRouter } from "react-router-dom";
 import { fetchAlbum } from "./api/gallery";
 import Spinner from "./Spinner";
+import PropTypes from 'prop-types';
 
 const ALBUM_URL_BASE = "/gallery/album/";
 
@@ -164,5 +165,10 @@ const styles = {
         },
     },
 };
+
+PhotoViewer.propTypes = {
+    album: PropTypes.object,
+    children: PropTypes.any
+}
 
 export default withRouter(PhotoViewer);

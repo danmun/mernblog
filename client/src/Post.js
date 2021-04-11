@@ -19,7 +19,7 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import AlertBox, { variants } from "./AlertBox";
 import { fetchPost } from "./api/posts";
-
+import PropTypes from 'prop-types';
 
 // props: post, onEdit, onDelete, readPost
 class Post extends React.Component {
@@ -272,6 +272,13 @@ const styles = {
             position: "relative",
         }
     }
+}
+
+Post.propTypes = {
+    post: PropTypes.object,
+    onEdit: PropTypes.func,
+    onDelete: PropTypes.func,
+    readPost: PropTypes.func
 }
 
 export default withRouter(withStyles(useStyle)(Post));

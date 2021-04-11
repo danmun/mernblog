@@ -21,6 +21,7 @@ import SwipeableViews from "react-swipeable-views";
 import SlideContainer from "./SlideContainer";
 import { toggleCarousel } from "./utils";
 import HorizontalStepper from "./HorizontalStepper";
+import PropTypes from "prop-types";
 
 const springConfig = {
     duration: "1s",
@@ -570,5 +571,11 @@ const styles = {
         },
     },
 };
+
+PostManagerForm.propTypes = {
+    onSubmit: PropTypes.func,
+    post: PropTypes.object,
+    uploadImageCallback: PropTypes.func
+}
 
 export default PostManagerForm;

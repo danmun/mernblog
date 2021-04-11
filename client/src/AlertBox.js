@@ -9,6 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import WarningIcon from "@material-ui/icons/Warning";
 import { makeStyles } from "@material-ui/core/styles";
+import PropTypes from 'prop-types';
 
 const variantIcon = {
     success: CheckCircleIcon,
@@ -53,7 +54,7 @@ function MySnackbarContentWrapper(props) {
     );
 }
 
-export default function AlertBox(props) {
+function AlertBox(props) {
     const classes = useStyles2();
 
     return (
@@ -68,6 +69,13 @@ export default function AlertBox(props) {
             )}
         </React.Fragment>
     );
+}
+
+AlertBox.propTypes = {
+    onClose: PropTypes.func,
+    variant: PropTypes.string,
+    open: PropTypes.any,
+    message: PropTypes.string
 }
 
 const useStyles2 = makeStyles((theme) => ({
@@ -101,3 +109,5 @@ const useStyles1 = makeStyles((theme) => ({
         alignItems: "center",
     },
 }));
+
+export default AlertBox;

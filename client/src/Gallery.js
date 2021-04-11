@@ -10,6 +10,7 @@ import Spinner from "./Spinner";
 import CircularProgressButton from "./CircularProgressButton";
 import { Icon } from "@material-ui/core";
 import { fetchGallery } from "./api/gallery";
+import PropTypes from 'prop-types';
 
 const springConfig = {
     duration: "1s",
@@ -47,7 +48,7 @@ class Gallery extends React.Component {
 
     createAlbum(viewAlbum, album) {
         return (
-            <Album viewAlbum={viewAlbum} album={album}>
+            <Album album={album}>
                 <div style={styles.albumThumb.button.container}>
                     <Button
                         onClick={() => viewAlbum("next", album)}
@@ -163,5 +164,11 @@ const styles = {
         },
     },
 };
+
+Gallery.propTypes = {
+    albumToShow: PropTypes.object,
+    slideIndex: PropTypes.number,
+    viewAlbum: PropTypes.func
+}
 
 export default Gallery;

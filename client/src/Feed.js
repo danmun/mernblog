@@ -2,6 +2,8 @@ import React from "react";
 import TextTruncate from "react-text-truncate";
 import DeletePostIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import PropTypes from 'prop-types';
+
 import {
     CardContent,
     CardActions,
@@ -215,5 +217,13 @@ const styles = {
         paddingRight: "20vw",
     },
 };
+
+Feed.propTypes = {
+    refresh: PropTypes.bool,
+    onRefresh: PropTypes.func,
+    readPost: PropTypes.func,
+    onEdit: PropTypes.func,
+    onDelete: PropTypes.func
+}
 
 export default Feed;

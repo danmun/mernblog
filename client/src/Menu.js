@@ -7,6 +7,7 @@ import AddPostIcon from "@material-ui/icons/AddCircle";
 import AddAlbumIcon from "@material-ui/icons/AddPhotoAlternate";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { logout } from "./api/auth";
+import PropTypes from 'prop-types';
 
 function Menu(props) {
     const [mobile, setMobile] = useState(false);
@@ -87,5 +88,13 @@ const styles = {
         },
     },
 };
+
+Menu.propTypes = {
+    createPost: PropTypes.func,
+    createAlbum: PropTypes.func,
+    onLogout: PropTypes.func,
+    navigator: PropTypes.func
+}
+
 
 export default Menu;

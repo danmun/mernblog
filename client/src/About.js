@@ -5,6 +5,7 @@ import AdminModal from "./AdminModal";
 import IconButton from "@material-ui/core/IconButton";
 import AddPostIcon from "@material-ui/icons/AddCircle";
 import Spinner from "./Spinner";
+import PropTypes from 'prop-types';
 import { editAbout, fetchAbout, createAbout } from "./api/about";
 
 const modalInitialState = {
@@ -125,5 +126,9 @@ const styles = {
         },
     },
 };
+
+About.propTypes = {
+    isAdmin: PropTypes.bool
+}
 
 export default About;

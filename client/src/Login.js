@@ -9,8 +9,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import AlertBox, { variants } from "./AlertBox";
 import { login } from "./api/auth";
+import PropTypes from 'prop-types';
 
-export default function Login(props) {
+function Login(props) {
     const classes = useStyles();
 
     const [alertBox, setAlertBox] = useState({
@@ -156,3 +157,9 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
 }));
+
+Login.propTypes = {
+    handleLogin: PropTypes.func
+}
+
+export default Login;

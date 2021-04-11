@@ -3,8 +3,7 @@ import { drawerWidth } from "./NavBar";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-
-
+import PropTypes from "prop-types";
 
 function ResponsiveDrawer(props) {
     const { container } = props;
@@ -59,4 +58,9 @@ const styles = (theme) => ({
 
 const useStyles = makeStyles(styles);
 
+ResponsiveDrawer.propTypes = {
+    mobileOpen: PropTypes.bool,
+    dispose: PropTypes.func,
+    children: PropTypes.any
+}
 export default ResponsiveDrawer;

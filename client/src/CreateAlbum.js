@@ -4,6 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import { TextField } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
+import PropTypes from 'prop-types';
 
 class CreateAlbum extends React.Component {
     constructor(props) {
@@ -210,5 +211,9 @@ const styles = {
         },
     },
 };
+
+CreateAlbum.propTypes = {
+    onCreate: PropTypes.func
+}
 
 export default CreateAlbum;

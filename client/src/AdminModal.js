@@ -2,12 +2,13 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { Fade, Grid, IconButton, Backdrop, Modal } from "@material-ui/core";
+import PropTypes from 'prop-types';
 
 const backdropProps = {
     timeout: 500,
 }
 
-export default function AdminModal(props) {
+function AdminModal(props) {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
     let open = props.open;
@@ -106,3 +107,12 @@ const style = {
         },
     },
 };
+
+AdminModal.propTypes = {
+    title: PropTypes.string,
+    open: PropTypes.bool,
+    dispose: PropTypes.func,
+    children: PropTypes.any
+}
+
+export default AdminModal;

@@ -3,7 +3,7 @@ import { convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import PostManagerForm from "./PostManagerForm";
 import { getImgurClientId } from "./api/auth";
-import { createPost, editPost } from "./api/posts";
+import PropTypes from 'prop-types';
 
 // TODO: rename to PostEditor and PostEditorForm
 class PostManager extends React.Component {
@@ -169,6 +169,12 @@ class PostManager extends React.Component {
             />
         );
     }
+}
+
+PostManager.propTypes = {
+    onCreate: PropTypes.func,
+    onEdit: PropTypes.func,
+    post: PropTypes.object
 }
 
 export default PostManager;

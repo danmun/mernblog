@@ -15,6 +15,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import { PAGES } from "./App";
+import PropTypes from "prop-types";
 
 function Sidebar(props) {
     const classes = useStyles();
@@ -100,5 +101,9 @@ const styles = (theme) => ({
 });
 
 const useStyles = makeStyles(styles);
+
+Sidebar.propTypes = {
+    navigator: PropTypes.func
+}
 
 export default withRouter(Sidebar);
