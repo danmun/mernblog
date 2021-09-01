@@ -1,28 +1,31 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { drawerWidth, appBarHeight } from "./NavBar";
-import Divider from "@material-ui/core/Divider";
 import PersonIcon from "@material-ui/icons/Person";
-import Grid from "@material-ui/core/Grid";
-import Avatar from "@material-ui/core/Avatar";
 import { SocialIcon } from "react-social-icons";
 import { makeStyles } from "@material-ui/core/styles";
 import HelpIcon from "@material-ui/icons/Help";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 import LibraryBookIcon from "@material-ui/icons/LibraryBooks";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
 import { PAGES } from "./App";
 import PropTypes from "prop-types";
+import {
+    Divider,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Avatar,
+    Grid,
+} from "@material-ui/core";
+import LastSeen from "./LastSeen";
 
 function Sidebar(props) {
     const classes = useStyles();
     const { navigator } = props;
 
     return (
-        <React.Fragment>
+        <div className={classes.sidebar}>
             <div className={classes.toolbar}>
                 <SocialIcon target="_blank" url="https://github.com/danmun" bgColor="#000000" className={classes.socialIcon}/>
                 <SocialIcon target="_blank" url="https://www.instagram.com/wandering.dnm/" className={classes.socialIcon}/>
@@ -74,8 +77,11 @@ function Sidebar(props) {
                         <PersonIcon />
                     </Avatar>
                 </Grid>
+                <div className={classes.lastSeen}>
+                    <LastSeen/>
+                </div>
             </Grid>
-        </React.Fragment>
+        </div>
     );
 }
 
@@ -86,6 +92,16 @@ const styles = (theme) => ({
         alignItems: "center",
         flexDirection: "row",
         justifyContent: "center",
+    },
+    sidebar: {
+        height: "100%"
+    },
+    lastSeen: {
+        position: "absolute",
+        bottom: "20px",
+        // enable the below to align text to left, though it will no longer be centered
+        // paddingLeft: "10px",
+        // width: "100%"
     },
     drawerPaper: {
         width: drawerWidth,

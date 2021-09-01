@@ -8,6 +8,8 @@ const enforceAuth = require('./middleware').enforceAuth;
 const checkAuth = require('./middleware').checkAuth;
 const logout = require('./middleware').logout;
 const login = require('./middleware').login;
+const GitHub = require('github-api');
+const moment = require('moment');
 
 let dev_config = {}
 const fs = require('fs')
@@ -97,6 +99,41 @@ apiRouter.get('/about', async function (req, res) {
     const about = await About.find({});
     try {
         res.send({about: about[0]});
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+
+apiRouter.get('/seen', async function (req, res) {
+    const posts = await Post.find({}).sort({createdOn: -1});
+
+    const lastPost = {
+        date: moment(posts[0].createdOn).fromNow(),
+        title: posts[0].title
+    }
+
+    const lastCommit = {
+        date: "Unavailable.",
+        url: "https://github.com",
+        message: "hmmmm..."
+    }
+    // get github commit time
+    try {
+        const gh = new GitHub();
+        const repo = gh.getRepo("danmun", "mernblog")
+        const commits  = await repo.listCommits()
+        const commit = commits.data[0]
+        const commitDetails = await repo.getCommit(commit.sha)
+        const commitDate = commitDetails.data.author.date
+        lastCommit.date = moment(commitDate).fromNow();
+        lastCommit.url = commitDetails.data.html_url;
+        lastCommit.message = commitDetails.data.message;
+    } catch (error) {
+        console.error("GitHub unavailable or rate limit exceeded.");
+    }
+
+    try {
+        res.send({lastPost, lastCommit});
     } catch (err) {
         res.status(500).send(err);
     }
