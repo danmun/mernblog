@@ -1,4 +1,5 @@
 let mongoose = require('mongoose');
+// note: if a field is not required:true, it will not show up in API responses until it specifically set on the model
 let PostSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,

@@ -21,6 +21,7 @@ dev_endpoints.js
 /.drawdeps
 blog_data.js
 dev_config.js
+migrations-config.json
 notes.txt
 TODO.txt
 
