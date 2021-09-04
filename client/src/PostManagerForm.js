@@ -336,20 +336,22 @@ class PostManagerForm extends React.Component {
                         label="Create album"
                     />
                 </div>
-                <div style={styles.extras.editDisplay.container}>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={this.state.displayEditDateChecked}
-                                onChange={this.handleShowDisplayEditDate}
-                                value="checkedB"
-                                color="primary"
-                                inputProps={styles.extras.editDisplay.inputProps}
-                            />
-                        }
-                        label="Display edit date on post page"
-                    />
-                </div>
+                {this.props.post &&
+                    <div style={styles.extras.editDisplay.container}>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={this.state.displayEditDateChecked}
+                                    onChange={this.handleShowDisplayEditDate}
+                                    value="checkedB"
+                                    color="primary"
+                                    inputProps={styles.extras.editDisplay.inputProps}
+                                />
+                            }
+                            label="Display edit date on post page"
+                        />
+                    </div>
+                }
             </div>
         );
     }
