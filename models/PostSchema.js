@@ -34,8 +34,7 @@ let PostSchema = new mongoose.Schema({
     },
     publishedAt: {
         type: Date,
-        required: true,
-        default: null
+        required: false
     },
     displayEditDate: {
         type: Boolean,
