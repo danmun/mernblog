@@ -43,8 +43,8 @@ const login = (req, res) => {
 
 // calls back with user obj if user is logged in
 const checkAuth = (req, res, next) => {
-    verifyToken(parseToken(req), function(username){
-        req.username = username ? username : null;
+    verifyToken(parseToken(req), function(user){
+        req.user = user;
         next();
     })
 }

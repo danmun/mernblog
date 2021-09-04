@@ -60,7 +60,7 @@ apiRouter.post('/login', login);
 
 apiRouter.get('/isAdmin', checkAuth, (req, res) => {
     res.send({
-        "isAdmin": !!req.username
+        "isAdmin": !!req.user
     })
 });
 
@@ -105,7 +105,7 @@ apiRouter.get('/about', async function (req, res) {
 });
 
 apiRouter.get('/seen', async function (req, res) {
-    const posts = await Post.find({}).sort({createdOn: -1});
+    const posts = await Post.find({}).sort({publishedAt: -1}).limit(1);
 
     const lastPost = {
         date: moment(posts[0].createdOn).fromNow(),
@@ -141,8 +141,8 @@ apiRouter.get('/seen', async function (req, res) {
 
 apiRouter.get('/gallery/album', checkAuth, async function (req, res) {
     // if user is not logged in, only send the album if it's not hidden
-    // req.username comes from the checkAuth middleware
-    let query = req.username ? {_id: req.query.id} : {hidden: false, _id: req.query.id};
+    // req.user comes from the checkAuth middleware
+    let query = req.user ? {_id: req.query.id} : {hidden: false, _id: req.query.id};
     let album = await Album.findOne(query);
     try {
         // TODO: if !album, send not found (implement a generic 404 mechanism)
@@ -154,7 +154,7 @@ apiRouter.get('/gallery/album', checkAuth, async function (req, res) {
 
 apiRouter.get('/gallery', checkAuth, async function (req, res) {
     // if not logged in, don't send hidden albums
-    const query = req.username ? {} : {hidden: false};
+    const query = req.user ? {} : {hidden: false};
     const sort = {createdOn: -1};
     let albums = await Album.find(query).sort(sort);
     try {

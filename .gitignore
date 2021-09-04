@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/client/node_modules
 /.pnp
 .pnp.js
 
@@ -21,7 +22,7 @@ dev_endpoints.js
 /.drawdeps
 blog_data.js
 dev_config.js
-migrations-config.json
+/migrations/config
 notes.txt
 TODO.txt
 
