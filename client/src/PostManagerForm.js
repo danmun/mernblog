@@ -63,13 +63,11 @@ class PostManagerForm extends React.Component {
         let selectedDateChecked = false;
         let createAlbumChecked = false;
         let displayEditDateChecked = false;
-        let showDisplayEditDate = false;
         let albumTitle = null;
         let title = "";
         let tags = "";
 
         if (props.post != null) {
-            showDisplayEditDate = true;
             postId = props.post._id;
             displayEditDateChecked = props.post.displayEditDate;
             let content = htmlToDraft(props.post.html);
@@ -85,7 +83,6 @@ class PostManagerForm extends React.Component {
         this.state = {
             postId: postId,
             title: title, // textfield value
-            showDisplayEditDate: showDisplayEditDate,
             displayEditDateChecked: displayEditDateChecked,
             selectedDate: selectedDate,
             selectedDateChecked: selectedDateChecked,
@@ -343,7 +340,7 @@ class PostManagerForm extends React.Component {
                                 <Checkbox
                                     checked={this.state.displayEditDateChecked}
                                     onChange={this.handleShowDisplayEditDate}
-                                    value="checkedB"
+                                    value="checked"
                                     color="primary"
                                     inputProps={styles.extras.editDisplay.inputProps}
                                 />
