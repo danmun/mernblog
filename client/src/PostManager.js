@@ -4,6 +4,7 @@ import draftToHtml from "draftjs-to-html";
 import PostManagerForm from "./PostManagerForm";
 import { getImgurClientId } from "./api/auth";
 import PropTypes from 'prop-types';
+import {createPost, editPost} from "./api/posts";
 
 // TODO: rename to PostEditor and PostEditorForm
 class PostManager extends React.Component {
@@ -13,6 +14,9 @@ class PostManager extends React.Component {
         this.uploadImageCallback = this.uploadImageCallback.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
         this.getPhotosFromRawContent = this.getPhotosFromRawContent.bind(this);
+
+        this.submitCreatePost = this.submitCreatePost.bind(this);
+        this.submitEditPost = this.submitEditPost.bind(this);
     }
 
     // TODO/FIXME: if post edited from post view, then return to feed, the feed still shows the old version of the post
@@ -92,9 +96,9 @@ class PostManager extends React.Component {
         };
 
         if (post.id === null || post.id.trim().length === 0) {
-            this.props.onCreate(post)
+            this.submitCreatePost(post)
         } else {
-            this.props.onEdit(post)
+            this.submitEditPost(post)
         }
     }
 
@@ -157,6 +161,18 @@ class PostManager extends React.Component {
         });
     }
 
+    submitCreatePost(post){
+        createPost(post).then((json) => {
+            this.props.onCreated()
+        });
+    }
+
+    submitEditPost(post) {
+        editPost(post).then((json) => {
+            this.props.onEdited(json.post);
+        });
+    }
+
     render() {
         // unfortunately the image tool of the editor library uses the link of the image to display it in the little image
         // box during editing... even if we choose the file option instead of the link option, it will wait for the file
@@ -172,8 +188,8 @@ class PostManager extends React.Component {
 }
 
 PostManager.propTypes = {
-    onCreate: PropTypes.func,
-    onEdit: PropTypes.func,
+    onCreated: PropTypes.func,
+    onEdited: PropTypes.func,
     post: PropTypes.object
 }
 

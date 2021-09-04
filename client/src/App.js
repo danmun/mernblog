@@ -23,7 +23,6 @@ import Button from "@material-ui/core/Button";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import CircularProgressButton from "./CircularProgressButton";
 import { Icon } from "@material-ui/core";
-import {createPost, editPost} from "./api/posts";
 
 export const PAGES = {
     FEED: 1,
@@ -89,8 +88,8 @@ class App extends React.Component {
         this.openPostManager = this.openPostManager.bind(this);
         this.closeDeletePost = this.closeDeletePost.bind(this);
         this.closePostManager = this.closePostManager.bind(this);
-        this.submitCreatePost = this.submitCreatePost.bind(this);
-        this.submitEditPost = this.submitEditPost.bind(this);
+        this.onPostCreated = this.onPostCreated.bind(this);
+        this.onPostEdited = this.onPostEdited.bind(this);
 
         this.openCreateAlbum = this.openCreateAlbum.bind(this);
         this.submitAlbum = this.submitAlbum.bind(this);
@@ -212,16 +211,12 @@ class App extends React.Component {
         this.props.history.push("/");
     }
 
-    submitCreatePost(post) {
-        createPost(post).then((json) => {
-            return this.closePostManager(true, null); // signal to setRefreshFeed
-        });
+    onPostCreated() {
+        return this.closePostManager(true, null); // signal to setRefreshFeed
     }
 
-    submitEditPost(post) {
-        editPost(post).then((json) => {
-            return this.closePostManager(true, json.post);
-        });
+    onPostEdited(post) {
+        return this.closePostManager(true, post);
     }
 
     closePostManager(stateChanged, editedPost) {
@@ -518,7 +513,7 @@ class App extends React.Component {
                 <div>
                     {/* Solving this with Routes is more complicated and creates just as much fog, while also requires touching the Switch too*/}
                     <AdminModal title={modal.title} open={modal.open} dispose={() => this.closePostManager(false, null)}>
-                        {modal.postCreation && <PostManager onCreate={this.submitCreatePost} onEdit={this.submitEditPost} post={modal.post}/>}
+                        {modal.postCreation && <PostManager onCreated={this.onPostCreated} onEdited={this.onPostEdited} post={modal.post}/>}
                         {modal.galleryCreation && <CreateAlbum onCreate={this.submitAlbum}/>}
                         {/*{modal.galleryCreation && <PhotoPreviewPane onCreate={this.submitAlbum}/>}*/}
                         {modal.postDeletion && <DeleteConfirmation onConfirm={this.closeDeletePost} toDelete={modal.post}/>}
