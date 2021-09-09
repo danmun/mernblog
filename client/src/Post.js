@@ -25,12 +25,18 @@ import PropTypes from 'prop-types';
 class Post extends React.Component {
     constructor(props) {
         super(props);
+        // TODO:CLEANUP state can be simplified to {post, editorState, error},
+        //              other info is probably available from the post object,
+        //              check what info is contained in post when we
+        //                      - use fetchPost in componentDidMount
+        //                      - pass the post via props when we do <Post ...> in App.js
         this.state = {
             editorState: null,
             post: null,
             title: "",
             editedOn: "",
             createdOn: "",
+            publishedAt: "",
             error: null,
         };
 
@@ -38,6 +44,7 @@ class Post extends React.Component {
         this.renderDeleteIcon = this.renderDeleteIcon.bind(this);
         this.renderEditIcon = this.renderEditIcon.bind(this);
         this.showPost = this.showPost.bind(this);
+        this.postDateComponent = this.postDateComponent.bind(this);
     }
 
     componentDidMount() {
@@ -69,9 +76,12 @@ class Post extends React.Component {
 
         let title = post.title
         let createdOn = new Date(post.createdOn).toLocaleString()
+        let publishedAt = post.publishedAt ? new Date(post.publishedAt).toLocaleString() : null
+        // TODO:CLEANUP why don't we just use createdOn from post, why need to put it separately?
+        //              (we add publishedAt in the same manner for consistency for now, tidy up later)
         let editedOn = post.displayEditDate ? (post.editedOn ? new Date(post.editedOn).toLocaleString() : null) : null
 
-        return { post, editorState, title, createdOn, editedOn };
+        return { post, editorState, title, createdOn, publishedAt, editedOn };
     }
 
     renderEditIcon() {
@@ -101,6 +111,14 @@ class Post extends React.Component {
         );
     }
 
+    postDateComponent(postDateText){
+        return(
+            <Typography component="p">
+                {postDateText}
+            </Typography>
+        )
+    }
+
     showPost(editor) {
         const { classes } = this.props;
         return (
@@ -114,6 +132,7 @@ class Post extends React.Component {
                             <Button
                                 onClick={() => this.props.readPost("prev", editor.post)}
                                 style={styles.title.nav.button}
+                                // TODO:CLEANUP headingButton doesn't exist
                                 className={classes.headingButton}
                                 variant="outlined"
                             >
@@ -138,12 +157,9 @@ class Post extends React.Component {
                                     <Typography variant="h5" component="h3">
                                         {editor.title}
                                     </Typography>
-                                    {/* if createdOn exists, show it*/}
-                                    {editor.createdOn && (
-                                        <Typography component="p">
-                                            {editor.createdOn}
-                                        </Typography>
-                                    )}
+                                    {/* if createdOn exists, show it */}
+                                    {/* TODO:CLEANUP refactor once initPost is refactored (use dates from post instead of return obj of initPost */}
+                                    {editor.publishedAt ? this.postDateComponent(editor.publishedAt) : this.postDateComponent("DRAFT")}
                                     {editor.editedOn && (
                                         <Typography
                                             component="p"

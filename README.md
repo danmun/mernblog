@@ -16,9 +16,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Running on local
 
 ### Node API + React on single server
-
-Run the Node API server on `localhost:4000` (defined in `server.js`) serving the React app from `client/build/`.
 This option is good for testing the currently deployed system and the routing system itself.
+
+On windows, run `start.bat` in a command prompt to run the frontend+backend served on localhost:4000. The React app is served from the `client/build` directory.
+To execute commands individually, see steps below.
+
 ```
 cd mernblog
 npm install
@@ -27,7 +29,7 @@ cd client/
 npm install
 npm run-script build
 ```
-Although the Node server will restart automatically on code and file changes, the React app needs to be rebuilt with `npm run-script build` to test changes.
+Although the Node server will restart automatically on code and file changes, the React app needs to be rebuilt with `npm run-script build` after any code changes.
 
 ### Node API + React on separate servers
 

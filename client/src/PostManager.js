@@ -21,7 +21,7 @@ class PostManager extends React.Component {
 
     // TODO/FIXME: if post edited from post view, then return to feed, the feed still shows the old version of the post
     // TODO: onSubmit, if edited content same as before, don't submit, just exit the modal
-    handleSubmit(form) {
+    handleSubmit(form, isDraft) {
         let {
             editorState,
             postId,
@@ -54,10 +54,9 @@ class PostManager extends React.Component {
             plaintext = rawContent.blocks[0].text;
         }
 
-        // if post date is not modified, post creation date should be the time when
-        // the user presses the submit button not when they start creating the post
+        // post date will be set by backend unless customized by user
         if (!selectedDateChecked) {
-            selectedDate = Date.now();
+            selectedDate = null;
         }
 
         let photos = this.getPhotosFromRawContent(rawContent);
@@ -71,6 +70,14 @@ class PostManager extends React.Component {
 
             // if checked, the album will be immediately visible in Gallery page
             // otherwise admin will have to set it visible (unhidden) on gallery page using edit gallery
+            // TODO:CLEANUP simplify to album.hidden = !createAlbumChecked
+            //              but idealy, either
+            //                  - rename createAlbumChecked or refactor logic in PostManagerForm to directly match
+            //                    the logic of the field in the database model (album.hidden)
+            //                    e.g. createHiddenAlbum instead of createAlbum checked => album.hidden = createHiddenAlbum
+            //                    OR
+            //                  - rename the field on the db model to match the form input,
+            //                    e.g. album.public instead of album.hidden => album.public = createAlbumChecked
             if (createAlbumChecked) {
                 album.hidden = false;
             } else {
@@ -79,7 +86,7 @@ class PostManager extends React.Component {
         }
 
         // all three fields must contain data, we have already checked for the html field earler
-        // TODO: change this mechanic to disable post-button while any data missing
+        // TODO:CLEANUP change this mechanic to disable post-button while any data missing
         if (!tags || !title) {
             return;
         }
@@ -96,9 +103,9 @@ class PostManager extends React.Component {
         };
 
         if (post.id === null || post.id.trim().length === 0) {
-            this.submitCreatePost(post)
+            this.submitCreatePost(post, isDraft)
         } else {
-            this.submitEditPost(post)
+            this.submitEditPost(post, isDraft)
         }
     }
 
@@ -161,14 +168,14 @@ class PostManager extends React.Component {
         });
     }
 
-    submitCreatePost(post){
-        createPost(post).then((json) => {
+    submitCreatePost(post, isDraft){
+        createPost(post, isDraft).then((json) => {
             this.props.onCreated()
         });
     }
 
-    submitEditPost(post) {
-        editPost(post).then((json) => {
+    submitEditPost(post, isDraft) {
+        editPost(post, isDraft).then((json) => {
             this.props.onEdited(json.post);
         });
     }

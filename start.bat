@@ -1,0 +1,1 @@
+npm --prefix ./client run-script build && nodemon server.js

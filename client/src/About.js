@@ -61,8 +61,8 @@ function About(props) {
                 >
                      {/*TODO: issue: outdated usage of PostManager -- under construction*/}
                     <PostManager
-                        onCreate={submitCreateAbout}
-                        onEdit={submitEditAbout}
+                        onCreated={submitCreateAbout}
+                        onEdited={submitEditAbout}
                         post={modal.editingPost}
                     />
                 </AdminModal>

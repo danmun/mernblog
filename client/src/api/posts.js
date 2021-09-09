@@ -8,8 +8,8 @@ export async function fetchPost(id) {
         .then((json) => json);
 }
 
-export async function createPost(post) {
-    return fetch(`${baseUrl}/post`, {
+export async function createPost(post, draft) {
+    return fetch(`${baseUrl}/post?draft=${draft}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),
@@ -18,8 +18,8 @@ export async function createPost(post) {
     });
 }
 
-export async function editPost(post) {
-    return await fetch(`${baseUrl}/edit?id=${post.id}`, {
+export async function editPost(post, draft) {
+    return await fetch(`${baseUrl}/edit?id=${post.id}&draft=${draft}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),

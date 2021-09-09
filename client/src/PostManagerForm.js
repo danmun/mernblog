@@ -111,9 +111,13 @@ class PostManagerForm extends React.Component {
         this.editorToolbarProps = this.editorToolbarProps.bind(this);
         this.tagsComponent = this.tagsComponent.bind(this);
         this.extrasComponent = this.extrasComponent.bind(this);
+        this.editModeButtons = this.editModeButtons.bind(this);
+        this.postModeButtons = this.postModeButtons.bind(this);
 
         this.renderStandard = this.renderStandard.bind(this);
         this.renderResponsive = this.renderResponsive.bind(this);
+
+        this.doSubmit = this.doSubmit.bind(this);
     }
 
     handleDateChange(date) {
@@ -353,6 +357,79 @@ class PostManagerForm extends React.Component {
         );
     }
 
+    // this trickles all the way up to App.js: PostManagerForm.js -> PostManager.js -> App.js
+    doSubmit(isDraft){
+        this.props.onSubmit(this.state, isDraft)
+    }
+
+    postModeButtons(){
+        return(
+            <React.Fragment>
+                <Button
+                    onClick={() => this.doSubmit(false)}
+                    variant="contained"
+                    color="primary"
+                    style={styles.nonResponsive.button.halfWidth}
+                >
+                    Publish post
+                    <Icon>send</Icon>
+                </Button>
+                <Button
+                    onClick={() => this.doSubmit(true)}
+                    variant="outlined"
+                    color="primary"
+                    style={styles.nonResponsive.button.halfWidth}
+                >
+                    Create draft
+                    <Icon>send</Icon>
+                </Button>
+            </React.Fragment>
+        )
+    }
+
+    editModeButtons(){
+        // if publishedAt exists, post is not a draft
+        if(this.props.post.publishedAt){
+            return(
+                <React.Fragment>
+                    <Button
+                        onClick={() => this.doSubmit(false)}
+                        variant="contained"
+                        color="primary"
+                        style={styles.nonResponsive.button.fullWidth}
+                    >
+                        Save post
+                        <Icon>send</Icon>
+                    </Button>
+                </React.Fragment>
+            )
+        }else{
+            // post is a draft
+            return(
+                <React.Fragment>
+                    <Button
+                        onClick={() => this.doSubmit(false)}
+                        variant="contained"
+                        color="primary"
+                        style={styles.nonResponsive.button.halfWidth}
+                    >
+                        Publish post
+                        <Icon>send</Icon>
+                    </Button>
+                    <Button
+                        onClick={() => this.doSubmit(true)}
+                        variant="outlined"
+                        color="primary"
+                        style={styles.nonResponsive.button.halfWidth}
+                    >
+                        Save draft
+                        <Icon>send</Icon>
+                    </Button>
+                </React.Fragment>
+            )
+        }
+    }
+
     renderResponsive() {
         const classes = {
             imagePopup: "wysiwyg-editor-image-popup-responsive",
@@ -410,6 +487,8 @@ class PostManagerForm extends React.Component {
             editor: "wysiwyg-editor",
         };
 
+        const editMode = this.props.post !== null;
+
         return (
             <React.Fragment>
                 <Grid item style={styles.nonResponsive.containers}>
@@ -429,15 +508,7 @@ class PostManagerForm extends React.Component {
                 </Grid>
 
                 <Grid item style={styles.nonResponsive.containers}>
-                    <Button
-                        onClick={() => this.props.onSubmit(this.state)}
-                        variant="contained"
-                        color="primary"
-                        style={styles.nonResponsive.button}
-                    >
-                        Post
-                        <Icon>send</Icon>
-                    </Button>
+                    {editMode ? this.editModeButtons() : this.postModeButtons()}
                 </Grid>
             </React.Fragment>
         );
@@ -489,7 +560,12 @@ const styles = {
             width: "100%",
         },
         button: {
-            width: "100%",
+            fullWidth: {
+                width: "100%"
+            },
+            halfWidth: {
+                width: "50%",
+            }
         },
     },
     main: {

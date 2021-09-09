@@ -110,6 +110,12 @@ class Feed extends React.Component {
         );
     }
 
+    /**
+     * In admin, we sort by createdOn but display publishedDate if available.
+     * This might be confusing in extreme cases (e.g. 2 posts with same creation date but different publish dates).
+     * Note, it is near impossible, and very unusual to create 2 posts at the exact same time.
+     * @returns {JSX.Element}
+     */
     showFeed() {
         let posts = this.state.posts;
         if (posts.length === 0) {
@@ -124,12 +130,15 @@ class Feed extends React.Component {
             return (
                 <React.Fragment>
                     {this.state.posts.map((post, posti) => {
+                        const date = post.publishedAt ? new Date(post.publishedAt).toLocaleString() : "DRAFT";
+                        const style = post.publishedAt ? {} : {opacity: 0.5};
+                        const readLabel = post.publishedAt ? "Read post" : "Read draft";
                         return (
                             <div key={"post" + posti + "_" + post.createdOn}>
-                                <Card>
+                                <Card style={style}>
                                     <CardContent>
                                         <Typography color="textSecondary" gutterBottom>
-                                            {new Date(post.createdOn).toLocaleString()}
+                                            {date}
                                         </Typography>
                                         <Typography variant="h5" component="h2">
                                             {post.title}
@@ -150,7 +159,7 @@ class Feed extends React.Component {
                                                     size="small"
                                                     onClick={() => this.props.readPost("next", post)}
                                                 >
-                                                    Read post
+                                                    {readLabel}
                                                 </Button>
                                             </Grid>
                                             <Grid item>
