@@ -4,7 +4,7 @@ const STRINGS = require('./locale/en').STRINGS
 
 /**
  * Post controllers.
- * It is assumed that most of some controllers functions are preceded by middleware that handle authn/authz
+ * It is assumed that some of these controllers functions are preceded by middleware that handle authn/authz
  * and the insertion of the user object into the request context (req.user).
  */
 
