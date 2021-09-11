@@ -1,5 +1,5 @@
 const About = require('../../models/PostSchema').About;
-const STRINGS = require('./locale/en').STRINGS
+const STRINGS = require('../../locale/en').STRINGS
 
 const create = async (req, res) => {
     const post = new About(About.fromRequest(req.user._id, req.body, false));

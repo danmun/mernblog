@@ -2,7 +2,7 @@
 // (e.g. sign up, update profile, etc...)
 const jwt = require('jsonwebtoken');
 const User = require('../../models/UserSchema');
-const STRINGS = require('./locale/en').STRINGS;
+const STRINGS = require('../../locale/en').STRINGS;
 const DEFAULT_SECRET = "not_so_secret"
 const secret = process.env.SECRET || DEFAULT_SECRET;
 if(secret === DEFAULT_SECRET){
