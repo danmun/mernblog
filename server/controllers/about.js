@@ -1,4 +1,4 @@
-const About = require('./models/PostSchema').About;
+const About = require('../../models/PostSchema').About;
 const STRINGS = require('./locale/en').STRINGS
 
 const create = async (req, res) => {

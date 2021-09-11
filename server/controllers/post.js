@@ -1,5 +1,5 @@
-const Post = require('./models/PostSchema').Post;
-const Album = require('./models/AlbumSchema');
+const Post = require('../../models/PostSchema').Post;
+const Album = require('../../models/AlbumSchema');
 const STRINGS = require('./locale/en').STRINGS
 
 /**

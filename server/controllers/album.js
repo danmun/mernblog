@@ -1,4 +1,4 @@
-const Album = require('./models/AlbumSchema');
+const Album = require('../../models/AlbumSchema');
 
 const index = async (req, res) => {
     // req.user is provided by auth middleware

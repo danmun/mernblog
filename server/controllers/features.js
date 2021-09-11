@@ -1,4 +1,4 @@
-const Post = require('./models/PostSchema').Post;
+const Post = require('../../models/PostSchema').Post;
 const GitHub = require('github-api');
 const moment = require('moment');
 

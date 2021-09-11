@@ -1,7 +1,7 @@
 // NOTE: Consider creating separate user and auth controllers once more extensive operations are implemented on the User
 // (e.g. sign up, update profile, etc...)
 const jwt = require('jsonwebtoken');
-const User = require('./models/UserSchema');
+const User = require('../../models/UserSchema');
 const STRINGS = require('./locale/en').STRINGS;
 const DEFAULT_SECRET = "not_so_secret"
 const secret = process.env.SECRET || DEFAULT_SECRET;
