@@ -48,6 +48,19 @@ let PostSchema = new mongoose.Schema({
     }
 });
 
+PostSchema.statics.fromRequest = function(userId, form, draft){
+    const {title, html, date, plaintext, tags} = form;
+    return {
+            user: userId,
+            title: title,
+            html: html,
+            plaintext: plaintext,
+            tags: tags,
+            publishedAt: draft ? null : (date ? date : Date.now()),
+            numComments: "0"
+    }
+}
+
 const Post = mongoose.model('Post', PostSchema);
 const About = mongoose.model('About', PostSchema);
 module.exports = {

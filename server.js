@@ -4,7 +4,7 @@ const path = require('path');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const api = require('./api');
+const api = require('./server/routes/api');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -39,10 +39,7 @@ app.use(express.static(path.join(__dirname, "photos")));
 app.use(cookieParser());
 app.set('json spaces', 2);
 
-//TODO: change res.statusCode === 200 to req.loggedin
-
 app.use('/api', api);
-
 // should always be last route in this file
 // so that it catches non-api routes (e.g. request to load the spa)
 app.get("*", (req, res) => {
