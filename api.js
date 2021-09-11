@@ -88,8 +88,9 @@ apiRouter.get('/feed', checkAuth, async function (req, res) {
     }
 });
 
-apiRouter.get('/post', async function (req, res) {
-    const post = await Post.findOne({_id: req.query.id});
+apiRouter.get('/post', checkAuth, async function (req, res) {
+    const {id} = req.query;
+    const post = req.user ? await Post.findOne({_id: id}) : await Post.findOne({_id: id, publishedAt: {$ne: null}});
     if(post){
         try {
             res.send(post);
@@ -98,7 +99,7 @@ apiRouter.get('/post', async function (req, res) {
         }
     }else{
         try {
-            res.status(404).send({error: "This post no longer exists."})
+            res.status(404).send({error: STRINGS.ITEM_NOT_FOUND})
         } catch (err) {
             res.status(500).send(err);
         }
@@ -204,7 +205,7 @@ apiRouter.post('/post', enforceAuth, async (req, res) => {
     }
 });
 
-apiRouter.post('/postAbout', enforceAuth, async (req, res) => {
+apiRouter.post('/about', enforceAuth, async (req, res) => {
     let about = constructPost(req.user, req.body);
     const post = new About(about);
     try {
@@ -215,7 +216,7 @@ apiRouter.post('/postAbout', enforceAuth, async (req, res) => {
     }
 });
 
-apiRouter.put('/edit', enforceAuth, async (req, res) => {
+apiRouter.put('/post', enforceAuth, async (req, res) => {
     const postId = req.query.id;
     // NOTE: query params are STRINGS!!
     // e.g. req.query.draft is not a boolean, it is a string, so !isDraft did not work
@@ -262,7 +263,7 @@ apiRouter.put('/edit', enforceAuth, async (req, res) => {
     //  Editing albums should be started from the Album page/endpoint.
 });
 
-apiRouter.put('/editAbout', enforceAuth, async (req, res) => {
+apiRouter.put('/about', enforceAuth, async (req, res) => {
     const postId = req.query.id;
     const newPost = req.body;
     delete newPost['id'];
@@ -294,7 +295,7 @@ apiRouter.put('/editAbout', enforceAuth, async (req, res) => {
 });
 
 // TODO:CLEANUP rename /delete to /post, this should be a route for .delete('/post')
-apiRouter.delete('/delete', enforceAuth, async (req, res) => {
+apiRouter.delete('/post', enforceAuth, async (req, res) => {
     const postId = req.query.id;
     Post.remove({ _id: postId }, function(err) {
         if (!err) {

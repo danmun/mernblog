@@ -1,6 +1,7 @@
 const STRINGS = {
     REGISTER_SUCCESS: "Successfully registered!",
     LOGOUT_FAILURE: "You are not logged in so please don't try to log out.",
+    LOGOUT_SUCCESS: "Successfully logged out!",
     LOGIN_FAILURE : "Incorrect username or password.",
     LOGIN_SUCCESS: "Successfully logged in!",
 
@@ -21,7 +22,9 @@ const STRINGS = {
     EDITABOUT_AUTH_FAILURE: "You must log in to edit the About section.",
     EDITABOUT_FAILURE: "Something has gone wrong while editing the About page.",
 
-    SERVER_ERROR: 'Server error. Please try again later.'
+    SERVER_ERROR: 'Server error. Please try again later.',
+    INVALID_ID: 'The provided ID is malformed.',
+    ITEM_NOT_FOUND: 'The requested item was not found.'
 }
 
 module.exports = {

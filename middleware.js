@@ -9,6 +9,7 @@ const logout = (req, res) => {
     if(res.statusCode === 401){
         res.status(401).send(STRINGS.LOGOUT_FAILURE);
     }else{
+        // TODO:CLEANUP don't just clear the cookie, invalidate the token to prevent replay attack
         res.clearCookie("token", { httpOnly: true }).status(200).send("Successfully logged out!");
     }
 }

@@ -7,7 +7,7 @@ export async function fetchAbout() {
 }
 
 export async function editAbout(post) {
-    return await fetch(`${baseUrl}/editAbout?id=${post.id}`, {
+    return await fetch(`${baseUrl}/about?id=${post.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),
@@ -17,7 +17,7 @@ export async function editAbout(post) {
 }
 
 export async function createAbout(post) {
-    return await fetch(`${baseUrl}/postAbout`, {
+    return await fetch(`${baseUrl}/about`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),

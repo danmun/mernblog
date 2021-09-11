@@ -19,7 +19,7 @@ export async function createPost(post, draft) {
 }
 
 export async function editPost(post, draft) {
-    return await fetch(`${baseUrl}/edit?id=${post.id}&draft=${draft}`, {
+    return await fetch(`${baseUrl}/post?id=${post.id}&draft=${draft}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),
@@ -29,7 +29,7 @@ export async function editPost(post, draft) {
 }
 
 export async function deletePost(post) {
-    return await fetch(`${baseUrl}/delete?id=${post._id}`, {
+    return await fetch(`${baseUrl}/post?id=${post._id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),
