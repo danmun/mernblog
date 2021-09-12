@@ -21,30 +21,23 @@ import AlertBox, { variants } from "./AlertBox";
 import { fetchPost } from "./api/posts";
 import PropTypes from 'prop-types';
 
-// props: post, onEdit, onDelete, readPost
 class Post extends React.Component {
     constructor(props) {
         super(props);
-        // TODO:CLEANUP state can be simplified to {post, editorState, error},
-        //              other info is probably available from the post object,
-        //              check what info is contained in post when we
-        //                      - use fetchPost in componentDidMount
-        //                      - pass the post via props when we do <Post ...> in App.js
+
         this.state = {
             editorState: null,
             post: null,
-            title: "",
-            editedOn: "",
-            createdOn: "",
-            publishedAt: "",
             error: null,
         };
 
-        this.initPost = this.initPost.bind(this);
+        this.initEditor = this.initEditor.bind(this);
         this.renderDeleteIcon = this.renderDeleteIcon.bind(this);
         this.renderEditIcon = this.renderEditIcon.bind(this);
         this.showPost = this.showPost.bind(this);
-        this.postDateComponent = this.postDateComponent.bind(this);
+        this.publishedDateComponent = this.publishedDateComponent.bind(this);
+        this.editedDateComponent = this.editedDateComponent.bind(this);
+        this.dateToStr = this.dateToStr.bind(this);
     }
 
     componentDidMount() {
@@ -53,19 +46,13 @@ class Post extends React.Component {
                 if (json.error) {
                     this.setState({ error: json.error });
                 } else {
-                    this.setState(this.initPost(json));
+                    this.setState(this.initEditor(json));
                 }
             });
         }
     }
 
-    initPost(post) {
-        let content = htmlToDraft(post.html);
-
-        let editorState = EditorState.createWithContent(
-            ContentState.createFromBlockArray(content.contentBlocks)
-        );
-
+    initEditor(post) {
         // const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1000px)' })
         // const classes = useStyles();
         // let postDimensions = {
@@ -74,18 +61,22 @@ class Post extends React.Component {
         //     width: isTabletOrMobile ? "100%" : "70%"
         // }
 
-        let title = post.title
-        let createdOn = new Date(post.createdOn).toLocaleString()
-        let publishedAt = post.publishedAt ? new Date(post.publishedAt).toLocaleString() : null
-        // TODO:CLEANUP why don't we just use createdOn from post, why need to put it separately?
-        //              (we add publishedAt in the same manner for consistency for now, tidy up later)
-        let editedOn = post.displayEditDate ? (post.editedOn ? new Date(post.editedOn).toLocaleString() : null) : null
+        const error = null;
+        let content = htmlToDraft(post.html);
 
-        return { post, editorState, title, createdOn, publishedAt, editedOn };
+        let editorState = EditorState.createWithContent(
+            ContentState.createFromBlockArray(content.contentBlocks)
+        );
+
+        // make dates human readable - mutates the original Post object received from backend
+        post.publishedAt = post.publishedAt ? this.dateToStr(post.publishedAt) : "DRAFT"
+        post.editedOn = post.editedOn && post.displayEditDate ? this.dateToStr(post.editedOn) : null;
+
+        return { post, editorState, error };
     }
 
     renderEditIcon() {
-        const post = this.props.post ? this.props.post : this.state.post;
+        const post = this.props.post || this.state.post;
         return (
             <IconButton
                 edge="start"
@@ -97,9 +88,8 @@ class Post extends React.Component {
         );
     }
 
-    // can't use this.props.post because it might be null (e.g. if it came from a shared URL)
     renderDeleteIcon() {
-        const post = this.props.post ? this.props.post : this.state.post;
+        const post = this.props.post || this.state.post;
         return (
             <IconButton
                 edge="start"
@@ -111,12 +101,20 @@ class Post extends React.Component {
         );
     }
 
-    postDateComponent(postDateText){
+    publishedDateComponent(publishedDateText){
         return(
             <Typography component="p">
-                {postDateText}
+                {publishedDateText}
             </Typography>
-        )
+        );
+    }
+    
+    editedDateComponent(editedDateText){
+        return(
+            <Typography component="p" style={styles.title.details.edited}>
+                {"Edited: " + editedDateText}
+            </Typography>
+        );
     }
 
     showPost(editor) {
@@ -132,8 +130,6 @@ class Post extends React.Component {
                             <Button
                                 onClick={() => this.props.readPost("prev", editor.post)}
                                 style={styles.title.nav.button}
-                                // TODO:CLEANUP headingButton doesn't exist
-                                className={classes.headingButton}
                                 variant="outlined"
                             >
                                 <ArrowBack />
@@ -155,24 +151,14 @@ class Post extends React.Component {
                             >
                                 <Grid item>
                                     <Typography variant="h5" component="h3">
-                                        {editor.title}
+                                        {editor.post.title}
                                     </Typography>
-                                    {/* if createdOn exists, show it */}
-                                    {/* TODO:CLEANUP refactor once initPost is refactored (use dates from post instead of return obj of initPost */}
-                                    {editor.publishedAt ? this.postDateComponent(editor.publishedAt) : this.postDateComponent("DRAFT")}
-                                    {editor.editedOn && (
-                                        <Typography
-                                            component="p"
-                                            style={styles.title.details.edited}
-                                        >
-                                            {"Edited: " + editor.editedOn}
-                                        </Typography>
-                                    )}
+                                    {this.publishedDateComponent(editor.post.publishedAt)}
+                                    {editor.post.editedOn && this.editedDateComponent(editor.post.editedOn)}
                                 </Grid>
                                 <Grid item>
                                     {this.props.onEdit && this.renderEditIcon()}
-                                    {this.props.onDelete &&
-                                        this.renderDeleteIcon()}
+                                    {this.props.onDelete && this.renderDeleteIcon()}
                                 </Grid>
                             </Grid>
                         </Paper>
@@ -201,13 +187,28 @@ class Post extends React.Component {
         );
     }
 
+    dateToStr(date){
+        return new Date(date).toLocaleString();
+    }
+
     render() {
-        const { post } = this.props;
-        // if page loaded via link, fetch it and use state, otherwise load the passed post (coming from feed)
-        const editor = post ? this.initPost(post) : this.state;
-        return (
-            <React.Fragment>
-                {editor.error ? (
+        // if post in props, it's coming from the feed
+        // if post in state, it's coming from URL visit
+        const {post} = this.props;
+        let editor = null;
+        if(post){
+            // editor is created "in memory"
+            editor = this.initEditor(post);
+        }else{
+            // editor is taken from "state"
+            editor = this.state;
+        }
+
+        if(editor.post){
+            return this.showPost(editor);
+        }else if(editor.error){
+            return(
+                <React.Fragment>
                     <div style={styles.alert.container}>
                         <AlertBox
                             open={true}
@@ -215,13 +216,11 @@ class Post extends React.Component {
                             message={editor.error}
                         />
                     </div>
-                ) : editor.editorState ? (
-                    this.showPost(editor)
-                ) : (
-                    <Spinner />
-                )}
-            </React.Fragment>
-        );
+                </React.Fragment>
+            );
+        }else{
+            return(<Spinner/>);
+        }
     }
 }
 
