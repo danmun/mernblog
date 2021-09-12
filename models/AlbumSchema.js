@@ -1,14 +1,12 @@
 let mongoose = require('mongoose');
 let AlbumSchema = new mongoose.Schema({
-    // TODO:CLEANUP change to mongoose.Schema.Types.ObjectId, create migration
     user: {
-        type: Number, // the user id whom the app belongs to, could be remodelled later
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
         trim: true
     },
-    // TODO:CLEANUP change to mongoose.Schema.Types.ObjectId, create migration
     post: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: false
     },
     title: {
