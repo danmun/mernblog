@@ -68,10 +68,6 @@ class Post extends React.Component {
             ContentState.createFromBlockArray(content.contentBlocks)
         );
 
-        // make dates human readable - mutates the original Post object received from backend
-        post.publishedAt = post.publishedAt ? this.dateToStr(post.publishedAt) : "DRAFT"
-        post.editedOn = post.editedOn && post.displayEditDate ? this.dateToStr(post.editedOn) : null;
-
         return { post, editorState, error };
     }
 
@@ -101,18 +97,19 @@ class Post extends React.Component {
         );
     }
 
-    publishedDateComponent(publishedDateText){
+    publishedDateComponent(date){
+        const text = date ? this.dateToStr(date) : "DRAFT"
         return(
             <Typography component="p">
-                {publishedDateText}
+                {text}
             </Typography>
         );
     }
     
-    editedDateComponent(editedDateText){
+    editedDateComponent(date){
         return(
             <Typography component="p" style={styles.title.details.edited}>
-                {"Edited: " + editedDateText}
+                {"Edited: " + this.dateToStr(date)}
             </Typography>
         );
     }
@@ -154,7 +151,7 @@ class Post extends React.Component {
                                         {editor.post.title}
                                     </Typography>
                                     {this.publishedDateComponent(editor.post.publishedAt)}
-                                    {editor.post.editedOn && this.editedDateComponent(editor.post.editedOn)}
+                                    {(editor.post.editedOn && editor.post.displayEditDate) && this.editedDateComponent(editor.post.editedOn)}
                                 </Grid>
                                 <Grid item>
                                     {this.props.onEdit && this.renderEditIcon()}
