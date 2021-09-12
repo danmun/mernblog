@@ -19,7 +19,7 @@ let PostSchema = new mongoose.Schema({
         required: true,
     },
     tags: {
-        type : Array ,
+        type : Array,
         default : [],
         required: true,
     },
