@@ -52,7 +52,6 @@ function AdminModal(props) {
                                             style={style.modal.title.button}
                                             edge="start"
                                             onClick={props.dispose}
-                                            // className={classes.menuButton}
                                         >
                                             <CancelIcon />
                                         </IconButton>

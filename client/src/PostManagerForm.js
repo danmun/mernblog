@@ -7,6 +7,7 @@ import { EditorState } from "draft-js";
 import { ContentState } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
 import DateFnsUtils from "@date-io/date-fns";
+import { withStyles } from "@material-ui/core/styles";
 import {
     TextField,
     Grid,
@@ -113,6 +114,7 @@ class PostManagerForm extends React.Component {
         this.extrasComponent = this.extrasComponent.bind(this);
         this.editModeButtons = this.editModeButtons.bind(this);
         this.postModeButtons = this.postModeButtons.bind(this);
+        this.submitButton = this.submitButton.bind(this);
 
         this.renderStandard = this.renderStandard.bind(this);
         this.renderResponsive = this.renderResponsive.bind(this);
@@ -357,80 +359,65 @@ class PostManagerForm extends React.Component {
         );
     }
 
+    submitButton(text, variant, className, onClick){
+        return(
+            <Button
+                onClick={onClick}
+                variant={variant}
+                color={"primary"}
+                className={className}
+            >
+                {text}
+                <Icon>send</Icon>
+            </Button>
+        )
+    }
+
     // this trickles all the way up to App.js: PostManagerForm.js -> PostManager.js -> App.js
     doSubmit(isDraft){
         this.props.onSubmit(this.state, isDraft)
     }
 
-    postModeButtons(){
+    postModeButtons(isResponsive){
+        const {classes} = this.props;
+        const classNames = isResponsive ? classes.responsive : classes.nonResponsiveHalfWidth;
         return(
             <React.Fragment>
-                <Button
-                    onClick={() => this.doSubmit(false)}
-                    variant="contained"
-                    color="primary"
-                    style={styles.nonResponsive.button.halfWidth}
-                >
-                    Publish post
-                    <Icon>send</Icon>
-                </Button>
-                <Button
-                    onClick={() => this.doSubmit(true)}
-                    variant="outlined"
-                    color="primary"
-                    style={styles.nonResponsive.button.halfWidth}
-                >
-                    Create draft
-                    <Icon>send</Icon>
-                </Button>
+                {this.submitButton("Publish", "contained", classNames, () => this.doSubmit(false))}
+                {this.submitButton("Draft", "outlined", classNames, () => this.doSubmit(true))}
             </React.Fragment>
         )
     }
 
-    editModeButtons(){
+    editModeButtons(isResponsive){
+        const {classes} = this.props
+        const classNames = isResponsive ? {
+            halfWidth: classes.responsive,
+            fullWidth: classes.responsive
+        } : {
+            halfWidth: classes.nonResponsiveHalfWidth,
+            fullWidth: classes.nonResponsiveFullWidth
+        }
         // if publishedAt exists, post is not a draft
         if(this.props.post.publishedAt){
             return(
                 <React.Fragment>
-                    <Button
-                        onClick={() => this.doSubmit(false)}
-                        variant="contained"
-                        color="primary"
-                        style={styles.nonResponsive.button.fullWidth}
-                    >
-                        Save post
-                        <Icon>send</Icon>
-                    </Button>
+                    {this.submitButton("Save", "contained", classNames.fullWidth, () => this.doSubmit(false))}
                 </React.Fragment>
             )
         }else{
             // post is a draft
             return(
                 <React.Fragment>
-                    <Button
-                        onClick={() => this.doSubmit(false)}
-                        variant="contained"
-                        color="primary"
-                        style={styles.nonResponsive.button.halfWidth}
-                    >
-                        Publish post
-                        <Icon>send</Icon>
-                    </Button>
-                    <Button
-                        onClick={() => this.doSubmit(true)}
-                        variant="outlined"
-                        color="primary"
-                        style={styles.nonResponsive.button.halfWidth}
-                    >
-                        Save draft
-                        <Icon>send</Icon>
-                    </Button>
+                    {this.submitButton("Publish", "contained", classNames.halfWidth, () => this.doSubmit(false))}
+                    {this.submitButton("Save", "outlined", classNames.halfWidth, () => this.doSubmit(true))}
                 </React.Fragment>
             )
         }
     }
 
     renderResponsive() {
+        const editMode = this.props.post !== null;
         const classes = {
             imagePopup: "wysiwyg-editor-image-popup-responsive",
             editor: "wysiwyg-editor-responsive",
@@ -474,20 +461,20 @@ class PostManagerForm extends React.Component {
                         steps={["Title", "Content", "Options"]}
                         onBack={() => this.changeSlide("prev")}
                         onNext={() => this.changeSlide("next")}
-                        onSubmit={() => this.props.onSubmit(this.state)}
-                    />
+                    >
+                        {editMode ? this.editModeButtons(true) : this.postModeButtons(true)}
+                    </HorizontalStepper>
                 </div>
             </div>
         );
     }
 
     renderStandard() {
+        const editMode = this.props.post !== null;
         const classes = {
             imagePopup: "wysiwyg-editor-image-popup",
             editor: "wysiwyg-editor",
         };
-
-        const editMode = this.props.post !== null;
 
         return (
             <React.Fragment>
@@ -508,7 +495,7 @@ class PostManagerForm extends React.Component {
                 </Grid>
 
                 <Grid item style={styles.nonResponsive.containers}>
-                    {editMode ? this.editModeButtons() : this.postModeButtons()}
+                    {editMode ? this.editModeButtons(false) : this.postModeButtons(false)}
                 </Grid>
             </React.Fragment>
         );
@@ -527,6 +514,18 @@ class PostManagerForm extends React.Component {
         );
     }
 }
+
+const useStyle = (theme) => ({
+    responsive: {
+        marginRight: theme.spacing(1)
+    },
+    nonResponsiveFullWidth: {
+        width: "100%"
+    },
+    nonResponsiveHalfWidth: {
+        width: "50%"
+    }
+});
 
 const styles = {
     responsive: {
@@ -558,14 +557,6 @@ const styles = {
     nonResponsive: {
         containers: {
             width: "100%",
-        },
-        button: {
-            fullWidth: {
-                width: "100%"
-            },
-            halfWidth: {
-                width: "50%",
-            }
         },
     },
     main: {
@@ -653,4 +644,4 @@ PostManagerForm.propTypes = {
     uploadImageCallback: PropTypes.func
 }
 
-export default PostManagerForm;
+export default withStyles(useStyle)(PostManagerForm);

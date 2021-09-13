@@ -37,7 +37,6 @@ function LastSeen(props) {
         });
     }, []);
 
-    // TODO: show spinners while loading
     return(
         <React.Fragment>
             <Typography variant={"caption"}  color="textSecondary">

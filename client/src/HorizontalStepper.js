@@ -51,7 +51,7 @@ function HorizontalStepper(props) {
                 </Button>
 
                 {activeStep === steps.length - 1
-                    ? renderSubmitButton(props.onSubmit, classes)
+                    ? props.children
                     : renderNextButton(handleNext, classes)}
             </div>
         </div>

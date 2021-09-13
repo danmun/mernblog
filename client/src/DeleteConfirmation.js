@@ -20,7 +20,6 @@ class DeleteConfirmation extends React.Component {
 
     handleSubmit(post) {
         let that = this;
-        // TODO: normalise the getter for the post ID (in this class we use ._id but in PostManager we use .id ...)
         deletePost(post).then((json) => {
             // maybe best to check if json.status === 200 etc...
             that.props.onConfirm(post);
