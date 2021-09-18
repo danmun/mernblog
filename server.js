@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const helmet = require('helmet');
 const path = require('path');
 const multer = require('multer');
 const mongoose = require('mongoose');
@@ -39,6 +40,7 @@ app.use(express.static(path.join(__dirname, "photos")));
 app.use(cookieParser());
 app.set('json spaces', 2);
 
+app.use(helmet());
 app.use('/api', api);
 // should always be last route in this file
 // so that it catches non-api routes (e.g. request to load the spa)

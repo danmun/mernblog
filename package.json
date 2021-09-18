@@ -33,7 +33,8 @@
     "github-api": "3.4.0",
     "moment": "2.29.1",
     "mongo-migrate": "2.0.2",
-    "node-2fa": "2.0.2"
+    "node-2fa": "2.0.2",
+    "helmet": "4.6.0"
   },
   "devDependencies": {
     "nodemon": "^1.19.3"
