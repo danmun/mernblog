@@ -1,15 +1,15 @@
 import React from "react";
 import Lightbox from "react-image-lightbox";
 import Grid from "@material-ui/core/Grid";
-import Photo from "./Photo";
+import Photo from "../gallery/Photo";
 import "react-image-lightbox/style.css";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import { withRouter } from "react-router-dom";
-import { fetchAlbum } from "./api/gallery";
-import Spinner from "./Spinner";
+import { fetchAlbum } from "../api/gallery";
+import Spinner from "../common/Spinner";
 import PropTypes from 'prop-types';
 
 const ALBUM_URL_BASE = "/gallery/album/";

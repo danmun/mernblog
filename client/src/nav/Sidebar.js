@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import HelpIcon from "@material-ui/icons/Help";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 import LibraryBookIcon from "@material-ui/icons/LibraryBooks";
-import { PAGES } from "./App";
+import { PAGES } from "../App";
 import PropTypes from "prop-types";
 import {
     Divider,
@@ -18,7 +18,7 @@ import {
     Avatar,
     Grid,
 } from "@material-ui/core";
-import LastSeen from "./LastSeen";
+import LastSeen from "../common/LastSeen";
 
 function Sidebar(props) {
     const classes = useStyles();

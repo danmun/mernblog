@@ -2,14 +2,14 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import SwipeableViews from "react-swipeable-views";
-import Album from "./Album";
-import PhotoViewer from "./PhotoViewer";
-import SlideContainer from "./SlideContainer";
+import Album from "../gallery/Album";
+import PhotoViewer from "../gallery/PhotoViewer";
+import SlideContainer from "../common/SlideContainer";
 import ArrowBack from "@material-ui/icons/ArrowBack";
-import Spinner from "./Spinner";
-import CircularProgressButton from "./CircularProgressButton";
+import Spinner from "../common/Spinner";
+import CircularProgressButton from "../common/CircularProgressButton";
 import { Icon } from "@material-ui/core";
-import { fetchGallery } from "./api/gallery";
+import { fetchGallery } from "../api/gallery";
 import PropTypes from 'prop-types';
 
 const springConfig = {

@@ -4,6 +4,7 @@ const STRINGS = {
     LOGOUT_SUCCESS: "Successfully logged out!",
     LOGIN_FAILURE : "Incorrect username or password.",
     LOGIN_SUCCESS: "Successfully logged in!",
+    PASSWORD_FAILURE: "Incorrect password.",
 
     NEWPOST_SUCCESS: "Successfully posted to the feed!",
     NEWPOST_AUTH_FAILURE: "You must log in to submit new posts.",
@@ -24,7 +25,14 @@ const STRINGS = {
 
     SERVER_ERROR: 'Server error. Please try again later.',
     INVALID_ID: 'The provided ID is malformed.',
-    ITEM_NOT_FOUND: 'The requested item was not found.'
+    ITEM_NOT_FOUND: 'The requested item was not found.',
+
+    MFA_ALREADY_ENROLLED: "You are already enrolled in 2FA.",
+    MFA_NOT_ENROLLED: "You are not enrolled in 2FA.",
+    MFA_ENROL_SUCCESS: "Successfully enrolled!",
+    MFA_ENROL_FAILURE: "Failed to enrol in 2FA. Please try again.",
+    MFA_INVALID_CODE: "Invalid code.",
+    MFA_REMOVE_SUCCESS: "Successfully removed 2FA."
 }
 
 module.exports = {

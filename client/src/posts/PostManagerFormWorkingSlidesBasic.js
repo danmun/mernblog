@@ -1,5 +1,5 @@
-import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import "./style/editor.css";
+import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "../style/editor.css";
 import "date-fns";
 import React from "react";
 import { Editor } from "react-draft-wysiwyg";
@@ -18,8 +18,8 @@ import {
 } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 import SwipeableViews from "react-swipeable-views";
-import SlideContainer from "./SlideContainer";
-import { toggleCarousel } from "./utils";
+import SlideContainer from "../common/SlideContainer";
+import { toggleCarousel } from "../utils";
 
 const springConfig = {
     duration: "1s",

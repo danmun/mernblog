@@ -1,6 +1,6 @@
 import {CircularProgress, Tooltip, Typography} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
-import {fetchSeen} from "./api/seen";
+import {fetchSeen} from "../api/seen";
 
 const LAST_SEEN_LOCALSTORAGE_KEY = 'lastSeen'
 const LAST_SEEN_EXPIRY_LOCALSTORAGE_KEY = 'lastSeenExpiresAt'

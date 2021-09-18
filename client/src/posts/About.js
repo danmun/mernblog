@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Post from "./Post";
 import PostManager from "./PostManager";
-import AdminModal from "./AdminModal";
+import AdminModal from "../common/AdminModal";
 import IconButton from "@material-ui/core/IconButton";
 import AddPostIcon from "@material-ui/icons/AddCircle";
-import Spinner from "./Spinner";
+import Spinner from "../common/Spinner";
 import PropTypes from 'prop-types';
-import { editAbout, fetchAbout, createAbout } from "./api/about";
+import { editAbout, fetchAbout, createAbout } from "../api/about";
 
 const modalInitialState = {
     open: false,
@@ -18,7 +18,6 @@ function About(props) {
     let isAdmin = props.isAdmin;
 
     const [modal, setModal] = useState(modalInitialState);
-
     const [about, setAbout] = useState({
         loading: true,
         post: null,

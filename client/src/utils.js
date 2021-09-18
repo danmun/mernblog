@@ -35,3 +35,18 @@ export const toggleCarousel = function (direction, slideIndex, slideCount) {
         slideCount: slideCount,
     };
 };
+
+export const isDigit = (c) => {
+    if(c.length > 1) return false;
+    return c >= '0' && c <= '9'
+}
+
+export const isValid2faCode = (code) => {
+    const lastChar = code.charAt(code.length - 1);
+    if(code.length !== 0 && !isDigit(lastChar)) return false;
+    return true;
+}
+
+export const copyToClipBoard = (text) => {
+    navigator.clipboard.writeText(text)
+}

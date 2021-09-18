@@ -6,12 +6,13 @@ import IconButton from "@material-ui/core/IconButton";
 import AddPostIcon from "@material-ui/icons/AddCircle";
 import AddAlbumIcon from "@material-ui/icons/AddPhotoAlternate";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { logout } from "./api/auth";
+import PhonelinkLock from "@material-ui/icons/PhonelinkLock";
+import { logout } from "../api/auth";
 import PropTypes from 'prop-types';
 
 function Menu(props) {
     const [mobile, setMobile] = useState(false);
-    const { createPost, createAlbum, onLogout } = props;
+    const { createPost, createAlbum, onLogout, mfaSetup } = props;
 
     const handleNav = (page) => {
         setMobile(false);
@@ -50,6 +51,16 @@ function Menu(props) {
                             style={styles.colors.addAlbum}
                         >
                             <AddAlbumIcon />
+                        </IconButton>
+                    )}
+                    {mfaSetup && (
+                        <IconButton
+                            aria-label="open drawer"
+                            edge="start"
+                            onClick={mfaSetup}
+                            style={styles.colors.logout}
+                        >
+                            <PhonelinkLock />
                         </IconButton>
                     )}
                     {onLogout && (
@@ -93,7 +104,8 @@ Menu.propTypes = {
     createPost: PropTypes.func,
     createAlbum: PropTypes.func,
     onLogout: PropTypes.func,
-    navigator: PropTypes.func
+    navigator: PropTypes.func,
+    mfaSetup: PropTypes.func
 }
 
 

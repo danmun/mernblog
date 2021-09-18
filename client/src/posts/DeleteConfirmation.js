@@ -3,7 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import { TextField } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { deletePost } from "./api/posts";
+import { deletePost } from "../api/posts";
 import PropTypes from 'prop-types';
 
 class DeleteConfirmation extends React.Component {

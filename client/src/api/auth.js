@@ -1,14 +1,19 @@
 let baseUrl = require("./config.json").baseUrl;
 
 export async function login(form) {
-    const response = await fetch(`${baseUrl}/login`, {
+    return await fetch(`${baseUrl}/login`, {
         method: "POST",
         body: JSON.stringify(form),
         headers: {
             "Content-Type": "application/json",
         },
-    });
-    return response.status === 200;
+    }).then((res) => res.json()
+        .then((json) => {
+                json.success = res.ok
+                return json
+            }
+        ))
+        .then((json) => json);
 }
 
 export async function logout() {

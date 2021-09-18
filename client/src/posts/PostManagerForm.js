@@ -1,5 +1,5 @@
-import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import "./style/editor.css";
+import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "../style/editor.css";
 import "date-fns";
 import React from "react";
 import { Editor } from "react-draft-wysiwyg";
@@ -19,9 +19,9 @@ import {
 } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
 import SwipeableViews from "react-swipeable-views";
-import SlideContainer from "./SlideContainer";
-import { toggleCarousel } from "./utils";
-import HorizontalStepper from "./HorizontalStepper";
+import SlideContainer from "../common/SlideContainer";
+import { toggleCarousel } from "../utils";
+import HorizontalStepper from "../common/HorizontalStepper";
 import PropTypes from "prop-types";
 
 const springConfig = {
@@ -426,6 +426,7 @@ class PostManagerForm extends React.Component {
         return (
             <div>
                 <div>
+                    {/* TODO: uhm.. why is this wrapped in SwipeableViews? What relation does it have to swiping? */}
                     <SwipeableViews
                         disabled
                         springConfig={springConfig}

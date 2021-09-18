@@ -13,8 +13,8 @@ import {
     IconButton,
     Grid,
 } from "@material-ui/core";
-import Spinner from "./Spinner";
-import { fetchFeed } from "./api/feed";
+import Spinner from "../common/Spinner";
+import { fetchFeed } from "../api/feed";
 
 class Feed extends React.Component {
     constructor(props) {

@@ -12,12 +12,18 @@ const auth = require('../middleware/auth')
 const resourceRoutes = {
     Post: '/post',
     About: '/about',
-    Album: '/gallery'
+    Album: '/gallery',
+    MfaEnrolment: '/2fa'
 }
 
-apiRouter.post('/login', user.login);
+apiRouter.post('/login', auth.process2fa, user.login);
 apiRouter.get('/isAdmin', auth.check, user.isAdmin);
 apiRouter.get('/logout', auth.enforce, user.logout);
+
+apiRouter.get(resourceRoutes.MfaEnrolment, auth.enforce, user.has2fa);
+apiRouter.post(resourceRoutes.MfaEnrolment, auth.enforce, user.enrol2fa);
+apiRouter.put(resourceRoutes.MfaEnrolment, auth.enforce, user.confirm2fa);
+apiRouter.delete(resourceRoutes.MfaEnrolment, auth.enforce, user.remove2fa);
 
 // auth.enforce guarantees that req.user exists,
 // otherwise it would throw a 401 and the next function in the chain (e.g. post.create) would not execute

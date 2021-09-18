@@ -2,9 +2,9 @@ import React from "react";
 import { convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import PostManagerForm from "./PostManagerForm";
-import { getImgurClientId } from "./api/auth";
+import { getImgurClientId } from "../api/auth";
 import PropTypes from 'prop-types';
-import {createPost, editPost} from "./api/posts";
+import {createPost, editPost} from "../api/posts";
 
 // TODO: rename to PostEditor and PostEditorForm
 class PostManager extends React.Component {

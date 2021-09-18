@@ -1,5 +1,5 @@
-import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import "./style/editor.css";
+import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "../style/editor.css";
 import React from "react";
 import {
     Paper,
@@ -14,11 +14,11 @@ import EditIcon from "@material-ui/icons/Edit";
 import htmlToDraft from "html-to-draftjs";
 import { ContentState, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
-import Spinner from "./Spinner";
+import Spinner from "../common/Spinner";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import AlertBox, { variants } from "./AlertBox";
-import { fetchPost } from "./api/posts";
+import AlertBox, { variants } from "../common/AlertBox";
+import { fetchPost } from "../api/posts";
 import PropTypes from 'prop-types';
 
 class Post extends React.Component {

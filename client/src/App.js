@@ -3,26 +3,27 @@ import "./style/App.css";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import SwipeableViews from "react-swipeable-views";
 import { toggleCarousel } from "./utils";
-import Feed from "./Feed";
-import Post from "./Post";
-import Gallery from "./Gallery";
-import AdminModal from "./AdminModal";
-import CreateAlbum from "./CreateAlbum";
+import Feed from "./posts/Feed";
+import Post from "./posts/Post";
+import Gallery from "./gallery/Gallery";
+import AdminModal from "./common/AdminModal";
+import CreateAlbum from "./gallery/CreateAlbum";
 import { withStyles } from "@material-ui/core/styles";
-import DeleteConfirmation from "./DeleteConfirmation";
-import PostManager from "./PostManager";
-import SlideContainer from "./SlideContainer";
+import DeleteConfirmation from "./posts/DeleteConfirmation";
+import PostManager from "./posts/PostManager";
+import SlideContainer from "./common/SlideContainer";
 import Grid from "@material-ui/core/Grid";
-import Login from "./Login";
-import About from "./About";
+import Login from "./auth/Login";
+import About from "./posts/About";
 import { Switch, withRouter, Route } from "react-router-dom";
-import Menu from "./Menu";
+import Menu from "./nav/Menu";
 import { checkLoggedIn } from "./api/auth";
-import PhotoViewer from "./PhotoViewer";
+import PhotoViewer from "./gallery/PhotoViewer";
 import Button from "@material-ui/core/Button";
 import ArrowBack from "@material-ui/icons/ArrowBack";
-import CircularProgressButton from "./CircularProgressButton";
+import CircularProgressButton from "./common/CircularProgressButton";
 import { Icon } from "@material-ui/core";
+import MfaManager from "./auth/MfaManager";
 
 export const PAGES = {
     FEED: 1,
@@ -50,6 +51,7 @@ const initialModal = {
     galleryCreation: false,
     postCreation: false,
     postDeletion: false,
+    mfaSetup: false,
     post: null,
 };
 
@@ -90,6 +92,7 @@ class App extends React.Component {
         this.closePostManager = this.closePostManager.bind(this);
         this.onPostCreated = this.onPostCreated.bind(this);
         this.onPostEdited = this.onPostEdited.bind(this);
+        this.openMfaSetup = this.openMfaSetup.bind(this);
 
         this.openCreateAlbum = this.openCreateAlbum.bind(this);
         this.submitAlbum = this.submitAlbum.bind(this);
@@ -238,6 +241,7 @@ class App extends React.Component {
                 open: false,
                 postCreation: false,
                 galleryCreation: false,
+                mfaSetup: false,
                 post: null,
             },
             slideState: slideState,
@@ -250,6 +254,18 @@ class App extends React.Component {
                 open: true,
                 title: "Create an album",
                 galleryCreation: true,
+                postCreation: false,
+            },
+        });
+    }
+
+    openMfaSetup() {
+        this.setState({
+            modal: {
+                open: true,
+                title: "Set up 2-factor authentication",
+                mfaSetup: true,
+                galleryCreation: false,
                 postCreation: false,
             },
         });
@@ -476,6 +492,7 @@ class App extends React.Component {
                         onLogout={isAdmin && this.onLogout}
                         createPost={isAdmin && this.openCreatePost}
                         createAlbum={isAdmin && this.openCreateAlbum}
+                        mfaSetup={isAdmin && this.openMfaSetup}
                     />
                 </div>
 
@@ -514,6 +531,7 @@ class App extends React.Component {
                     {/* Solving this with Routes is more complicated and creates just as much fog, while also requires touching the Switch too*/}
                     <AdminModal title={modal.title} open={modal.open} dispose={() => this.closePostManager(false, null)}>
                         {modal.postCreation && <PostManager onCreated={this.onPostCreated} onEdited={this.onPostEdited} post={modal.post}/>}
+                        {modal.mfaSetup && <MfaManager/>}
                         {modal.galleryCreation && <CreateAlbum onCreate={this.submitAlbum}/>}
                         {/*{modal.galleryCreation && <PhotoPreviewPane onCreate={this.submitAlbum}/>}*/}
                         {modal.postDeletion && <DeleteConfirmation onConfirm={this.closeDeletePost} toDelete={modal.post}/>}
