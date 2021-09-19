@@ -11,44 +11,51 @@ import AlertBox, { variants } from "../common/AlertBox";
 import { login } from "../api/auth";
 import PropTypes from 'prop-types';
 import {isValid2faCode} from "../utils";
+import CircularProgressButton from "../common/CircularProgressButton";
 
 const initialAlertBoxState = {
     open: false,
     message: null
 }
 
-const initialFormState = {
+const initialFormData = {
     username: "",
     password: "",
     code: ""
+}
+
+const initialFormState = {
+    mfaPending: false,
+    isSubmitting: false
 }
 
 const Login = (props) => {
     const classes = useStyles();
 
     const [alertBox, setAlertBox] = useState(initialAlertBoxState);
-    const [form, setForm] = useState(initialFormState);
-    const [mfaPending, setMfaPending] = useState(false);
+    const [form, setForm] = useState(initialFormData);
+    const [formState, setFormState] = useState(initialFormState);
 
     const handleLogin = (message, success, mfa) => {
+        const isSubmitting = false, mfaPending = mfa;
         if(mfa){ // mfa initiated
-            setMfaPending(true);
+            setFormState({isSubmitting, mfaPending});
             setAlertBox(initialAlertBoxState);
         }else if(success){ // mfa code submitted OR login succeeded
             // clear password from state!
-            setForm(initialFormState);
-            setMfaPending(false);
+            setForm(initialFormData);
+            setFormState(initialFormState)
             setAlertBox(initialAlertBoxState);
             props.handleLogin();
         }else{
             setAlertBox({open: true, message: message});
-            setForm(initialFormState);
-            setMfaPending(false);
+            setForm(initialFormData);
+            setFormState(initialFormState)
         }
     }
 
-    const onSubmit = async (event) => {
-        event.preventDefault();
+    const onSubmit = async () => {
+        setFormState({...formState, isSubmitting: true})
         login(form).then((res) => {
             const {message, success, mfa} = res;
             handleLogin(message, success, mfa);
@@ -71,9 +78,10 @@ const Login = (props) => {
         });
     };
 
-    const Form = mfaPending ? show2fa(form.code, onCodeChanged) : showLogin(onTextChanged);
-    const screenTitle = mfaPending ? "2-factor authentication" : "Login";
-    const buttonEnabled = mfaPending ? form.code : form.password && form.username;
+    const Form = formState.mfaPending ? show2fa(form.code, onCodeChanged) : showLogin(onTextChanged);
+    const screenTitle = formState.mfaPending ? "2-factor authentication" : "Login";
+    // if field is blank, disable button; which fields determine this depends on login type (2fa/pw)
+    const buttonDisabled = formState.mfaPending ? !form.code : !form.password || !!form.username;
 
     return (
         // i don't know why this requires height of 85vh to get a height which fills parent
@@ -81,8 +89,9 @@ const Login = (props) => {
             <CssBaseline />
             <AuthScreen title={screenTitle} classes={classes}>
                 {Form}
-                <Button
-                    disabled={!buttonEnabled}
+                <CircularProgressButton
+                    loading={formState.isSubmitting}
+                    disabled={buttonDisabled}
                     type="submit"
                     fullWidth
                     variant="contained"
@@ -91,7 +100,7 @@ const Login = (props) => {
                     onClick={onSubmit}
                 >
                     Sign In
-                </Button>
+                </CircularProgressButton>
             </AuthScreen>
             <div>
                 <AlertBox

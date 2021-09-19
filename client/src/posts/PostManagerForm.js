@@ -11,7 +11,6 @@ import { withStyles } from "@material-ui/core/styles";
 import {
     TextField,
     Grid,
-    Button,
     Icon,
     Hidden,
     Checkbox,
@@ -23,6 +22,7 @@ import SlideContainer from "../common/SlideContainer";
 import { toggleCarousel } from "../utils";
 import HorizontalStepper from "../common/HorizontalStepper";
 import PropTypes from "prop-types";
+import CircularProgressButton from "../common/CircularProgressButton";
 
 const springConfig = {
     duration: "1s",
@@ -82,6 +82,7 @@ class PostManagerForm extends React.Component {
         }
 
         this.state = {
+            isSubmitting: false,
             postId: postId,
             title: title, // textfield value
             displayEditDateChecked: displayEditDateChecked,
@@ -359,59 +360,50 @@ class PostManagerForm extends React.Component {
         );
     }
 
-    submitButton(text, variant, className, onClick){
+    submitButton(text, variant, onClick){
         return(
-            <Button
+            <CircularProgressButton
+                loading={this.props.isSubmitting}
                 onClick={onClick}
                 variant={variant}
                 color={"primary"}
-                className={className}
             >
                 {text}
                 <Icon>send</Icon>
-            </Button>
+            </CircularProgressButton>
         )
     }
 
-    // this trickles all the way up to App.js: PostManagerForm.js -> PostManager.js -> App.js
     doSubmit(isDraft){
         this.props.onSubmit(this.state, isDraft)
     }
 
     postModeButtons(isResponsive){
         const {classes} = this.props;
-        const classNames = isResponsive ? classes.responsive : classes.nonResponsiveHalfWidth;
         return(
-            <React.Fragment>
-                {this.submitButton("Publish", "contained", classNames, () => this.doSubmit(false))}
-                {this.submitButton("Draft", "outlined", classNames, () => this.doSubmit(true))}
-            </React.Fragment>
+            <ButtonContainer responsive={isResponsive} classes={classes}>
+                {this.submitButton("Publish", "contained", () => this.doSubmit(false))}
+                {this.submitButton("Draft", "outlined", () => this.doSubmit(true))}
+            </ButtonContainer>
         )
     }
 
     editModeButtons(isResponsive){
-        const {classes} = this.props
-        const classNames = isResponsive ? {
-            halfWidth: classes.responsive,
-            fullWidth: classes.responsive
-        } : {
-            halfWidth: classes.nonResponsiveHalfWidth,
-            fullWidth: classes.nonResponsiveFullWidth
-        }
+        const {classes, post} = this.props;
         // if publishedAt exists, post is not a draft
-        if(this.props.post.publishedAt){
+        if(post.publishedAt){
             return(
-                <React.Fragment>
-                    {this.submitButton("Save", "contained", classNames.fullWidth, () => this.doSubmit(false))}
-                </React.Fragment>
+                <ButtonContainer responsive={isResponsive} classes={classes}>
+                    {this.submitButton("Save", "contained",() => this.doSubmit(false))}
+                </ButtonContainer>
             )
         }else{
             // post is a draft
             return(
-                <React.Fragment>
-                    {this.submitButton("Publish", "contained", classNames.halfWidth, () => this.doSubmit(false))}
-                    {this.submitButton("Save", "outlined", classNames.halfWidth, () => this.doSubmit(true))}
-                </React.Fragment>
+                <ButtonContainer responsive={isResponsive} classes={classes}>
+                    {this.submitButton("Publish", "contained", () => this.doSubmit(false))}
+                    {this.submitButton("Save", "outlined", () => this.doSubmit(true))}
+                </ButtonContainer>
             )
         }
     }
@@ -516,19 +508,48 @@ class PostManagerForm extends React.Component {
     }
 }
 
+const ButtonContainer = (props) => {
+    const {children, classes, responsive} = props;
+    const patchedChildren = Array.isArray(children) ? children : [children];
+    const numChildren = patchedChildren.length;
+    return(
+        <div style={styles.buttonContainer.container}>
+            {patchedChildren.map((child, index) => {
+                let className = "";
+                if(index === 0){
+                    className = classes.rightGap;
+                }else if(index === numChildren - 1){
+                    // this is kind of bad as it relies on styling (spacing) of in HorizontalStepper's Back button
+                    if(!responsive) className = classes.leftGap;
+                }
+                return (
+                    <div key={`btnContainer${responsive ? "R" : "NR"}${index}`} style={styles.buttonContainer.item} className={className}>
+                        {child}
+                    </div>
+                );
+            })}
+        </div>
+    )
+}
+
 const useStyle = (theme) => ({
-    responsive: {
+    rightGap: {
         marginRight: theme.spacing(1)
     },
-    nonResponsiveFullWidth: {
-        width: "100%"
-    },
-    nonResponsiveHalfWidth: {
-        width: "50%"
+    leftGap: {
+        marginLeft: theme.spacing(1)
     }
 });
 
 const styles = {
+    buttonContainer: {
+        container: {
+            display: "flex"
+        },
+        item: {
+            width: "100%"
+        }
+    },
     responsive: {
         container: {
             maxWidth: "96vw",
@@ -638,6 +659,10 @@ const styles = {
         },
     },
 };
+
+ButtonContainer.propTypes = {
+    responsive: PropTypes.bool
+}
 
 PostManagerForm.propTypes = {
     onSubmit: PropTypes.func,

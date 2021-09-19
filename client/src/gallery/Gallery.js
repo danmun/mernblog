@@ -23,6 +23,7 @@ class Gallery extends React.Component {
         super(props);
 
         this.state = {
+            isDownloading: false,
             loading: true,
             albums: [],
         };
@@ -101,7 +102,8 @@ class Gallery extends React.Component {
                                         <ArrowBack />
                                     </Button>
                                     <CircularProgressButton
-                                        onClick={(setDone) => this.downloadAlbum(albumToShow._id, setDone)}
+                                        loading={this.state.isDownloading}
+                                        onClick={() => this.downloadAlbum(albumToShow._id)}
                                     >
                                         Download
                                         <Icon>save</Icon>
@@ -117,10 +119,11 @@ class Gallery extends React.Component {
         }
     }
 
-    downloadAlbum(albumId, setDone) {
+    downloadAlbum(albumId) {
+        this.setState({isDownloading: true})
         console.log(albumId);
-        // fetch()
-        setTimeout(() => setDone(), 3000);
+        // fetch() zipped pics etc...
+        setTimeout(() => {this.setState({isDownloading: false})}, 3000);
     }
 
     render() {

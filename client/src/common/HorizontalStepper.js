@@ -7,9 +7,12 @@ const useStyles = makeStyles((theme) => ({
     root: {
         width: "100%",
     },
-    button: {
+    backButton: {
         marginRight: theme.spacing(1),
     },
+    nextButton: {
+        marginLeft: theme.spacing(1),
+    }
 }));
 
 function HorizontalStepper(props) {
@@ -41,18 +44,20 @@ function HorizontalStepper(props) {
                 })}
             </Stepper>
             <div style={styles.button.back.container}>
-                <Button
-                    variant="contained"
-                    disabled={activeStep === 0}
-                    onClick={handleBack}
-                    className={classes.button}
-                >
-                    Back
-                </Button>
+                <div style={{display: "flex", justifyContent: "center"}}>
+                    <Button
+                        variant="contained"
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                        className={classes.backButton}
+                    >
+                        Back
+                    </Button>
 
-                {activeStep === steps.length - 1
-                    ? props.children
-                    : renderNextButton(handleNext, classes)}
+                    {activeStep === steps.length - 1
+                        ? props.children
+                        : renderNextButton(handleNext, classes)}
+                </div>
             </div>
         </div>
     );
@@ -64,7 +69,7 @@ function renderNextButton(handleNext, classes) {
             variant="contained"
             color="primary"
             onClick={handleNext}
-            className={classes.button}
+            className={classes.nextButton}
         >
             Next
         </Button>

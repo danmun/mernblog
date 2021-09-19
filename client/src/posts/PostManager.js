@@ -10,6 +10,9 @@ import {createPost, editPost} from "../api/posts";
 class PostManager extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isSubmitting: false
+        }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.uploadImageCallback = this.uploadImageCallback.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
@@ -102,6 +105,7 @@ class PostManager extends React.Component {
             tags: tags.split("#").filter((item) => item), // split string of tags into hashtagless array
         };
 
+        this.setState({isSubmitting: true});
         if (post.id === null || post.id.trim().length === 0) {
             this.submitCreatePost(post, isDraft)
         } else {
@@ -170,12 +174,14 @@ class PostManager extends React.Component {
 
     submitCreatePost(post, isDraft){
         createPost(post, isDraft).then((json) => {
+            this.setState({isSubmitting: false});
             this.props.onCreated()
         });
     }
 
     submitEditPost(post, isDraft) {
         editPost(post, isDraft).then((json) => {
+            this.setState({isSubmitting: false});
             this.props.onEdited(json.post);
         });
     }
@@ -189,6 +195,7 @@ class PostManager extends React.Component {
                 onSubmit={this.handleSubmit}
                 uploadImageCallback={this.uploadImageCallback}
                 post={this.props.post}
+                isSubmitting={this.state.isSubmitting}
             />
         );
     }

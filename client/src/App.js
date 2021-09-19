@@ -424,11 +424,17 @@ class App extends React.Component {
                     return (
                         <SlideContainer>
                             <PhotoViewer>
+                                {/* TODO:CLEANUP why is this not <Gallery ... > ? why the need to specify components here instead of using gallery with props?
+                                                gallery should be referring to exact same variable (component) on route and non-route renders!
+                                                currently they have 2 different renders (noticed because button had different text on routed render vs non routed render
+                                */}
                                 <div style={styles.gallery.buttons.container}>
                                     <Button onClick={() => this.viewAlbumAndUpdateSlide("prev", null)} size="small">
                                         <ArrowBack/>
                                     </Button>
-                                    <CircularProgressButton onClick={() => console.log("pressed download")}>
+                                    <CircularProgressButton
+                                        loading={false} // change once implemented downloads
+                                        onClick={() => console.log("pressed download")}>
                                         Download
                                         <Icon>save</Icon>
                                     </CircularProgressButton>

@@ -1,7 +1,7 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import { TextField } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
+import CircularProgressButton from "../common/CircularProgressButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { deletePost } from "../api/posts";
 import PropTypes from 'prop-types';
@@ -13,15 +13,19 @@ class DeleteConfirmation extends React.Component {
         this.state = {
             title: "",
             doDelete: false,
+            isSubmitting: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleSubmit(post) {
+    handleSubmit(event) {
+        this.setState({isSubmitting: true});
+        const post = this.props.toDelete;
         let that = this;
         deletePost(post).then((json) => {
             // maybe best to check if json.status === 200 etc...
+            this.setState({isSubmitting: false});
             that.props.onConfirm(post);
         });
     }
@@ -42,15 +46,15 @@ class DeleteConfirmation extends React.Component {
                 </Grid>
 
                 <Grid item style={styles.submit.container}>
-                    <Button
-                        onClick={() => this.handleSubmit(this.props.toDelete)}
+                    <CircularProgressButton
+                        loading={this.state.isSubmitting}
+                        onClick={this.handleSubmit}
                         variant="contained"
                         color="secondary"
-                        style={styles.submit.button}
                     >
                         Delete
                         <DeleteIcon />
-                    </Button>
+                    </CircularProgressButton>
                 </Grid>
             </React.Fragment>
         );
@@ -69,10 +73,7 @@ const styles = {
     submit: {
         container: {
             width: "100%",
-        },
-        button: {
-            width: "100%",
-        },
+        }
     },
 };
 
