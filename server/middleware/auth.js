@@ -57,7 +57,17 @@ const process2fa = async (req, res, next) => {
  */
 const challenge2fa = async (req, res, next) => {
     const user = req.userFromMongo;
-    const enrolment = await MFAEnrolment.findOne({user: user._id});
+    let enrolment;
+    try{
+        enrolment = await MFAEnrolment.findOne({user: user._id});
+    }catch(err){
+        // if we get an error here, we MUST halt the request chain,
+        // otherwise user gets passed to next middleware/controller below and can possibly log in without 2FA
+        console.error(err);
+        res.status(500).send({message: STRINGS.SERVER_ERROR})
+        return;
+    }
+
     if(enrolment){
         // start 2fa flow
         res.status(200).send({mfa: true})
@@ -77,7 +87,16 @@ const challenge2fa = async (req, res, next) => {
 const verify2fa = async (req, res, next) => {
     const {code} = req.body;
     const user = req.userFromMongo;
-    const enrolment = await MFAEnrolment.findOne({user: user._id});
+    let enrolment;
+
+    try{
+        enrolment = await MFAEnrolment.findOne({user: user._id});
+    }catch(err){
+        console.error(err);
+        res.status(500).send({message: STRINGS.SERVER_ERROR})
+        return;
+    }
+
     if(enrolment){
         const match = twoFactor.verifyToken(enrolment.secret, code, 1);
         if(match && match.delta === 0){
