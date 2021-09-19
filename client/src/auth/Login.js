@@ -81,7 +81,7 @@ const Login = (props) => {
     const Form = formState.mfaPending ? show2fa(form.code, onCodeChanged) : showLogin(onTextChanged);
     const screenTitle = formState.mfaPending ? "2-factor authentication" : "Login";
     // if field is blank, disable button; which fields determine this depends on login type (2fa/pw)
-    const buttonDisabled = formState.mfaPending ? !form.code : !form.password || !!form.username;
+    const buttonDisabled = formState.mfaPending ? !form.code : !form.password || !form.username;
 
     return (
         // i don't know why this requires height of 85vh to get a height which fills parent
