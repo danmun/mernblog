@@ -53,6 +53,8 @@ class Post extends React.Component {
     }
 
     initEditor(post) {
+        // TODO:CLEANUP investigate usage of the useMediaQuery in a class component
+        //              (work on reducing excessive content squeeze on mobile)
         // const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1000px)' })
         // const classes = useStyles();
         // let postDimensions = {
@@ -276,6 +278,7 @@ const styles = {
         },
         typography: {
             whiteSpace: "pre-wrap",
+            // TODO:CLEANUP modify these margins to reduce excessive content squeeze on mobile
             marginLeft: "15%",
             marginRight: "15%",
         },

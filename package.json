@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
-    "local": "set SECRET=1234567ABCDEFGHIJKLMNOPQRSTUVWXY && nodemon server.js",
+    "win-local": "set SECRET=1234567ABCDEFGHIJKLMNOPQRSTUVWXY && nodemon server.js",
+    "mac-local": "export SECRET=1234567ABCDEFGHIJKLMNOPQRSTUVWXY && nodemon server.js",
     "start": "node server.js"
   },
   "repository": {

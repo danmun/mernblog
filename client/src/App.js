@@ -53,6 +53,7 @@ const initialModal = {
     postDeletion: false,
     mfaSetup: false,
     post: null,
+    isAbout: false,
 };
 
 // TODO: rename pageToShow to currentPage
@@ -87,6 +88,8 @@ class App extends React.Component {
         this.openCreatePost = this.openCreatePost.bind(this);
         this.openEditPost = this.openEditPost.bind(this);
         this.openDeletePost = this.openDeletePost.bind(this);
+        this.openCreateAbout = this.openCreateAbout.bind(this);
+        this.openEditAbout = this.openEditAbout.bind(this);
         this.openPostManager = this.openPostManager.bind(this);
         this.closeDeletePost = this.closeDeletePost.bind(this);
         this.closePostManager = this.closePostManager.bind(this);
@@ -98,7 +101,6 @@ class App extends React.Component {
         this.submitAlbum = this.submitAlbum.bind(this);
 
         this.navigator = this.navigator.bind(this);
-        this.setMobile = this.setMobile.bind(this);
         this.setRefreshFeed = this.setRefreshFeed.bind(this);
 
         this.renderBlog = this.renderBlog.bind(this);
@@ -120,6 +122,7 @@ class App extends React.Component {
             refreshFeed: true,
             slideState: initialSlideState,
         });
+        this.props.history.push({ pathname: PAGES_URLS[PAGES.FEED] });
         // TODO: add logout success/fail message/alertbox
         // if user saved token from the cookie previously outside browser, they can still use it to access their session
         // would be nice to be able to invalidate the token server side
@@ -161,11 +164,19 @@ class App extends React.Component {
     }
 
     openCreatePost() {
-        this.openPostManager("Create a post", null);
+        this.openPostManager("Create a post", null, false);
     }
 
     openEditPost(post) {
-        this.openPostManager("Edit your post", post);
+        this.openPostManager("Edit your post", post, false);
+    }
+
+    openCreateAbout() {
+        this.openPostManager("Add an About section", null, true);
+    }
+
+    openEditAbout(post) {
+        this.openPostManager("Edit the About section", post, true);
     }
 
     openDeletePost(post) {
@@ -183,7 +194,7 @@ class App extends React.Component {
         });
     }
 
-    openPostManager(title, post) {
+    openPostManager(title, post, isAbout) {
         this.setState({
             modal: {
                 open: true,
@@ -191,6 +202,7 @@ class App extends React.Component {
                 galleryCreation: false,
                 postCreation: true,
                 post: post,
+                isAbout: isAbout
             },
         });
     }
@@ -209,29 +221,30 @@ class App extends React.Component {
                 galleryCreation: false,
                 postCreation: false,
                 postDeletion: false,
+                isAbout: false,
             },
         });
         this.props.history.push("/");
     }
 
-    onPostCreated() {
-        return this.closePostManager(true, null); // signal to setRefreshFeed
+    onPostCreated(post) {
+        return this.closePostManager(true, post); // signal to setRefreshFeed
     }
 
     onPostEdited(post) {
         return this.closePostManager(true, post);
     }
 
-    closePostManager(stateChanged, editedPost) {
+    closePostManager(stateChanged, post) {
         let slideState = this.state.slideState;
+        const {pageToShow} = this.state
         // if we are on feed, we need to manage the slide state
         // if we are not on feed (e.g. About), we need not worry about the slide state
-        if (this.state.pageToShow === PAGES.FEED) {
+        if (pageToShow === PAGES.FEED || pageToShow === PAGES.ABOUT) {
+             // PAGES.ABOUT only happens if we navigate to About within the app, not if we visit via URL
             slideState = {
                 ...this.state.slideState,
-                itemToShow: editedPost
-                    ? editedPost
-                    : this.state.slideState.itemToShow,
+                itemToShow: post || this.state.slideState.itemToShow,
             };
         }
 
@@ -243,6 +256,7 @@ class App extends React.Component {
                 galleryCreation: false,
                 mfaSetup: false,
                 post: null,
+                isAbout: false
             },
             slideState: slideState,
         });
@@ -292,13 +306,16 @@ class App extends React.Component {
         });
     }
 
+    // TODO:CLEANUP note that this does not fire on external load, e.g. if we visit URL /about, state.pageToShow is still set to 1
+    //              this causes problems when trying to use closePostManager and itemToShow
     // can this be done in each of the routes? instead of one monolithic navigator?
     // e.g. in the function that is passed as render in the route, e.g. in renderBlog, renderGallery, etc...
     navigator(newPage) {
         // could change push to ".replace" see if it makes a difference
         this.props.history.push({ pathname: PAGES_URLS[newPage] });
         if (newPage === PAGES.LOGIN && this.state.isAdmin) {
-            this.setState({ mobileOpen: false });
+            if(this.state.mobileOpen) this.setState({ mobileOpen: false });
+            // we do not show login page when admin is logged in
             return;
         }
 
@@ -317,20 +334,17 @@ class App extends React.Component {
             } else {
                 // otherwise do nothing because we're already on the first slide of the requested page
                 // e.g. page 1, slide 1 - Feed page, list of posts slide
-                this.setState({ mobileOpen: false });
+                if(this.state.mobileOpen) this.setState({ mobileOpen: false });
             }
         } else {
-            // if switching to another page, do a render to make new page appear
+            // if switching to another page, do a render to make new page appear;
+            // also reset itemToShow (in slideState) to empty
             this.setState({
                 pageToShow: newPage,
                 slideState: initialSlideState,
                 mobileOpen: false,
             });
         }
-    }
-
-    setMobile(open) {
-        this.setState({ mobileOpen: open });
     }
 
     setRefreshFeed(flag) {
@@ -348,6 +362,7 @@ class App extends React.Component {
         // then display just the post, otherwise display the feed!!
         if (external_visit) {
             // dynamic route, let it handle via the router so we can easily access :id
+            // post itself will be fetched via API within the Post component, since we don't pass a post to it during external request
             return (
                 <Route
                     path="/post/:id"
@@ -460,6 +475,9 @@ class App extends React.Component {
     }
 
     renderAbout() {
+        const {isAdmin, slideState} = this.state;
+        const onCreate = isAdmin ? this.openCreateAbout : null;
+        const onEdit = isAdmin ? this.openEditAbout : null;
         return (
             <SlideContainer>
                 <Grid
@@ -467,7 +485,7 @@ class App extends React.Component {
                     className={"hyphenate"}
                     style={styles.slides.about.container}
                 >
-                    <About isAdmin={this.state.isAdmin} />
+                    <About onCreate={onCreate} onEdit={onEdit} post={slideState.itemToShow}/>
                 </Grid>
             </SlideContainer>
         );
@@ -535,13 +553,16 @@ class App extends React.Component {
 
                 <div>
                     {/* Solving this with Routes is more complicated and creates just as much fog, while also requires touching the Switch too*/}
-                    <AdminModal title={modal.title} open={modal.open} dispose={() => this.closePostManager(false, null)}>
-                        {modal.postCreation && <PostManager onCreated={this.onPostCreated} onEdited={this.onPostEdited} post={modal.post}/>}
-                        {modal.mfaSetup && <MfaManager/>}
-                        {modal.galleryCreation && <CreateAlbum onCreate={this.submitAlbum}/>}
-                        {/*{modal.galleryCreation && <PhotoPreviewPane onCreate={this.submitAlbum}/>}*/}
-                        {modal.postDeletion && <DeleteConfirmation onConfirm={this.closeDeletePost} toDelete={modal.post}/>}
-                    </AdminModal>
+                    {isAdmin &&
+                        <AdminModal title={modal.title} open={modal.open} dispose={() => this.closePostManager(false, null)}>
+                            {console.log("this renders here")}
+                            {modal.postCreation && <PostManager onCreated={this.onPostCreated} onEdited={this.onPostEdited} post={modal.post} isAbout={modal.isAbout}/>}
+                            {modal.mfaSetup && <MfaManager/>}
+                            {modal.galleryCreation && <CreateAlbum onCreate={this.submitAlbum}/>}
+                            {/*{modal.galleryCreation && <PhotoPreviewPane onCreate={this.submitAlbum}/>}*/}
+                            {modal.postDeletion && <DeleteConfirmation onConfirm={this.closeDeletePost} toDelete={modal.post}/>}
+                        </AdminModal>
+                    }
                 </div>
             </div>
         );

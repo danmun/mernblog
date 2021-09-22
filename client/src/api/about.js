@@ -6,8 +6,8 @@ export async function fetchAbout() {
         .then((json) => json);
 }
 
-export async function editAbout(post) {
-    return await fetch(`${baseUrl}/about?id=${post.id}`, {
+export async function editAbout(post, draft) {
+    return await fetch(`${baseUrl}/about?id=${post.id}&draft=${draft}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),
@@ -16,8 +16,8 @@ export async function editAbout(post) {
         .then((json) => json);
 }
 
-export async function createAbout(post) {
-    return await fetch(`${baseUrl}/about`, {
+export async function createAbout(post, draft) {
+    return await fetch(`${baseUrl}/about?draft=${draft}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(post),

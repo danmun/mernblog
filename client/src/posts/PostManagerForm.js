@@ -82,7 +82,6 @@ class PostManagerForm extends React.Component {
         }
 
         this.state = {
-            isSubmitting: false,
             postId: postId,
             title: title, // textfield value
             displayEditDateChecked: displayEditDateChecked,
@@ -667,7 +666,8 @@ ButtonContainer.propTypes = {
 PostManagerForm.propTypes = {
     onSubmit: PropTypes.func,
     post: PropTypes.object,
-    uploadImageCallback: PropTypes.func
+    uploadImageCallback: PropTypes.func,
+    isSubmitting: PropTypes.bool
 }
 
 export default withStyles(useStyle)(PostManagerForm);

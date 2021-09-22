@@ -24,7 +24,7 @@ To execute commands individually, see steps below.
 ```
 cd mernblog
 npm install
-nodemon server.js
+npm run-script win-local
 cd client/
 npm install
 npm run-script build
@@ -37,7 +37,7 @@ Run the Node API server on `localhost:4000` and the React dev server on `localho
 ```
 cd mernblog
 npm install
-nodemon server.js
+npm run-script win-local
 cd client/
 npm install
 npm start

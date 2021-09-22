@@ -1,28 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Post from "./Post";
-import PostManager from "./PostManager";
-import AdminModal from "../common/AdminModal";
 import IconButton from "@material-ui/core/IconButton";
 import AddPostIcon from "@material-ui/icons/AddCircle";
 import Spinner from "../common/Spinner";
 import PropTypes from 'prop-types';
-import { editAbout, fetchAbout, createAbout } from "../api/about";
+import { fetchAbout } from "../api/about";
 
-const modalInitialState = {
-    open: false,
-    title: "Add an About section",
-    editingPost: null,
-}
-
-function About(props) {
-    let isAdmin = props.isAdmin;
-
-    const [modal, setModal] = useState(modalInitialState);
+const About = (props) => {
+    const {post, onEdit, onCreate} = props;
     const [about, setAbout] = useState({
         loading: true,
         post: null,
     });
 
+    // This will only fire when mounting, e.g. when navigated from About (1) externally (2) from another page.
+    // In those cases, the passed post will be certainly null as the post is only passed when the PostManager closes
+    // within the same page (e.g. after editing About content)
     useEffect(() => {
         fetchAbout().then((json) => {
             setAbout({
@@ -32,51 +25,29 @@ function About(props) {
         });
     }, []);
 
-    const submitCreateAbout = (post) => {
-        createAbout(post).then((json) => {
-            setAbout({ post: json.about });
-            setModal(modalInitialState);
-        });
-    }
-
-    const submitEditAbout = (post) => {
-        editAbout(post).then((json) => {
-            setAbout({ post: json.about });
-            setModal(modalInitialState);
-        });
-    }
-
+    // the passed post enjoys priority over the fetched post, as it is more up-to-date (e.g. edited/created)
+    // it must come first in the conditional assignment
+    const postToShow = post || about.post
     return (
         <React.Fragment>
-            {about.loading ? <Spinner/> : showAbout(isAdmin, about, modal, setModal)}
-
-            {(isAdmin && !about.loading && !about.post) && showAdminUI(about, modal, setModal)}
-
-            <div>
-                <AdminModal
-                    title={modal.title}
-                    open={modal.open}
-                    dispose={() => setModal({ open: false })}
-                >
-                     {/*TODO: issue: outdated usage of PostManager -- under construction*/}
-                    <PostManager
-                        onCreated={submitCreateAbout}
-                        onEdited={submitEditAbout}
-                        post={modal.editingPost}
-                    />
-                </AdminModal>
-            </div>
+            {about.loading ? <Spinner/> : showAbout(postToShow, onEdit)}
+            {(onCreate && !about.loading && !postToShow) && showCreateAbout(onCreate)}
         </React.Fragment>
     );
 }
 
-function showAdminUI(about, modal, setModal) {
+/**
+ * Show button to create an About post.
+ * @param onCreate
+ * @returns {JSX.Element}
+ */
+const showCreateAbout = (onCreate) => {
     return (
         <div style={styles.admin.container}>
             <IconButton
                 aria-label="open drawer"
                 edge="start"
-                onClick={() => openPostManager(about, modal, setModal)}
+                onClick={onCreate}
                 style={styles.admin.icon}
             >
                 <AddPostIcon />
@@ -85,8 +56,8 @@ function showAdminUI(about, modal, setModal) {
     );
 }
 
-function showAbout(isAdmin, about, modal, setModal) {
-    if (!about.post) {
+const showAbout = (post, onEdit) => {
+    if (!post) {
         return (
             <React.Fragment>
                 <div style={styles.emptyAbout}>
@@ -95,21 +66,12 @@ function showAbout(isAdmin, about, modal, setModal) {
             </React.Fragment>
         );
     } else {
-        let onEdit = isAdmin ? () => openPostManager(about, modal, setModal) : null;
         return (
             <React.Fragment>
-                <Post onEdit={onEdit} post={about.post} />
+                <Post onEdit={onEdit} post={post} />
             </React.Fragment>
         );
     }
-}
-
-function openPostManager(about, modal, setModal) {
-    setModal({
-        ...modal,
-        editingPost: about.post,
-        open: true,
-    });
 }
 
 const styles = {
@@ -127,7 +89,13 @@ const styles = {
 };
 
 About.propTypes = {
-    isAdmin: PropTypes.bool
+    // a post is passed to About after editing or creating the about section
+    // if no post is passed, it is fetched from the API
+    post: PropTypes.object,
+    // callback when edit icon is pressed - this only opens the PostManager,
+    // the PostManager is then responsible for passing back the edited post to About via the post prop
+    onEdit: PropTypes.func,
+    onCreate: PropTypes.func
 }
 
 export default About;

@@ -128,7 +128,7 @@ class MfaManager extends React.Component {
                     </div>
                 </Grid>
                 <Grid item style={styles.alignment.center}>
-                    Scan the QR code above with an authenticator app. Alternatively, click it to copy the 2FA secret for pasting into your app.
+                    Scan the QR code above or click it to copy the 2FA secret for your an authenticator app.
                 </Grid>
                 <Grid item style={styles.alignment.center}>
                     {/* we need to sanitize the code, so need to use a controlled text input (i.e. set its value from state) */}

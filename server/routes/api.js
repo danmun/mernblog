@@ -33,7 +33,7 @@ apiRouter.post(resourceRoutes.Post, auth.enforce, post.create);
 apiRouter.put(resourceRoutes.Post, auth.enforce, post.update);
 apiRouter.delete(resourceRoutes.Post, auth.enforce, post.del);
 
-apiRouter.get(resourceRoutes.About, about.read);
+apiRouter.get(resourceRoutes.About, auth.check, about.read);
 apiRouter.post(resourceRoutes.About, auth.enforce, about.create);
 apiRouter.put(resourceRoutes.About, auth.enforce, about.update);
 

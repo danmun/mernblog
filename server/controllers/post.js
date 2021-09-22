@@ -48,14 +48,20 @@ const create = async (req, res) => {
 
     // draft post's album gets created on /edit endpoint, when draft is published
     if(req.body.album === null || isDraft){
-        res.send(STRINGS.NEWPOST_SUCCESS);
+        res.send({
+            status: isDraft ? STRINGS.NEWDRAFT_SUCCESS : STRINGS.NEWPOST_SUCCESS,
+            post: post
+        });
         return;
     }
 
     const album = new Album(Album.fromRequest(req.user._id, req.body, post));
     try{
         await album.save();
-        res.send(STRINGS.NEWPOST_SUCCESS);
+        res.send({
+            status: STRINGS.NEWPOST_SUCCESS,
+            post: post
+        });
     } catch (err){
         res.status(500).send(err);
     }
@@ -124,7 +130,7 @@ const update = async (req, res) => {
                 await album.save();
             }
         }
-        post.save();
+        await post.save();
         res.send({
             status: STRINGS.EDITPOST_SUCCESS,
             post: post

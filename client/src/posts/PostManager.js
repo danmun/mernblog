@@ -5,6 +5,7 @@ import PostManagerForm from "./PostManagerForm";
 import { getImgurClientId } from "../api/auth";
 import PropTypes from 'prop-types';
 import {createPost, editPost} from "../api/posts";
+import {createAbout, editAbout} from "../api/about";
 
 // TODO: rename to PostEditor and PostEditorForm
 class PostManager extends React.Component {
@@ -106,10 +107,11 @@ class PostManager extends React.Component {
         };
 
         this.setState({isSubmitting: true});
+        const {isAbout} = this.props;
         if (post.id === null || post.id.trim().length === 0) {
-            this.submitCreatePost(post, isDraft)
+            isAbout ? this.submitCreateAbout(post, isDraft) : this.submitCreatePost(post, isDraft);
         } else {
-            this.submitEditPost(post, isDraft)
+            isAbout ? this.submitEditAbout(post, isDraft) : this.submitEditPost(post, isDraft);
         }
     }
 
@@ -172,10 +174,10 @@ class PostManager extends React.Component {
         });
     }
 
-    submitCreatePost(post, isDraft){
+    submitCreatePost(post, isDraft) {
         createPost(post, isDraft).then((json) => {
             this.setState({isSubmitting: false});
-            this.props.onCreated()
+            this.props.onCreated(json.post)
         });
     }
 
@@ -183,6 +185,20 @@ class PostManager extends React.Component {
         editPost(post, isDraft).then((json) => {
             this.setState({isSubmitting: false});
             this.props.onEdited(json.post);
+        });
+    }
+
+    submitCreateAbout(post, isDraft) {
+        createAbout(post, isDraft).then((json) => {
+            this.setState({isSubmitting: false});
+            this.props.onCreated(json.about)
+        });
+    }
+
+    submitEditAbout(post, isDraft){
+        editAbout(post, isDraft).then((json) => {
+            this.setState({isSubmitting: false});
+            this.props.onEdited(json.about);
         });
     }
 
@@ -204,7 +220,8 @@ class PostManager extends React.Component {
 PostManager.propTypes = {
     onCreated: PropTypes.func,
     onEdited: PropTypes.func,
-    post: PropTypes.object
+    post: PropTypes.object,
+    isAbout: PropTypes.bool,
 }
 
 export default PostManager;
