@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -78,7 +77,7 @@ const Login = (props) => {
         });
     };
 
-    const Form = formState.mfaPending ? show2fa(form.code, onCodeChanged) : showLogin(onTextChanged);
+    const Form = formState.mfaPending ? show2fa(form.code, onCodeChanged) : showLogin(form.username, form.password, onTextChanged);
     const screenTitle = formState.mfaPending ? "2-factor authentication" : "Login";
     // if field is blank, disable button; which fields determine this depends on login type (2fa/pw)
     const buttonDisabled = formState.mfaPending ? !form.code : !form.password || !form.username;
@@ -132,11 +131,11 @@ const AuthScreen = (props) => {
     )
 }
 
-const showLogin = (onTextChanged) => {
+const showLogin = (username, password, onTextChanged) => {
     return(
         <React.Fragment>
-            {renderInputFieldComponent(null, onTextChanged, "username", "Username", true, null)}
-            {renderInputFieldComponent(null, onTextChanged, "password", "Password", false, {type: "password"})}
+            {renderInputFieldComponent(username, onTextChanged, "username", "Username", true, null)}
+            {renderInputFieldComponent(password, onTextChanged, "password", "Password", false, {type: "password"})}
         </React.Fragment>
     )
 }
