@@ -25,12 +25,14 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
-// https://stackoverflow.com/a/65894606
 const helmetConfig = {
     contentSecurityPolicy: {
         directives: {
             ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+            // https://stackoverflow.com/a/65894606
             "script-src": ["'self'", "'unsafe-inline'"],
+            // https://stackoverflow.com/a/65334628
+            "img-src": ["'self'", "i.imgur.com"]
         },
     },
 }
