@@ -579,7 +579,8 @@ const useStyles = (theme) => ({
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(1),
         marginTop: `${appBarHeight}px`,
-        minHeight: "90vh",
+        // Fix white gap on Login page bottom
+        minHeight: "100vh",
     },
 });
 
