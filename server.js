@@ -25,6 +25,16 @@ const fileFilter = (req, file, cb) => {
     }
 }
 
+// https://stackoverflow.com/a/65894606
+const helmetConfig = {
+    contentSecurityPolicy: {
+        directives: {
+            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+            "script-src": ["'self'", "'unsafe-inline'"],
+        },
+    },
+}
+
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter
@@ -40,7 +50,7 @@ app.use(express.static(path.join(__dirname, "photos")));
 app.use(cookieParser());
 app.set('json spaces', 2);
 
-app.use(helmet());
+app.use(helmet(helmetConfig));
 app.use('/api', api);
 // should always be last route in this file
 // so that it catches non-api routes (e.g. request to load the spa)
