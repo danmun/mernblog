@@ -34,6 +34,7 @@ const helmetConfig = {
             // https://stackoverflow.com/a/65334628
             "img-src": [
                 "'self'",
+                "data:",
                 "i.imgur.com",
                 "localhost",
                 "drive.google.com",
