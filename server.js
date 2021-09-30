@@ -37,7 +37,7 @@ const helmetConfig = {
                 "i.imgur.com",
                 "localhost",
                 "drive.google.com",
-                "googleusercontent.com",
+                "*.googleusercontent.com",
                 "wanderingblog.herokuapp.com",
                 "wanderingblog-playground.herokuapp.com"]
         },
