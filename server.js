@@ -38,6 +38,7 @@ const helmetConfig = {
                 "localhost",
                 "drive.google.com",
                 "*.googleusercontent.com",
+                "docs.google.com",
                 "wanderingblog.herokuapp.com",
                 "wanderingblog-playground.herokuapp.com"]
         },
