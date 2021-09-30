@@ -555,7 +555,6 @@ class App extends React.Component {
                     {/* Solving this with Routes is more complicated and creates just as much fog, while also requires touching the Switch too*/}
                     {isAdmin &&
                         <AdminModal title={modal.title} open={modal.open} dispose={() => this.closePostManager(false, null)}>
-                            {console.log("this renders here")}
                             {modal.postCreation && <PostManager onCreated={this.onPostCreated} onEdited={this.onPostEdited} post={modal.post} isAbout={modal.isAbout}/>}
                             {modal.mfaSetup && <MfaManager/>}
                             {modal.galleryCreation && <CreateAlbum onCreate={this.submitAlbum}/>}

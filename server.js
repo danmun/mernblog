@@ -32,7 +32,14 @@ const helmetConfig = {
             // https://stackoverflow.com/a/65894606
             "script-src": ["'self'", "'unsafe-inline'"],
             // https://stackoverflow.com/a/65334628
-            "img-src": ["'self'", "i.imgur.com", "localhost", "wanderingblog.herokuapp.com", "wanderingblog-playground.herokuapp.com"]
+            "img-src": [
+                "'self'",
+                "i.imgur.com",
+                "localhost",
+                "drive.google.com",
+                "googleusercontent.com",
+                "wanderingblog.herokuapp.com",
+                "wanderingblog-playground.herokuapp.com"]
         },
     },
 }
