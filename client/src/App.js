@@ -96,23 +96,7 @@ class App extends React.Component {
         this.renderLogin = this.renderLogin.bind(this);
     }
 
-    // state/props tracker, more details https://stackoverflow.com/a/51082563
-    componentDidUpdate(prevProps, prevState) {
-        Object.entries(this.props).forEach(
-            ([key, val]) =>
-                prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-        );
-        if (this.state) {
-            Object.entries(this.state).forEach(
-                ([key, val]) =>
-                    prevState[key] !== val &&
-                    console.log(`State '${key}' changed`)
-            );
-        }
-    }
-
     componentDidMount() {
-        // TODO add session expiry info here, can display in appbar or somewhere
         checkLoggedIn().then((isAdmin) => {
             this.setState({ isAdmin: isAdmin });
         });
