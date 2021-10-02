@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import WarningIcon from "@material-ui/icons/Warning";
 import { makeStyles } from "@material-ui/core/styles";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const variantIcon = {
     success: CheckCircleIcon,
@@ -75,8 +75,8 @@ AlertBox.propTypes = {
     onClose: PropTypes.func,
     variant: PropTypes.string,
     open: PropTypes.any,
-    message: PropTypes.string
-}
+    message: PropTypes.string,
+};
 
 const useStyles2 = makeStyles((theme) => ({
     margin: {

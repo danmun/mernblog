@@ -3,11 +3,11 @@ import Post from "./Post";
 import IconButton from "@material-ui/core/IconButton";
 import AddPostIcon from "@material-ui/icons/AddCircle";
 import Spinner from "../common/Spinner";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { fetchAbout } from "../api/about";
 
 const About = (props) => {
-    const {post, onEdit, onCreate} = props;
+    const { post, onEdit, onCreate } = props;
     const [about, setAbout] = useState({
         loading: true,
         post: null,
@@ -27,14 +27,17 @@ const About = (props) => {
 
     // the passed post enjoys priority over the fetched post, as it is more up-to-date (e.g. edited/created)
     // it must come first in the conditional assignment
-    const postToShow = post || about.post
+    const postToShow = post || about.post;
     return (
         <React.Fragment>
-            {about.loading ? <Spinner/> : showAbout(postToShow, onEdit)}
-            {(onCreate && !about.loading && !postToShow) && showCreateAbout(onCreate)}
+            {about.loading ? <Spinner /> : showAbout(postToShow, onEdit)}
+            {onCreate &&
+                !about.loading &&
+                !postToShow &&
+                showCreateAbout(onCreate)}
         </React.Fragment>
     );
-}
+};
 
 /**
  * Show button to create an About post.
@@ -54,7 +57,7 @@ const showCreateAbout = (onCreate) => {
             </IconButton>
         </div>
     );
-}
+};
 
 const showAbout = (post, onEdit) => {
     if (!post) {
@@ -72,7 +75,7 @@ const showAbout = (post, onEdit) => {
             </React.Fragment>
         );
     }
-}
+};
 
 const styles = {
     emptyAbout: {
@@ -95,7 +98,7 @@ About.propTypes = {
     // callback when edit icon is pressed - this only opens the PostManager,
     // the PostManager is then responsible for passing back the edited post to About via the post prop
     onEdit: PropTypes.func,
-    onCreate: PropTypes.func
-}
+    onCreate: PropTypes.func,
+};
 
 export default About;

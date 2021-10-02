@@ -3,17 +3,17 @@ import { convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
 import PostManagerForm from "./PostManagerForm";
 import { getImgurClientId } from "../api/auth";
-import PropTypes from 'prop-types';
-import {createPost, editPost} from "../api/posts";
-import {createAbout, editAbout} from "../api/about";
+import PropTypes from "prop-types";
+import { createPost, editPost } from "../api/posts";
+import { createAbout, editAbout } from "../api/about";
 
 // TODO: rename to PostEditor and PostEditorForm
 class PostManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isSubmitting: false
-        }
+            isSubmitting: false,
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.uploadImageCallback = this.uploadImageCallback.bind(this);
         this.uploadImage = this.uploadImage.bind(this);
@@ -106,12 +106,16 @@ class PostManager extends React.Component {
             tags: tags.split("#").filter((item) => item), // split string of tags into hashtagless array
         };
 
-        this.setState({isSubmitting: true});
-        const {isAbout} = this.props;
+        this.setState({ isSubmitting: true });
+        const { isAbout } = this.props;
         if (post.id === null || post.id.trim().length === 0) {
-            isAbout ? this.submitCreateAbout(post, isDraft) : this.submitCreatePost(post, isDraft);
+            isAbout
+                ? this.submitCreateAbout(post, isDraft)
+                : this.submitCreatePost(post, isDraft);
         } else {
-            isAbout ? this.submitEditAbout(post, isDraft) : this.submitEditPost(post, isDraft);
+            isAbout
+                ? this.submitEditAbout(post, isDraft)
+                : this.submitEditPost(post, isDraft);
         }
     }
 
@@ -176,28 +180,28 @@ class PostManager extends React.Component {
 
     submitCreatePost(post, isDraft) {
         createPost(post, isDraft).then((json) => {
-            this.setState({isSubmitting: false});
-            this.props.onCreated(json.post)
+            this.setState({ isSubmitting: false });
+            this.props.onCreated(json.post);
         });
     }
 
     submitEditPost(post, isDraft) {
         editPost(post, isDraft).then((json) => {
-            this.setState({isSubmitting: false});
+            this.setState({ isSubmitting: false });
             this.props.onEdited(json.post);
         });
     }
 
     submitCreateAbout(post, isDraft) {
         createAbout(post, isDraft).then((json) => {
-            this.setState({isSubmitting: false});
-            this.props.onCreated(json.about)
+            this.setState({ isSubmitting: false });
+            this.props.onCreated(json.about);
         });
     }
 
-    submitEditAbout(post, isDraft){
+    submitEditAbout(post, isDraft) {
         editAbout(post, isDraft).then((json) => {
-            this.setState({isSubmitting: false});
+            this.setState({ isSubmitting: false });
             this.props.onEdited(json.about);
         });
     }
@@ -222,6 +226,6 @@ PostManager.propTypes = {
     onEdited: PropTypes.func,
     post: PropTypes.object,
     isAbout: PropTypes.bool,
-}
+};
 
 export default PostManager;

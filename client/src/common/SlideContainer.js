@@ -29,7 +29,7 @@ const styles = {
 };
 
 SlideContainer.propTypes = {
-    children: PropTypes.any
-}
+    children: PropTypes.any,
+};
 
 export default SlideContainer;

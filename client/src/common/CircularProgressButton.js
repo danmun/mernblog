@@ -2,11 +2,11 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { green } from "@material-ui/core/colors";
 import { Button, CircularProgress } from "@material-ui/core";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 function CircularProgressButton(props) {
     const classes = useStyles();
-    const {loading, disabled, className, onClick} = props;
+    const { loading, disabled, className, onClick } = props;
 
     const handleButtonClick = (event) => {
         event.preventDefault();
@@ -24,7 +24,12 @@ function CircularProgressButton(props) {
                 />
                 {/* size=24 comes from Mui official docs for setting up a button with a spinner over it,
                     this size is tightly coupled to other styling, so don't touch it */}
-                {loading && <CircularProgress size={24} className={classes.buttonProgress}/>}
+                {loading && (
+                    <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                    />
+                )}
             </div>
         </div>
     );
@@ -41,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
         position: "relative",
     },
     button: {
-        minWidth: "100%"
+        minWidth: "100%",
     },
     buttonProgress: {
         width: "100%",
@@ -58,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
 
 CircularProgressButton.propTypes = {
     onClick: PropTypes.func,
-    loading: PropTypes.bool
-}
+    loading: PropTypes.bool,
+};
 
 export default CircularProgressButton;

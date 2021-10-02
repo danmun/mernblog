@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 import { TextField } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import CircularProgressButton from "../common/CircularProgressButton";
 
 class CreateAlbum extends React.Component {
@@ -16,7 +16,7 @@ class CreateAlbum extends React.Component {
             tags: "", // textfield value
             description: "",
             images: [],
-            isSubmitting: false
+            isSubmitting: false,
         };
 
         this.hashtagOnBlur = this.hashtagOnBlur.bind(this);
@@ -71,7 +71,7 @@ class CreateAlbum extends React.Component {
     }
 
     handleSubmit() {
-        this.setState({isSubmitting: true});
+        this.setState({ isSubmitting: true });
         // do API call here, then do:
         // this.setState({isSubmitting: false});
         // TODO:CLEANUP fix album creation, do api call from here, implement the rest ... etc...
@@ -219,7 +219,7 @@ const styles = {
 };
 
 CreateAlbum.propTypes = {
-    onCreate: PropTypes.func
-}
+    onCreate: PropTypes.func,
+};
 
 export default CreateAlbum;

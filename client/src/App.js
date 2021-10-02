@@ -96,7 +96,23 @@ class App extends React.Component {
         this.renderLogin = this.renderLogin.bind(this);
     }
 
+    // state/props tracker, more details https://stackoverflow.com/a/51082563
+    componentDidUpdate(prevProps, prevState) {
+        Object.entries(this.props).forEach(
+            ([key, val]) =>
+                prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+        );
+        if (this.state) {
+            Object.entries(this.state).forEach(
+                ([key, val]) =>
+                    prevState[key] !== val &&
+                    console.log(`State '${key}' changed`)
+            );
+        }
+    }
+
     componentDidMount() {
+        // TODO add session expiry info here, can display in appbar or somewhere
         checkLoggedIn().then((isAdmin) => {
             this.setState({ isAdmin: isAdmin });
         });
@@ -151,23 +167,47 @@ class App extends React.Component {
     }
 
     openCreatePost() {
-        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.CREATE_POST, null, false)})
+        this.setState({
+            modal: Modals.POST_MANAGER(
+                Modals.POST_MANAGER_TYPES.CREATE_POST,
+                null,
+                false
+            ),
+        });
     }
 
     openEditPost(post) {
-        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.EDIT_POST, post, false)})
+        this.setState({
+            modal: Modals.POST_MANAGER(
+                Modals.POST_MANAGER_TYPES.EDIT_POST,
+                post,
+                false
+            ),
+        });
     }
 
     openCreateAbout() {
-        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.CREATE_ABOUT, null, true)})
+        this.setState({
+            modal: Modals.POST_MANAGER(
+                Modals.POST_MANAGER_TYPES.CREATE_ABOUT,
+                null,
+                true
+            ),
+        });
     }
 
     openEditAbout(post) {
-        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.EDIT_ABOUT, post, true)})
+        this.setState({
+            modal: Modals.POST_MANAGER(
+                Modals.POST_MANAGER_TYPES.EDIT_ABOUT,
+                post,
+                true
+            ),
+        });
     }
 
     openDeletePost(post) {
-        this.setState({modal: Modals.POST_DELETION(post)})
+        this.setState({ modal: Modals.POST_DELETION(post) });
     }
 
     // this is only called when post was actually deleted
@@ -177,7 +217,7 @@ class App extends React.Component {
         this.setState({
             refreshFeed: true,
             slideState: initialSlideState,
-            modal: Modals.INITIAL()
+            modal: Modals.INITIAL(),
         });
         this.props.history.push("/");
     }
@@ -192,11 +232,11 @@ class App extends React.Component {
 
     closePostManager(stateChanged, post) {
         let slideState = this.state.slideState;
-        const {pageToShow} = this.state
+        const { pageToShow } = this.state;
         // if we are on feed, we need to manage the slide state
         // if we are not on feed (e.g. About), we need not worry about the slide state
         if (pageToShow === PAGES.FEED || pageToShow === PAGES.ABOUT) {
-             // PAGES.ABOUT only happens if we navigate to About within the app, not if we visit via URL
+            // PAGES.ABOUT only happens if we navigate to About within the app, not if we visit via URL
             slideState = {
                 ...this.state.slideState,
                 itemToShow: post || this.state.slideState.itemToShow,
@@ -210,9 +250,13 @@ class App extends React.Component {
         });
     }
 
-    openCreateAlbum() { this.setState({ modal: Modals.CREATE_ALBUM() }); }
+    openCreateAlbum() {
+        this.setState({ modal: Modals.CREATE_ALBUM() });
+    }
 
-    openMfaSetup() { this.setState({ modal: Modals.MFA_SETUP() }); }
+    openMfaSetup() {
+        this.setState({ modal: Modals.MFA_SETUP() });
+    }
 
     submitAlbum(album) {
         let { title, tags, description, images } = album;
@@ -235,7 +279,7 @@ class App extends React.Component {
         // could change push to ".replace" see if it makes a difference
         this.props.history.push({ pathname: PAGES_URLS[newPage] });
         if (newPage === PAGES.LOGIN && this.state.isAdmin) {
-            if(this.state.mobileOpen) this.setState({ mobileOpen: false });
+            if (this.state.mobileOpen) this.setState({ mobileOpen: false });
             // we do not show login page when admin is logged in
             return;
         }
@@ -255,7 +299,7 @@ class App extends React.Component {
             } else {
                 // otherwise do nothing because we're already on the first slide of the requested page
                 // e.g. page 1, slide 1 - Feed page, list of posts slide
-                if(this.state.mobileOpen) this.setState({ mobileOpen: false });
+                if (this.state.mobileOpen) this.setState({ mobileOpen: false });
             }
         } else {
             // if switching to another page, do a render to make new page appear;
@@ -312,7 +356,9 @@ class App extends React.Component {
                             {/* TODO: change readPost={} to onRead={}*/}
                             <Feed
                                 refresh={this.state.refreshFeed}
-                                onRefresh={() => this.setState({ refreshFeed: false })}
+                                onRefresh={() =>
+                                    this.setState({ refreshFeed: false })
+                                }
                                 readPost={this.viewPostAndUpdateSlide}
                                 onEdit={onEdit}
                                 onDelete={onDelete}
@@ -352,31 +398,47 @@ class App extends React.Component {
             // this is dirty and so is the same thing we did for Post routing, refactor ASAP
             return (
                 // note the optional /imdIdx route denoted by question mark
-                <Route path='/gallery/album/:albumId/:imgIdx?' render={() => {
-                    return (
-                        <SlideContainer>
-                            <PhotoViewer>
-                                {/* TODO:CLEANUP why is this not <Gallery ... > ? why the need to specify components here instead of using gallery with props?
+                <Route
+                    path="/gallery/album/:albumId/:imgIdx?"
+                    render={() => {
+                        return (
+                            <SlideContainer>
+                                <PhotoViewer>
+                                    {/* TODO:CLEANUP why is this not <Gallery ... > ? why the need to specify components here instead of using gallery with props?
                                                 gallery should be referring to exact same variable (component) on route and non-route renders!
                                                 currently they have 2 different renders (noticed because button had different text on routed render vs non routed render
                                 */}
-                                <div style={styles.gallery.buttons.container}>
-                                    <Button onClick={() => this.viewAlbumAndUpdateSlide("prev", null)} size="small">
-                                        <ArrowBack/>
-                                    </Button>
-                                    <CircularProgressButton
-                                        loading={false} // change once implemented downloads
-                                        onClick={() => console.log("pressed download")}>
-                                        Download
-                                        <Icon>save</Icon>
-                                    </CircularProgressButton>
-                                </div>
-                            </PhotoViewer>
-                        </SlideContainer>
-                    )
-                }}/>
-            )
-        }else{
+                                    <div
+                                        style={styles.gallery.buttons.container}
+                                    >
+                                        <Button
+                                            onClick={() =>
+                                                this.viewAlbumAndUpdateSlide(
+                                                    "prev",
+                                                    null
+                                                )
+                                            }
+                                            size="small"
+                                        >
+                                            <ArrowBack />
+                                        </Button>
+                                        <CircularProgressButton
+                                            loading={false} // change once implemented downloads
+                                            onClick={() =>
+                                                console.log("pressed download")
+                                            }
+                                        >
+                                            Download
+                                            <Icon>save</Icon>
+                                        </CircularProgressButton>
+                                    </div>
+                                </PhotoViewer>
+                            </SlideContainer>
+                        );
+                    }}
+                />
+            );
+        } else {
             return (
                 <SlideContainer>
                     <Grid item style={styles.slides.gallery.container}>
@@ -392,7 +454,7 @@ class App extends React.Component {
     }
 
     renderAbout() {
-        const {isAdmin, slideState} = this.state;
+        const { isAdmin, slideState } = this.state;
         const onCreate = isAdmin ? this.openCreateAbout : null;
         const onEdit = isAdmin ? this.openEditAbout : null;
         return (
@@ -402,7 +464,11 @@ class App extends React.Component {
                     className={"hyphenate"}
                     style={styles.slides.about.container}
                 >
-                    <About onCreate={onCreate} onEdit={onEdit} post={slideState.itemToShow}/>
+                    <About
+                        onCreate={onCreate}
+                        onEdit={onEdit}
+                        post={slideState.itemToShow}
+                    />
                 </Grid>
             </SlideContainer>
         );
@@ -461,24 +527,54 @@ class App extends React.Component {
                 <main className={classes.content}>
                     <Switch>
                         {/* order of Routes ARE IMPORTANT*/}
-                        <Route exact path='/about' render={this.renderAbout} key={this.props.location.pathname}/>
-                        {!isAdmin && <Route exact path='/login' render={this.renderLogin} key={this.props.location.pathname}/>}
-                        <Route path='/gallery' render={this.renderGallery}/>
-                        <Route path='/' render={this.renderBlog}/>
+                        <Route
+                            exact
+                            path="/about"
+                            render={this.renderAbout}
+                            key={this.props.location.pathname}
+                        />
+                        {!isAdmin && (
+                            <Route
+                                exact
+                                path="/login"
+                                render={this.renderLogin}
+                                key={this.props.location.pathname}
+                            />
+                        )}
+                        <Route path="/gallery" render={this.renderGallery} />
+                        <Route path="/" render={this.renderBlog} />
                     </Switch>
                 </main>
 
                 <div>
                     {/* Solving this with Routes is more complicated and creates just as much fog, while also requires touching the Switch too*/}
-                    {isAdmin &&
-                        <AdminModal title={modal.title} open={modal.open} dispose={() => this.closePostManager(false, null)}>
-                            {modal.postCreation && <PostManager onCreated={this.onPostCreated} onEdited={this.onPostEdited} post={modal.post} isAbout={modal.isAbout}/>}
-                            {modal.mfaSetup && <MfaManager/>}
-                            {modal.galleryCreation && <CreateAlbum onCreate={this.submitAlbum}/>}
+                    {isAdmin && (
+                        <AdminModal
+                            title={modal.title}
+                            open={modal.open}
+                            dispose={() => this.closePostManager(false, null)}
+                        >
+                            {modal.postCreation && (
+                                <PostManager
+                                    onCreated={this.onPostCreated}
+                                    onEdited={this.onPostEdited}
+                                    post={modal.post}
+                                    isAbout={modal.isAbout}
+                                />
+                            )}
+                            {modal.mfaSetup && <MfaManager />}
+                            {modal.galleryCreation && (
+                                <CreateAlbum onCreate={this.submitAlbum} />
+                            )}
                             {/*{modal.galleryCreation && <PhotoPreviewPane onCreate={this.submitAlbum}/>}*/}
-                            {modal.postDeletion && <DeleteConfirmation onConfirm={this.closeDeletePost} toDelete={modal.post}/>}
+                            {modal.postDeletion && (
+                                <DeleteConfirmation
+                                    onConfirm={this.closeDeletePost}
+                                    toDelete={modal.post}
+                                />
+                            )}
                         </AdminModal>
-                    }
+                    )}
                 </div>
             </div>
         );
@@ -550,7 +646,7 @@ class Modals {
         CREATE_POST: 0,
         EDIT_POST: 1,
         CREATE_ABOUT: 2,
-        EDIT_ABOUT: 3
+        EDIT_ABOUT: 3,
     };
 
     static TITLES = {
@@ -561,50 +657,52 @@ class Modals {
             "Create a post",
             "Edit your post",
             "Add an About section",
-            "Edit the About section"
-        ]
+            "Edit the About section",
+        ],
     };
 
-    static POST_DELETION(post){
+    static POST_DELETION(post) {
         return {
             open: true,
             postDeletion: true,
             title: this.TITLES.POST_DELETION,
-            post: post
+            post: post,
         };
     }
 
-    static POST_MANAGER(type, post, isAbout){
+    static POST_MANAGER(type, post, isAbout) {
         return {
             open: true,
             postCreation: true,
-            title: type < this.TITLES.POST_MANAGER.length ? this.TITLES.POST_MANAGER[type] : "",
+            title:
+                type < this.TITLES.POST_MANAGER.length
+                    ? this.TITLES.POST_MANAGER[type]
+                    : "",
             post: post,
-            isAbout: isAbout
+            isAbout: isAbout,
         };
     }
 
-    static CREATE_ALBUM(){
+    static CREATE_ALBUM() {
         return {
             open: true,
             galleryCreation: true,
-            title: this.TITLES.CREATE_ALBUM
+            title: this.TITLES.CREATE_ALBUM,
         };
     }
 
-    static MFA_SETUP(){
+    static MFA_SETUP() {
         return {
             open: true,
             mfaSetup: true,
-            title: this.TITLES.MFA_SETUP
+            title: this.TITLES.MFA_SETUP,
         };
     }
 
     // for consistency
-    static INITIAL(){
+    static INITIAL() {
         return {};
     }
-
 }
 
 export default withStyles(useStyles)(withRouter(App));

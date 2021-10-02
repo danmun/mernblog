@@ -14,7 +14,7 @@ function ResponsiveDrawer(props) {
     };
     const drawerProps = {
         keepMounted: true, // Better open performance on mobile.
-    }
+    };
 
     return (
         // original z-index is 1200 for the Drawer, must be lowered for the lightbox to be fully visible
@@ -61,6 +61,6 @@ const useStyles = makeStyles(styles);
 ResponsiveDrawer.propTypes = {
     mobileOpen: PropTypes.bool,
     dispose: PropTypes.func,
-    children: PropTypes.any
-}
+    children: PropTypes.any,
+};
 export default ResponsiveDrawer;

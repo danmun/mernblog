@@ -4,7 +4,7 @@ import { TextField } from "@material-ui/core";
 import CircularProgressButton from "../common/CircularProgressButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { deletePost } from "../api/posts";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 class DeleteConfirmation extends React.Component {
     constructor(props) {
@@ -13,19 +13,19 @@ class DeleteConfirmation extends React.Component {
         this.state = {
             title: "",
             doDelete: false,
-            isSubmitting: false
+            isSubmitting: false,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit(event) {
-        this.setState({isSubmitting: true});
+        this.setState({ isSubmitting: true });
         const post = this.props.toDelete;
         let that = this;
         deletePost(post).then((json) => {
             // maybe best to check if json.status === 200 etc...
-            this.setState({isSubmitting: false});
+            this.setState({ isSubmitting: false });
             that.props.onConfirm(post);
         });
     }
@@ -73,13 +73,13 @@ const styles = {
     submit: {
         container: {
             width: "100%",
-        }
+        },
     },
 };
 
 DeleteConfirmation.propTypes = {
     onConfirm: PropTypes.func,
-    toDelete: PropTypes.object
-}
+    toDelete: PropTypes.object,
+};
 
 export default DeleteConfirmation;

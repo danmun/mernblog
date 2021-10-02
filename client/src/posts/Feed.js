@@ -2,7 +2,7 @@ import React from "react";
 import TextTruncate from "react-text-truncate";
 import DeletePostIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 import {
     CardContent,
@@ -130,22 +130,36 @@ class Feed extends React.Component {
             return (
                 <React.Fragment>
                     {this.state.posts.map((post, posti) => {
-                        const date = post.publishedAt ? new Date(post.publishedAt).toLocaleString() : "DRAFT";
-                        const style = post.publishedAt ? {} : {opacity: 0.5};
-                        const readLabel = post.publishedAt ? "Read post" : "Read draft";
+                        const date = post.publishedAt
+                            ? new Date(post.publishedAt).toLocaleString()
+                            : "DRAFT";
+                        const style = post.publishedAt ? {} : { opacity: 0.5 };
+                        const readLabel = post.publishedAt
+                            ? "Read post"
+                            : "Read draft";
                         return (
                             <div key={"post" + posti + "_" + post.createdOn}>
                                 <Card style={style}>
                                     <CardContent>
-                                        <Typography color="textSecondary" gutterBottom>
+                                        <Typography
+                                            color="textSecondary"
+                                            gutterBottom
+                                        >
                                             {date}
                                         </Typography>
                                         <Typography variant="h5" component="h2">
                                             {post.title}
                                         </Typography>
-                                        <Typography variant="body2" component="div" style={styles.previewText}>
+                                        <Typography
+                                            variant="body2"
+                                            component="div"
+                                            style={styles.previewText}
+                                        >
                                             {/*{this.truncateTextTo(2, post.plaintext)}*/}
-                                            {this.shortenTextTo(120, post.plaintext)}
+                                            {this.shortenTextTo(
+                                                120,
+                                                post.plaintext
+                                            )}
                                         </Typography>
                                         <br />
                                         <Typography color="textSecondary">
@@ -153,11 +167,21 @@ class Feed extends React.Component {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Grid container direction="row" justify="space-between" alignItems="center">
+                                        <Grid
+                                            container
+                                            direction="row"
+                                            justify="space-between"
+                                            alignItems="center"
+                                        >
                                             <Grid item>
                                                 <Button
                                                     size="small"
-                                                    onClick={() => this.props.readPost("next", post)}
+                                                    onClick={() =>
+                                                        this.props.readPost(
+                                                            "next",
+                                                            post
+                                                        )
+                                                    }
                                                 >
                                                     {readLabel}
                                                 </Button>
@@ -232,7 +256,7 @@ Feed.propTypes = {
     onRefresh: PropTypes.func,
     readPost: PropTypes.func,
     onEdit: PropTypes.func,
-    onDelete: PropTypes.func
-}
+    onDelete: PropTypes.func,
+};
 
 export default Feed;

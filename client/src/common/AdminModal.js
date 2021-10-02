@@ -2,11 +2,11 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { Fade, Grid, IconButton, Backdrop, Modal } from "@material-ui/core";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const backdropProps = {
     timeout: 500,
-}
+};
 
 function AdminModal(props) {
     const classes = useStyles();
@@ -111,7 +111,7 @@ AdminModal.propTypes = {
     title: PropTypes.string,
     open: PropTypes.bool,
     dispose: PropTypes.func,
-    children: PropTypes.any
-}
+    children: PropTypes.any,
+};
 
 export default AdminModal;

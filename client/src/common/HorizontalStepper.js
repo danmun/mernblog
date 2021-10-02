@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Icon, StepLabel, Step, Stepper } from "@material-ui/core";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     },
     nextButton: {
         marginLeft: theme.spacing(1),
-    }
+    },
 }));
 
 function HorizontalStepper(props) {
@@ -44,7 +44,7 @@ function HorizontalStepper(props) {
                 })}
             </Stepper>
             <div style={styles.button.back.container}>
-                <div style={{display: "flex", justifyContent: "center"}}>
+                <div style={{ display: "flex", justifyContent: "center" }}>
                     <Button
                         variant="contained"
                         disabled={activeStep === 0}
@@ -104,7 +104,7 @@ HorizontalStepper.propTypes = {
     steps: PropTypes.array,
     onNext: PropTypes.func,
     onBack: PropTypes.func,
-    onSubmit: PropTypes.func
-}
+    onSubmit: PropTypes.func,
+};
 
 export default HorizontalStepper;

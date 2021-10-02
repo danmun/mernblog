@@ -6,7 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 function Album(props) {
     const classes = useStyles();
@@ -34,9 +34,7 @@ function Album(props) {
                 </Typography>
             </CardContent>
 
-            <CardActions>
-                {props.children}
-            </CardActions>
+            <CardActions>{props.children}</CardActions>
         </Card>
     );
 }
@@ -52,7 +50,7 @@ const useStyles = makeStyles({
 });
 
 Album.propTypes = {
-    album: PropTypes.object
-}
+    album: PropTypes.object,
+};
 
 export default Album;

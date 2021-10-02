@@ -10,7 +10,7 @@ import Spinner from "../common/Spinner";
 import CircularProgressButton from "../common/CircularProgressButton";
 import { Icon } from "@material-ui/core";
 import { fetchGallery } from "../api/gallery";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const springConfig = {
     duration: "1s",
@@ -85,7 +85,10 @@ class Gallery extends React.Component {
                         {albums.map((album, albumi) => {
                             return (
                                 <Grid key={album.thumb} item>
-                                    {this.createAlbum(this.props.viewAlbum, album)}
+                                    {this.createAlbum(
+                                        this.props.viewAlbum,
+                                        album
+                                    )}
                                 </Grid>
                             );
                         })}
@@ -96,7 +99,12 @@ class Gallery extends React.Component {
                             <PhotoViewer album={albumToShow}>
                                 <div style={styles.album.buttons.container}>
                                     <Button
-                                        onClick={() => this.props.viewAlbum("prev", albumToShow)}
+                                        onClick={() =>
+                                            this.props.viewAlbum(
+                                                "prev",
+                                                albumToShow
+                                            )
+                                        }
                                         size="small"
                                     >
                                         <ArrowBack />
@@ -120,10 +128,12 @@ class Gallery extends React.Component {
     }
 
     downloadAlbum(albumId) {
-        this.setState({isDownloading: true})
+        this.setState({ isDownloading: true });
         console.log(albumId);
         // fetch() zipped pics etc...
-        setTimeout(() => {this.setState({isDownloading: false})}, 3000);
+        setTimeout(() => {
+            this.setState({ isDownloading: false });
+        }, 3000);
     }
 
     render() {
@@ -171,7 +181,7 @@ const styles = {
 Gallery.propTypes = {
     albumToShow: PropTypes.object,
     slideIndex: PropTypes.number,
-    viewAlbum: PropTypes.func
-}
+    viewAlbum: PropTypes.func,
+};
 
 export default Gallery;

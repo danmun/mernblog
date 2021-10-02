@@ -7,12 +7,13 @@ export async function login(form) {
         headers: {
             "Content-Type": "application/json",
         },
-    }).then((res) => res.json()
-        .then((json) => {
-                json.success = res.ok
-                return json
-            }
-        ))
+    })
+        .then((res) =>
+            res.json().then((json) => {
+                json.success = res.ok;
+                return json;
+            })
+        )
         .then((json) => json);
 }
 

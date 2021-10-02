@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { withRouter } from "react-router-dom";
 import { fetchAlbum } from "../api/gallery";
 import Spinner from "../common/Spinner";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 const ALBUM_URL_BASE = "/gallery/album/";
 
@@ -75,7 +75,10 @@ class PhotoViewer extends React.Component {
                 {album.photos.map((photo, photoi) => {
                     return (
                         <Grid key={photo} item>
-                            <Photo photo={photo} showPhoto={() => this.toggleLightbox(photoi)}/>
+                            <Photo
+                                photo={photo}
+                                showPhoto={() => this.toggleLightbox(photoi)}
+                            />
                         </Grid>
                     );
                 })}
@@ -124,7 +127,7 @@ class PhotoViewer extends React.Component {
         } else if (newDirection === "next") {
             photoIndex = (index + 1) % images.length;
         }
-        this.setState({photoIndex: photoIndex});
+        this.setState({ photoIndex: photoIndex });
         // we can push just the id here since the parent will already be the album ID
         // gallery/album/<albumId>/<photoIndex>
         this.props.history.push(`${photoIndex}`);
@@ -168,7 +171,7 @@ const styles = {
 
 PhotoViewer.propTypes = {
     album: PropTypes.object,
-    children: PropTypes.any
-}
+    children: PropTypes.any,
+};
 
 export default withRouter(PhotoViewer);

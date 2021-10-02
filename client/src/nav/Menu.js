@@ -8,7 +8,7 @@ import AddAlbumIcon from "@material-ui/icons/AddPhotoAlternate";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PhonelinkLock from "@material-ui/icons/PhonelinkLock";
 import { logout } from "../api/auth";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 function Menu(props) {
     const [mobile, setMobile] = useState(false);
@@ -105,8 +105,7 @@ Menu.propTypes = {
     createAlbum: PropTypes.func,
     onLogout: PropTypes.func,
     navigator: PropTypes.func,
-    mfaSetup: PropTypes.func
-}
-
+    mfaSetup: PropTypes.func,
+};
 
 export default Menu;

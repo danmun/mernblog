@@ -8,6 +8,7 @@ const STRINGS = require('../../locale/en').STRINGS;
 const DEFAULT_SECRET = "not_so_secret";
 const SECRET = (process.env.SECRET || DEFAULT_SECRET).trim();
 const TOKEN_EXPIRY = (process.env.TOKEN_EXPIRY || "2h").trim();
+const MFA_APP_NAME = "MernBlog"
 if(SECRET === DEFAULT_SECRET){
     console.error("!!!!!!!!!!!!!   Production server SECRET is not set in env   !!!!!!!!!!!!! - controllers/user.js")
 }
@@ -64,7 +65,7 @@ const enrol2fa = async (req, res) => {
             } else {
                 // secret is a json
                 // for some reason, generated QR code is invalid in Authenticator extension in Chrome, the secret works though
-                const secret = twoFactor.generateSecret({ name: "MernBlog", account: req.user.username });
+                const secret = twoFactor.generateSecret({ name: MFA_APP_NAME, account: req.user.username });
                 // ideally we should encrypt this secret and have the encryption key with frontend
                 // so it can decrypt would protect from MITM
                 // or set the secret in a cookie as encrypted jwt as source of truth
@@ -123,15 +124,11 @@ const remove2fa = async (req, res) => {
     }
 }
 
-const isAdmin = (req, res) => {
-    res.send({
-        "isAdmin": !!req.user
-    })
-}
+const isAdmin = (req, res) => { res.send({ isAdmin: !!req.user }) }
 
 const has2fa = async (req, res) => {
     const enrolment = await MFAEnrolment.findOne({user: req.user._id});
-    res.status(200).send({"enabled": !!enrolment})
+    res.status(200).send({ enabled: !!enrolment })
 }
 
 module.exports = {

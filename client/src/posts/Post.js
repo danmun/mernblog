@@ -1,12 +1,7 @@
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "../style/editor.css";
 import React from "react";
-import {
-    Paper,
-    Grid,
-    Typography,
-    IconButton,
-} from "@material-ui/core";
+import { Paper, Grid, Typography, IconButton } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import DeletePostIcon from "@material-ui/icons/Delete";
@@ -19,7 +14,7 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import AlertBox, { variants } from "../common/AlertBox";
 import { fetchPost } from "../api/posts";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 class Post extends React.Component {
     constructor(props) {
@@ -79,7 +74,7 @@ class Post extends React.Component {
             <IconButton
                 edge="start"
                 onClick={() => this.props.onEdit(post)}
-                style={ styles.title.icons.edit }
+                style={styles.title.icons.edit}
             >
                 <EditIcon />
             </IconButton>
@@ -92,24 +87,20 @@ class Post extends React.Component {
             <IconButton
                 edge="start"
                 onClick={() => this.props.onDelete(post)}
-                style={ styles.title.icons.delete }
+                style={styles.title.icons.delete}
             >
                 <DeletePostIcon />
             </IconButton>
         );
     }
 
-    publishedDateComponent(date){
-        const text = date ? this.dateToStr(date) : "DRAFT"
-        return(
-            <Typography component="p">
-                {text}
-            </Typography>
-        );
+    publishedDateComponent(date) {
+        const text = date ? this.dateToStr(date) : "DRAFT";
+        return <Typography component="p">{text}</Typography>;
     }
-    
-    editedDateComponent(date){
-        return(
+
+    editedDateComponent(date) {
+        return (
             <Typography component="p" style={styles.title.details.edited}>
                 {"Edited: " + this.dateToStr(date)}
             </Typography>
@@ -127,7 +118,9 @@ class Post extends React.Component {
                     {this.props.readPost && (
                         <Grid item xs={1} style={styles.title.nav.container}>
                             <Button
-                                onClick={() => this.props.readPost("prev", editor.post)}
+                                onClick={() =>
+                                    this.props.readPost("prev", editor.post)
+                                }
                                 style={styles.title.nav.button}
                                 variant="outlined"
                             >
@@ -152,12 +145,19 @@ class Post extends React.Component {
                                     <Typography variant="h5" component="h3">
                                         {editor.post.title}
                                     </Typography>
-                                    {this.publishedDateComponent(editor.post.publishedAt)}
-                                    {(editor.post.editedOn && editor.post.displayEditDate) && this.editedDateComponent(editor.post.editedOn)}
+                                    {this.publishedDateComponent(
+                                        editor.post.publishedAt
+                                    )}
+                                    {editor.post.editedOn &&
+                                        editor.post.displayEditDate &&
+                                        this.editedDateComponent(
+                                            editor.post.editedOn
+                                        )}
                                 </Grid>
                                 <Grid item>
                                     {this.props.onEdit && this.renderEditIcon()}
-                                    {this.props.onDelete && this.renderDeleteIcon()}
+                                    {this.props.onDelete &&
+                                        this.renderDeleteIcon()}
                                 </Grid>
                             </Grid>
                         </Paper>
@@ -186,27 +186,27 @@ class Post extends React.Component {
         );
     }
 
-    dateToStr(date){
+    dateToStr(date) {
         return new Date(date).toLocaleString();
     }
 
     render() {
         // if post in props, it's coming from the feed
         // if post in state, it's coming from URL visit
-        const {post} = this.props;
+        const { post } = this.props;
         let editor = null;
-        if(post){
+        if (post) {
             // editor is created "in memory"
             editor = this.initEditor(post);
-        }else{
+        } else {
             // editor is taken from "state"
             editor = this.state;
         }
 
-        if(editor.post){
+        if (editor.post) {
             return this.showPost(editor);
-        }else if(editor.error){
-            return(
+        } else if (editor.error) {
+            return (
                 <React.Fragment>
                     <div style={styles.alert.container}>
                         <AlertBox
@@ -217,8 +217,8 @@ class Post extends React.Component {
                     </div>
                 </React.Fragment>
             );
-        }else{
-            return(<Spinner/>);
+        } else {
+            return <Spinner />;
         }
     }
 }
@@ -236,8 +236,8 @@ const useStyle = (theme) => ({
 const styles = {
     alert: {
         container: {
-            textAlign: "center"
-        }
+            textAlign: "center",
+        },
     },
     title: {
         icons: {
@@ -247,34 +247,34 @@ const styles = {
             },
             delete: {
                 color: "red",
-                padding: "7px"
-            }
+                padding: "7px",
+            },
         },
         nav: {
             container: {
-                display: "flex"
+                display: "flex",
             },
             button: {
                 textAlign: "center",
                 minHeight: "100%",
                 minWidth: "100%",
-            }
+            },
         },
         details: {
             container: {
-                textAlign: "left"
+                textAlign: "left",
             },
             edited: {
-                color: "#bdbdbd"
-            }
-        }
+                color: "#bdbdbd",
+            },
+        },
     },
     editor: {
         container: {
-            justifyContent: "center"
+            justifyContent: "center",
         },
         itemContainer: {
-            minWidth: "100%"
+            minWidth: "100%",
         },
         typography: {
             whiteSpace: "pre-wrap",
@@ -285,15 +285,15 @@ const styles = {
         self: {
             overflow: "visible",
             position: "relative",
-        }
-    }
-}
+        },
+    },
+};
 
 Post.propTypes = {
     post: PropTypes.object,
     onEdit: PropTypes.func,
     onDelete: PropTypes.func,
-    readPost: PropTypes.func
-}
+    readPost: PropTypes.func,
+};
 
 export default withRouter(withStyles(useStyle)(Post));

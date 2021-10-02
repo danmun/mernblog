@@ -102,8 +102,12 @@ class PostManagerForm extends React.Component {
         this.onEditorStateChange = this.onEditorStateChange.bind(this);
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleDateChangeChecked = this.handleDateChangeChecked.bind(this);
-        this.handleShowDisplayEditDate = this.handleShowDisplayEditDate.bind(this);
-        this.handleCreateAlbumChecked = this.handleCreateAlbumChecked.bind(this);
+        this.handleShowDisplayEditDate = this.handleShowDisplayEditDate.bind(
+            this
+        );
+        this.handleCreateAlbumChecked = this.handleCreateAlbumChecked.bind(
+            this
+        );
 
         this.changeSlide = this.changeSlide.bind(this);
 
@@ -240,7 +244,7 @@ class PostManagerForm extends React.Component {
             link: { inDropdown: true },
             history: { inDropdown: true },
             image: imgTool,
-        }
+        };
     }
 
     editorComponent(classes) {
@@ -293,7 +297,9 @@ class PostManagerForm extends React.Component {
                             value={this.state.selectedDate}
                             onChange={this.handleDateChange}
                             disabled={!this.state.selectedDateChecked}
-                            KeyboardButtonProps={styles.extras.date.picker.keyboardButtonProps}
+                            KeyboardButtonProps={
+                                styles.extras.date.picker.keyboardButtonProps
+                            }
                         />
                     </MuiPickersUtilsProvider>
                 </div>
@@ -305,7 +311,9 @@ class PostManagerForm extends React.Component {
                                 onChange={this.handleDateChangeChecked}
                                 value="checkedB"
                                 color="primary"
-                                inputProps={styles.extras.date.checkbox.inputProps}
+                                inputProps={
+                                    styles.extras.date.checkbox.inputProps
+                                }
                             />
                         }
                         label="Change post date"
@@ -320,7 +328,9 @@ class PostManagerForm extends React.Component {
                         placeholder="A date or a few words"
                         margin="normal"
                         variant="outlined"
-                        inputProps={styles.extras.album.title.inputField.inputProps}
+                        inputProps={
+                            styles.extras.album.title.inputField.inputProps
+                        }
                         onChange={this.albumTitleOnType}
                         disabled={!this.state.createAlbumChecked}
                     />
@@ -333,13 +343,15 @@ class PostManagerForm extends React.Component {
                                 onChange={this.handleCreateAlbumChecked}
                                 value="checkedB"
                                 color="primary"
-                                inputProps={styles.extras.album.checkbox.inputProps}
+                                inputProps={
+                                    styles.extras.album.checkbox.inputProps
+                                }
                             />
                         }
                         label="Create album"
                     />
                 </div>
-                {this.props.post &&
+                {this.props.post && (
                     <div style={styles.extras.editDisplay.container}>
                         <FormControlLabel
                             control={
@@ -348,19 +360,21 @@ class PostManagerForm extends React.Component {
                                     onChange={this.handleShowDisplayEditDate}
                                     value="checked"
                                     color="primary"
-                                    inputProps={styles.extras.editDisplay.inputProps}
+                                    inputProps={
+                                        styles.extras.editDisplay.inputProps
+                                    }
                                 />
                             }
                             label="Display edit date on post page"
                         />
                     </div>
-                }
+                )}
             </div>
         );
     }
 
-    submitButton(text, variant, onClick){
-        return(
+    submitButton(text, variant, onClick) {
+        return (
             <CircularProgressButton
                 loading={this.props.isSubmitting}
                 onClick={onClick}
@@ -370,40 +384,50 @@ class PostManagerForm extends React.Component {
                 {text}
                 <Icon>send</Icon>
             </CircularProgressButton>
-        )
+        );
     }
 
-    doSubmit(isDraft){
-        this.props.onSubmit(this.state, isDraft)
+    doSubmit(isDraft) {
+        this.props.onSubmit(this.state, isDraft);
     }
 
-    postModeButtons(isResponsive){
-        const {classes} = this.props;
-        return(
+    postModeButtons(isResponsive) {
+        const { classes } = this.props;
+        return (
             <ButtonContainer responsive={isResponsive} classes={classes}>
-                {this.submitButton("Publish", "contained", () => this.doSubmit(false))}
-                {this.submitButton("Draft", "outlined", () => this.doSubmit(true))}
+                {this.submitButton("Publish", "contained", () =>
+                    this.doSubmit(false)
+                )}
+                {this.submitButton("Draft", "outlined", () =>
+                    this.doSubmit(true)
+                )}
             </ButtonContainer>
-        )
+        );
     }
 
-    editModeButtons(isResponsive){
-        const {classes, post} = this.props;
+    editModeButtons(isResponsive) {
+        const { classes, post } = this.props;
         // if publishedAt exists, post is not a draft
-        if(post.publishedAt){
-            return(
+        if (post.publishedAt) {
+            return (
                 <ButtonContainer responsive={isResponsive} classes={classes}>
-                    {this.submitButton("Save", "contained",() => this.doSubmit(false))}
+                    {this.submitButton("Save", "contained", () =>
+                        this.doSubmit(false)
+                    )}
                 </ButtonContainer>
-            )
-        }else{
+            );
+        } else {
             // post is a draft
-            return(
+            return (
                 <ButtonContainer responsive={isResponsive} classes={classes}>
-                    {this.submitButton("Publish", "contained", () => this.doSubmit(false))}
-                    {this.submitButton("Save", "outlined", () => this.doSubmit(true))}
+                    {this.submitButton("Publish", "contained", () =>
+                        this.doSubmit(false)
+                    )}
+                    {this.submitButton("Save", "outlined", () =>
+                        this.doSubmit(true)
+                    )}
                 </ButtonContainer>
-            )
+            );
         }
     }
 
@@ -454,7 +478,9 @@ class PostManagerForm extends React.Component {
                         onBack={() => this.changeSlide("prev")}
                         onNext={() => this.changeSlide("next")}
                     >
-                        {editMode ? this.editModeButtons(true) : this.postModeButtons(true)}
+                        {editMode
+                            ? this.editModeButtons(true)
+                            : this.postModeButtons(true)}
                     </HorizontalStepper>
                 </div>
             </div>
@@ -487,7 +513,9 @@ class PostManagerForm extends React.Component {
                 </Grid>
 
                 <Grid item style={styles.nonResponsive.containers}>
-                    {editMode ? this.editModeButtons(false) : this.postModeButtons(false)}
+                    {editMode
+                        ? this.editModeButtons(false)
+                        : this.postModeButtons(false)}
                 </Grid>
             </React.Fragment>
         );
@@ -508,46 +536,50 @@ class PostManagerForm extends React.Component {
 }
 
 const ButtonContainer = (props) => {
-    const {children, classes, responsive} = props;
+    const { children, classes, responsive } = props;
     const patchedChildren = Array.isArray(children) ? children : [children];
     const numChildren = patchedChildren.length;
-    return(
+    return (
         <div style={styles.buttonContainer.container}>
             {patchedChildren.map((child, index) => {
                 let className = "";
-                if(index === 0){
+                if (index === 0) {
                     className = classes.rightGap;
-                }else if(index === numChildren - 1){
+                } else if (index === numChildren - 1) {
                     // this is kind of bad as it relies on styling (spacing) of in HorizontalStepper's Back button
-                    if(!responsive) className = classes.leftGap;
+                    if (!responsive) className = classes.leftGap;
                 }
                 return (
-                    <div key={`btnContainer${responsive ? "R" : "NR"}${index}`} style={styles.buttonContainer.item} className={className}>
+                    <div
+                        key={`btnContainer${responsive ? "R" : "NR"}${index}`}
+                        style={styles.buttonContainer.item}
+                        className={className}
+                    >
                         {child}
                     </div>
                 );
             })}
         </div>
-    )
-}
+    );
+};
 
 const useStyle = (theme) => ({
     rightGap: {
-        marginRight: theme.spacing(1)
+        marginRight: theme.spacing(1),
     },
     leftGap: {
-        marginLeft: theme.spacing(1)
-    }
+        marginLeft: theme.spacing(1),
+    },
 });
 
 const styles = {
     buttonContainer: {
         container: {
-            display: "flex"
+            display: "flex",
         },
         item: {
-            width: "100%"
-        }
+            width: "100%",
+        },
     },
     responsive: {
         container: {
@@ -660,14 +692,14 @@ const styles = {
 };
 
 ButtonContainer.propTypes = {
-    responsive: PropTypes.bool
-}
+    responsive: PropTypes.bool,
+};
 
 PostManagerForm.propTypes = {
     onSubmit: PropTypes.func,
     post: PropTypes.object,
     uploadImageCallback: PropTypes.func,
-    isSubmitting: PropTypes.bool
-}
+    isSubmitting: PropTypes.bool,
+};
 
 export default withStyles(useStyle)(PostManagerForm);

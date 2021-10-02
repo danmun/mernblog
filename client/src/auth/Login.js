@@ -8,25 +8,25 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import AlertBox, { variants } from "../common/AlertBox";
 import { login } from "../api/auth";
-import PropTypes from 'prop-types';
-import {isValid2faCode} from "../utils";
+import PropTypes from "prop-types";
+import { isValid2faCode } from "../utils";
 import CircularProgressButton from "../common/CircularProgressButton";
 
 const initialAlertBoxState = {
     open: false,
-    message: null
-}
+    message: null,
+};
 
 const initialFormData = {
     username: "",
     password: "",
-    code: ""
-}
+    code: "",
+};
 
 const initialFormState = {
     mfaPending: false,
-    isSubmitting: false
-}
+    isSubmitting: false,
+};
 
 const Login = (props) => {
     const classes = useStyles();
@@ -36,27 +36,30 @@ const Login = (props) => {
     const [formState, setFormState] = useState(initialFormState);
 
     const handleLogin = (message, success, mfa) => {
-        const isSubmitting = false, mfaPending = mfa;
-        if(mfa){ // mfa initiated
-            setFormState({isSubmitting, mfaPending});
+        const isSubmitting = false,
+            mfaPending = mfa;
+        if (mfa) {
+            // mfa initiated
+            setFormState({ isSubmitting, mfaPending });
             setAlertBox(initialAlertBoxState);
-        }else if(success){ // mfa code submitted OR login succeeded
+        } else if (success) {
+            // mfa code submitted OR login succeeded
             // clear password from state!
             setForm(initialFormData);
-            setFormState(initialFormState)
+            setFormState(initialFormState);
             setAlertBox(initialAlertBoxState);
             props.handleLogin();
-        }else{
-            setAlertBox({open: true, message: message});
+        } else {
+            setAlertBox({ open: true, message: message });
             setForm(initialFormData);
-            setFormState(initialFormState)
+            setFormState(initialFormState);
         }
-    }
+    };
 
     const onSubmit = async () => {
-        setFormState({...formState, isSubmitting: true})
+        setFormState({ ...formState, isSubmitting: true });
         login(form).then((res) => {
-            const {message, success, mfa} = res;
+            const { message, success, mfa } = res;
             handleLogin(message, success, mfa);
         });
     };
@@ -64,23 +67,29 @@ const Login = (props) => {
     const onTextChanged = (event) => {
         setForm({
             ...form,
-            [event.target.name]: event.target.value
+            [event.target.name]: event.target.value,
         });
     };
 
     const onCodeChanged = (event) => {
         const code = event.target.value;
-        if(!isValid2faCode(code)) return;
+        if (!isValid2faCode(code)) return;
         setForm({
             ...form,
-            code: event.target.value
+            code: event.target.value,
         });
     };
 
-    const Form = formState.mfaPending ? show2fa(form.code, onCodeChanged) : showLogin(form.username, form.password, onTextChanged);
-    const screenTitle = formState.mfaPending ? "2-factor authentication" : "Login";
+    const Form = formState.mfaPending
+        ? show2fa(form.code, onCodeChanged)
+        : showLogin(form.username, form.password, onTextChanged);
+    const screenTitle = formState.mfaPending
+        ? "2-factor authentication"
+        : "Login";
     // if field is blank, disable button; which fields determine this depends on login type (2fa/pw)
-    const buttonDisabled = formState.mfaPending ? !form.code : !form.password || !form.username;
+    const buttonDisabled = formState.mfaPending
+        ? !form.code
+        : !form.password || !form.username;
 
     return (
         // i don't know why this requires height of 85vh to get a height which fills parent
@@ -112,11 +121,11 @@ const Login = (props) => {
             </div>
         </Container>
     );
-}
+};
 
 const AuthScreen = (props) => {
-    const {title, classes, children} = props;
-    return(
+    const { title, classes, children } = props;
+    return (
         <div className={`${classes.paper} ${classes.centered}`}>
             <Avatar className={classes.avatar}>
                 <LockOutlinedIcon />
@@ -128,29 +137,57 @@ const AuthScreen = (props) => {
                 {children}
             </form>
         </div>
-    )
-}
+    );
+};
 
 const showLogin = (username, password, onTextChanged) => {
-    return(
+    return (
         <React.Fragment>
-            {renderInputFieldComponent(username, onTextChanged, "username", "Username", true, null)}
-            {renderInputFieldComponent(password, onTextChanged, "password", "Password", false, {type: "password"})}
+            {renderInputFieldComponent(
+                username,
+                onTextChanged,
+                "username",
+                "Username",
+                true,
+                null
+            )}
+            {renderInputFieldComponent(
+                password,
+                onTextChanged,
+                "password",
+                "Password",
+                false,
+                { type: "password" }
+            )}
         </React.Fragment>
-    )
-}
+    );
+};
 
 const show2fa = (code, onCodeChanged) => {
-    return(
+    return (
         <React.Fragment>
-            {renderInputFieldComponent(code, onCodeChanged, "code", "6-digit code", true, {maxLength: 6 })}
+            {renderInputFieldComponent(
+                code,
+                onCodeChanged,
+                "code",
+                "6-digit code",
+                true,
+                { maxLength: 6 }
+            )}
         </React.Fragment>
-    )
-}
+    );
+};
 
-const renderInputFieldComponent = (value, onTextChanged, name, label, autoFocus, inputProps) => {
-    if(!inputProps) inputProps = {};
-    return(
+const renderInputFieldComponent = (
+    value,
+    onTextChanged,
+    name,
+    label,
+    autoFocus,
+    inputProps
+) => {
+    if (!inputProps) inputProps = {};
+    return (
         <TextField
             variant={"outlined"}
             margin={"normal"}
@@ -164,8 +201,8 @@ const renderInputFieldComponent = (value, onTextChanged, name, label, autoFocus,
             inputProps={inputProps}
             onChange={onTextChanged}
         />
-    )
-}
+    );
+};
 
 // TODO: add back commented parts later, they enhance security and convenience
 const useStyles = makeStyles((theme) => ({
@@ -192,12 +229,12 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
     centered: {
-        textAlign: "center"
-    }
+        textAlign: "center",
+    },
 }));
 
 Login.propTypes = {
-    handleLogin: PropTypes.func
-}
+    handleLogin: PropTypes.func,
+};
 
 export default Login;

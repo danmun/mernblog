@@ -11,7 +11,6 @@ import {
     TextField,
     Grid,
     Button,
-    Icon,
     Hidden,
     Checkbox,
     FormControlLabel,

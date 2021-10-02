@@ -27,8 +27,13 @@ function Sidebar(props) {
     return (
         <div className={classes.sidebar}>
             <div className={classes.toolbar}>
-                <SocialIcon target="_blank" url="https://github.com/danmun" bgColor="#000000" className={classes.socialIcon}/>
-                <SocialIcon target="_blank" url="https://www.instagram.com/wandering.dnm/" className={classes.socialIcon}/>
+                <SocialIcon
+                    target="_blank"
+                    url="https://github.com/danmun"
+                    bgColor="#000000"
+                    className={classes.socialIcon}
+                />
+                {/*<SocialIcon target="_blank" url="https://www.instagram.com/wandering.dnm/" className={classes.socialIcon}/>*/}
             </div>
             <Divider />
 
@@ -43,7 +48,10 @@ function Sidebar(props) {
                             <ListItemText primary="Blog" />
                         </ListItem>
 
-                        <ListItem button onClick={() => navigator(PAGES.GALLERY)}>
+                        <ListItem
+                            button
+                            onClick={() => navigator(PAGES.GALLERY)}
+                        >
                             <ListItemIcon>
                                 <PhotoLibraryIcon />
                             </ListItemIcon>
@@ -73,12 +81,15 @@ function Sidebar(props) {
             >
                 {/* xs is NOT THE RIGHT WAY to center the items, but `alignItems` and `justify` don't work! */}
                 <Grid item xs={12}>
-                    <Avatar className={classes.bigAvatar} onClick={() => navigator(PAGES.LOGIN)}>
+                    <Avatar
+                        className={classes.bigAvatar}
+                        onClick={() => navigator(PAGES.LOGIN)}
+                    >
                         <PersonIcon />
                     </Avatar>
                 </Grid>
                 <div className={classes.lastSeen}>
-                    <LastSeen/>
+                    <LastSeen />
                 </div>
             </Grid>
         </div>
@@ -94,7 +105,7 @@ const styles = (theme) => ({
         justifyContent: "center",
     },
     sidebar: {
-        height: "100%"
+        height: "100%",
     },
     lastSeen: {
         position: "absolute",
@@ -119,7 +130,7 @@ const styles = (theme) => ({
 const useStyles = makeStyles(styles);
 
 Sidebar.propTypes = {
-    navigator: PropTypes.func
-}
+    navigator: PropTypes.func,
+};
 
 export default withRouter(Sidebar);
