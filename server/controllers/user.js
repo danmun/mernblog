@@ -5,8 +5,9 @@ const twoFactor = require("node-2fa");
 const User = require('../../models/UserSchema');
 const MFAEnrolment = require('../../models/MFAEnrolment');
 const STRINGS = require('../../locale/en').STRINGS;
-const DEFAULT_SECRET = "not_so_secret"
+const DEFAULT_SECRET = "not_so_secret";
 const SECRET = (process.env.SECRET || DEFAULT_SECRET).trim();
+const TOKEN_EXPIRY = (process.env.TOKEN_EXPIRY || "2h").trim();
 if(SECRET === DEFAULT_SECRET){
     console.error("!!!!!!!!!!!!!   Production server SECRET is not set in env   !!!!!!!!!!!!! - controllers/user.js")
 }
@@ -33,7 +34,7 @@ const login = async (req, res) => {
             } else {
                 // Issue token
                 const payload = { username, _id };
-                const token = jwt.sign(payload, SECRET, {expiresIn: '1h'});
+                const token = jwt.sign(payload, SECRET, {expiresIn: TOKEN_EXPIRY});
                 res.status(200).cookie('token', token, { httpOnly: true }).send({message: STRINGS.LOGIN_SUCCESS});
             }
         });

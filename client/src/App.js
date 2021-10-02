@@ -45,17 +45,6 @@ const springConfig = {
     delay: "0.1s", // so that the `Read Post` button shows its animation
 };
 
-const initialModal = {
-    open: false,
-    title: "",
-    galleryCreation: false,
-    postCreation: false,
-    postDeletion: false,
-    mfaSetup: false,
-    post: null,
-    isAbout: false,
-};
-
 // TODO: rename pageToShow to currentPage
 const initialSlideState = {
     slideIndex: 0,
@@ -75,8 +64,8 @@ class App extends React.Component {
             pageToShow: PAGES.FEED,
             mobileOpen: false,
             refreshFeed: false,
-            modal: initialModal,
             slideState: initialSlideState,
+            modal: Modals.INITIAL(),
         };
 
         this.onLogout = this.onLogout.bind(this);
@@ -90,7 +79,6 @@ class App extends React.Component {
         this.openDeletePost = this.openDeletePost.bind(this);
         this.openCreateAbout = this.openCreateAbout.bind(this);
         this.openEditAbout = this.openEditAbout.bind(this);
-        this.openPostManager = this.openPostManager.bind(this);
         this.closeDeletePost = this.closeDeletePost.bind(this);
         this.closePostManager = this.closePostManager.bind(this);
         this.onPostCreated = this.onPostCreated.bind(this);
@@ -101,7 +89,6 @@ class App extends React.Component {
         this.submitAlbum = this.submitAlbum.bind(this);
 
         this.navigator = this.navigator.bind(this);
-        this.setRefreshFeed = this.setRefreshFeed.bind(this);
 
         this.renderBlog = this.renderBlog.bind(this);
         this.renderGallery = this.renderGallery.bind(this);
@@ -164,47 +151,23 @@ class App extends React.Component {
     }
 
     openCreatePost() {
-        this.openPostManager("Create a post", null, false);
+        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.CREATE_POST, null, false)})
     }
 
     openEditPost(post) {
-        this.openPostManager("Edit your post", post, false);
+        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.EDIT_POST, post, false)})
     }
 
     openCreateAbout() {
-        this.openPostManager("Add an About section", null, true);
+        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.CREATE_ABOUT, null, true)})
     }
 
     openEditAbout(post) {
-        this.openPostManager("Edit the About section", post, true);
+        this.setState({modal: Modals.POST_MANAGER(Modals.POST_MANAGER_TYPES.EDIT_ABOUT, post, true)})
     }
 
     openDeletePost(post) {
-        console.log('Deleting post "' + post.title + '"');
-
-        this.setState({
-            modal: {
-                open: true,
-                title: "Are you sure you want to delete this post?",
-                galleryCreation: false,
-                postCreation: false,
-                postDeletion: true,
-                post: post,
-            },
-        });
-    }
-
-    openPostManager(title, post, isAbout) {
-        this.setState({
-            modal: {
-                open: true,
-                title: title,
-                galleryCreation: false,
-                postCreation: true,
-                post: post,
-                isAbout: isAbout
-            },
-        });
+        this.setState({modal: Modals.POST_DELETION(post)})
     }
 
     // this is only called when post was actually deleted
@@ -214,15 +177,7 @@ class App extends React.Component {
         this.setState({
             refreshFeed: true,
             slideState: initialSlideState,
-            modal: {
-                open: false,
-                title: "",
-                post: null,
-                galleryCreation: false,
-                postCreation: false,
-                postDeletion: false,
-                isAbout: false,
-            },
+            modal: Modals.INITIAL()
         });
         this.props.history.push("/");
     }
@@ -250,40 +205,14 @@ class App extends React.Component {
 
         this.setState({
             refreshFeed: stateChanged,
-            modal: {
-                open: false,
-                postCreation: false,
-                galleryCreation: false,
-                mfaSetup: false,
-                post: null,
-                isAbout: false
-            },
+            modal: Modals.INITIAL(),
             slideState: slideState,
         });
     }
 
-    openCreateAlbum() {
-        this.setState({
-            modal: {
-                open: true,
-                title: "Create an album",
-                galleryCreation: true,
-                postCreation: false,
-            },
-        });
-    }
+    openCreateAlbum() { this.setState({ modal: Modals.CREATE_ALBUM() }); }
 
-    openMfaSetup() {
-        this.setState({
-            modal: {
-                open: true,
-                title: "Set up 2-factor authentication",
-                mfaSetup: true,
-                galleryCreation: false,
-                postCreation: false,
-            },
-        });
-    }
+    openMfaSetup() { this.setState({ modal: Modals.MFA_SETUP() }); }
 
     submitAlbum(album) {
         let { title, tags, description, images } = album;
@@ -295,15 +224,7 @@ class App extends React.Component {
 
         // TODO: send album to server for storing
         // TODO: refresh gallery (by updating state)
-        this.setState({
-            modal: {
-                open: false,
-                title: "",
-                post: null,
-                galleryCreation: false,
-                postCreation: false,
-            },
-        });
+        this.setState({ modal: Modals.INITIAL() });
     }
 
     // TODO:CLEANUP note that this does not fire on external load, e.g. if we visit URL /about, state.pageToShow is still set to 1
@@ -345,10 +266,6 @@ class App extends React.Component {
                 mobileOpen: false,
             });
         }
-    }
-
-    setRefreshFeed(flag) {
-        this.setState({ refreshFeed: flag });
     }
 
     renderBlog() {
@@ -395,7 +312,7 @@ class App extends React.Component {
                             {/* TODO: change readPost={} to onRead={}*/}
                             <Feed
                                 refresh={this.state.refreshFeed}
-                                onRefresh={() => this.setRefreshFeed(false)}
+                                onRefresh={() => this.setState({ refreshFeed: false })}
                                 readPost={this.viewPostAndUpdateSlide}
                                 onEdit={onEdit}
                                 onDelete={onDelete}
@@ -627,5 +544,67 @@ const styles = {
         },
     },
 };
+
+class Modals {
+    static POST_MANAGER_TYPES = {
+        CREATE_POST: 0,
+        EDIT_POST: 1,
+        CREATE_ABOUT: 2,
+        EDIT_ABOUT: 3
+    };
+
+    static TITLES = {
+        CREATE_ALBUM: "Create an album",
+        MFA_SETUP: "Set up 2-factor authentication",
+        POST_DELETION: "Are you sure you want to delete this post?",
+        POST_MANAGER: [
+            "Create a post",
+            "Edit your post",
+            "Add an About section",
+            "Edit the About section"
+        ]
+    };
+
+    static POST_DELETION(post){
+        return {
+            open: true,
+            postDeletion: true,
+            title: this.TITLES.POST_DELETION,
+            post: post
+        };
+    }
+
+    static POST_MANAGER(type, post, isAbout){
+        return {
+            open: true,
+            postCreation: true,
+            title: type < this.TITLES.POST_MANAGER.length ? this.TITLES.POST_MANAGER[type] : "",
+            post: post,
+            isAbout: isAbout
+        };
+    }
+
+    static CREATE_ALBUM(){
+        return {
+            open: true,
+            galleryCreation: true,
+            title: this.TITLES.CREATE_ALBUM
+        };
+    }
+
+    static MFA_SETUP(){
+        return {
+            open: true,
+            mfaSetup: true,
+            title: this.TITLES.MFA_SETUP
+        };
+    }
+
+    // for consistency
+    static INITIAL(){
+        return {};
+    }
+
+}
 
 export default withStyles(useStyles)(withRouter(App));
