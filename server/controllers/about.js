@@ -25,7 +25,7 @@ const read = async (req, res) => {
 const update = async (req, res) => {
     const {id, draft} = req.query;
     const isDraft = draft === "true";
-    const {title, html, plaintext, tags, date} = req.body;
+    const {title, html, plaintext, displayEditDate, tags, date} = req.body;
 
     let post = await About.findById(id);
 
@@ -37,6 +37,7 @@ const update = async (req, res) => {
             post.plaintext = plaintext;
             post.tags = tags;
             post.editedOn = Date.now();
+            post.displayEditDate = displayEditDate;
             if(newlyPublished) post.publishedAt = date || Date.now();
 
             await post.save();
