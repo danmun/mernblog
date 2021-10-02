@@ -19,11 +19,11 @@ try {
 const imgur_client_id = process.env.IMGUR_CLIENT_ID || dev_config.IMGUR_CLIENT_ID
 
 const lastSeen = async (req, res) => {
-    const posts = await Post.find({}).sort({publishedAt: -1}).limit(1);
-
+    const post = await Post.find({publishedAt: {$ne: null}}).sort({publishedAt: -1}).limit(1)[0];
+    const date = post.publishedAt ? post.publishedAt : post.createdOn;
     const lastPost = {
-        date: moment(posts[0].createdOn).fromNow(),
-        title: posts[0].title
+        date: moment(date).fromNow(),
+        title: post.title
     }
 
     const lastCommit = {

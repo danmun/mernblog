@@ -187,7 +187,7 @@ class Post extends React.Component {
     }
 
     dateToStr(date) {
-        return new Date(date).toLocaleString();
+        return new Date(date).toLocaleString("ja-JP");
     }
 
     render() {

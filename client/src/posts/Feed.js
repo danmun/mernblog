@@ -131,7 +131,7 @@ class Feed extends React.Component {
                 <React.Fragment>
                     {this.state.posts.map((post, posti) => {
                         const date = post.publishedAt
-                            ? new Date(post.publishedAt).toLocaleString()
+                            ? new Date(post.publishedAt).toLocaleString("ja-JP")
                             : "DRAFT";
                         const style = post.publishedAt ? {} : { opacity: 0.5 };
                         const readLabel = post.publishedAt
