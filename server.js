@@ -55,8 +55,9 @@ require("dotenv").config();
 
 // NOTE: heroku filesystem is not persistent; not suitable for serving user uploaded content
 app.use(express.json()); // same as express.bodyParser
-app.use(express.static(path.join(__dirname, "client", "build")));
-app.use(express.static(path.join(__dirname, "client", "public", "static")));
+// index fix based on https://stackoverflow.com/a/46204364
+app.use(express.static(path.join(__dirname, "client", "build"),{ index : false }));
+app.use(express.static(path.join(__dirname, "client", "public", "static"), { index : false }));
 app.use(express.static(path.join(__dirname, "photos")));
 app.use(cookieParser());
 app.set('json spaces', 2);
@@ -66,7 +67,13 @@ app.use('/api', api);
 // should always be last route in this file
 // so that it catches non-api routes (e.g. request to load the spa)
 app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    if(process.env.BLOG_HEROKUAPP_HOSTNAME){
+        if(req.hostname.includes(process.env.BLOG_HEROKUAPP_HOSTNAME)){
+            return res.redirect(process.env.BLOG_HOSTNAME);
+        }
+    }else{
+        res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    }
 });
 /**
  * START APP
