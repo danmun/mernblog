@@ -30,18 +30,17 @@ const helmetConfig = {
         directives: {
             ...helmet.contentSecurityPolicy.getDefaultDirectives(),
             // https://stackoverflow.com/a/65894606
-            "script-src": ["'self'", "http:", "'unsafe-inline'"],
+            "script-src": ["'self'", "'unsafe-inline'"],
             // https://stackoverflow.com/a/65334628
             "img-src": [
                 "'self'",
                 "data:",
-                "http:",
                 "i.imgur.com",
                 "localhost",
                 "drive.google.com",
                 "*.googleusercontent.com",
                 "docs.google.com",
-                "http://wanderingblog.net",
+                "wanderingblog.herokuapp.com",
                 "wanderingblog-playground.herokuapp.com"]
         },
     },
