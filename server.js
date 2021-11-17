@@ -40,7 +40,7 @@ const helmetConfig = {
                 "drive.google.com",
                 "*.googleusercontent.com",
                 "docs.google.com",
-                "wanderingblog.herokuapp.com",
+                "wanderingblog.net",
                 "wanderingblog-playground.herokuapp.com"]
         },
     },
