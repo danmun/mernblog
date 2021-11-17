@@ -30,11 +30,12 @@ const helmetConfig = {
         directives: {
             ...helmet.contentSecurityPolicy.getDefaultDirectives(),
             // https://stackoverflow.com/a/65894606
-            "script-src": ["'self'", "'unsafe-inline'"],
+            "script-src": ["'self'", "http:", "'unsafe-inline'"],
             // https://stackoverflow.com/a/65334628
             "img-src": [
                 "'self'",
                 "data:",
+                "http:",
                 "i.imgur.com",
                 "localhost",
                 "drive.google.com",
