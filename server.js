@@ -46,6 +46,8 @@ const helmetConfig = {
     },
 }
 
+delete helmetConfig.contentSecurityPolicy.directives['upgrade-insecure-requests'];
+
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter
