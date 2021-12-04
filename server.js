@@ -45,7 +45,7 @@ const helmetConfig = {
         },
     },
 }
-
+// TODO: delete this line once we have SSL cert
 delete helmetConfig.contentSecurityPolicy.directives['upgrade-insecure-requests'];
 
 const upload = multer({
