@@ -111,6 +111,17 @@ class Feed extends React.Component {
     }
 
     /**
+     * Handle click on the Post tile's Read button.
+     * Cancel event that results from the href that we also have on the button.
+     * @param event
+     * @param post
+     */
+    onPostTileClick(event, post) {
+        event.preventDefault();
+        this.props.readPost("next", post)
+    }
+
+    /**
      * In admin, we sort by createdOn but display publishedDate if available.
      * This might be confusing in extreme cases (e.g. 2 posts with same creation date but different publish dates).
      * Note, it is near impossible, and very unusual to create 2 posts at the exact same time.
@@ -176,12 +187,12 @@ class Feed extends React.Component {
                                             <Grid item>
                                                 <Button
                                                     size="small"
-                                                    onClick={() =>
-                                                        this.props.readPost(
-                                                            "next",
-                                                            post
-                                                        )
-                                                    }
+                                                    // This href + e.preventDefault() in onClick is a little hack
+                                                    // for making the site Google-scrapeable while keeping the current
+                                                    // animation/transition system. Refactoring this is on the roadmap.
+                                                    // As per https://developers.google.com/search/docs/advanced/guidelines/links-crawlable.
+                                                    href={`/post/${post._id}`}
+                                                    onClick={(e) => this.onPostTileClick(e, post)}
                                                 >
                                                     {readLabel}
                                                 </Button>
