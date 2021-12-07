@@ -49,7 +49,7 @@ class Post extends React.Component {
     }
 
     setPageTitle(title) {
-        document.title = `wanderingdnm | ${title}`;
+        document.title = `wanderingdnm blog | ${title}`;
     }
 
     initEditor(post) {
