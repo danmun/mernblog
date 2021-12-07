@@ -33,6 +33,7 @@ class Post extends React.Component {
         this.publishedDateComponent = this.publishedDateComponent.bind(this);
         this.editedDateComponent = this.editedDateComponent.bind(this);
         this.dateToStr = this.dateToStr.bind(this);
+        this.setPageTitle = this.setPageTitle.bind(this);
     }
 
     componentDidMount() {
@@ -45,6 +46,10 @@ class Post extends React.Component {
                 }
             });
         }
+    }
+
+    setPageTitle(title) {
+        document.title = `wanderingdnm | ${title}`;
     }
 
     initEditor(post) {
@@ -65,6 +70,7 @@ class Post extends React.Component {
             ContentState.createFromBlockArray(content.contentBlocks)
         );
 
+        this.setPageTitle(post.title);
         return { post, editorState, error };
     }
 
