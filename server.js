@@ -69,9 +69,9 @@ app.use('/api', api);
 // should always be last route in this file
 // so that it catches non-api routes (e.g. request to load the spa)
 app.get("*", (req, res) => {
-    if(process.env.BLOG_HEROKUAPP_HOSTNAME){
-        if(req.hostname.includes(process.env.BLOG_HEROKUAPP_HOSTNAME)){
-            return res.redirect(process.env.BLOG_HOSTNAME);
+    if(process.env.HEROKUAPP_HOSTNAME){
+        if(req.hostname.includes(process.env.HEROKUAPP_HOSTNAME)){
+            res.status(418).send({hello: "Nothing here... hmm..."});
         }
     }else{
         res.sendFile(path.join(__dirname, "client", "build", "index.html"));
