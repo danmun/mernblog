@@ -30,7 +30,6 @@ class Feed extends React.Component {
         this.renderEditIcon = this.renderEditIcon.bind(this);
         this.renderDeleteIcon = this.renderDeleteIcon.bind(this);
         this.shortenTextTo = this.shortenTextTo.bind(this);
-        this.setPageTitle = this.setPageTitle.bind(this);
         // this.truncateTextTo = this.truncateTextTo.bind(this);
     }
 
@@ -60,12 +59,7 @@ class Feed extends React.Component {
     }
 
     componentDidMount() {
-        this.setPageTitle();
         this.fetch();
-    }
-    
-    setPageTitle() {
-        document.title = "wanderingdnm blog | Feed"
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {

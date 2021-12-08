@@ -25,7 +25,6 @@ const About = (props) => {
         });
     }, []);
 
-    setPageTitle();
     // the passed post enjoys priority over the fetched post, as it is more up-to-date (e.g. edited/created)
     // it must come first in the conditional assignment
     const postToShow = post || about.post;
@@ -39,10 +38,6 @@ const About = (props) => {
         </React.Fragment>
     );
 };
-
-const setPageTitle = () => {
-    document.title = "wanderingdnm blog | About"
-}
 
 /**
  * Show button to create an About post.

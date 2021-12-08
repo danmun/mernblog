@@ -39,6 +39,8 @@ export const PAGES_URLS = {
     4: "/login",
 };
 
+const BLOG_TITLE = "wanderingdnm blog";
+
 const springConfig = {
     duration: "1s",
     easeFunction: "cubic-bezier(0.1, 0.35, 0.2, 1)",
@@ -94,6 +96,11 @@ class App extends React.Component {
         this.renderGallery = this.renderGallery.bind(this);
         this.renderAbout = this.renderAbout.bind(this);
         this.renderLogin = this.renderLogin.bind(this);
+        this.setPageTitle = this.setPageTitle.bind(this);
+    }
+
+    setPageTitle(pageTitle) {
+        document.title = `${pageTitle} | ${BLOG_TITLE}`
     }
 
     componentDidMount() {
@@ -133,6 +140,7 @@ class App extends React.Component {
             this.props.history.push({ pathname: `/post/${post._id}` });
         } else if (newDirection === "prev") {
             // don't use goBack(), if the user came via a URL, goBack() will literally return to the last page the user visited
+            this.setPageTitle("Feed");
             this.props.history.push({ pathname: `/` });
         }
     }
@@ -299,13 +307,13 @@ class App extends React.Component {
     renderBlog() {
         let onEdit = this.state.isAdmin ? this.openEditPost : null;
         let onDelete = this.state.isAdmin ? this.openDeletePost : null;
-        let external_visit =
+        let isExternalVisit =
             this.props.location.pathname.includes("post") &&
             !this.state.slideState.itemToShow;
 
         // if post is requesed from an externally clicked link (e.g. someone gave me a link and I click it)
         // then display just the post, otherwise display the feed!!
-        if (external_visit) {
+        if (isExternalVisit) {
             // dynamic route, let it handle via the router so we can easily access :id
             // post itself will be fetched via API within the Post component, since we don't pass a post to it during external request
             return (
@@ -317,12 +325,16 @@ class App extends React.Component {
                                 onEdit={onEdit}
                                 onDelete={onDelete}
                                 readPost={this.viewPostAndUpdateSlide}
+                                setPageTitle={this.setPageTitle}
                             />
                         );
                     }}
                 />
             );
         } else {
+            const {slideState} = this.state;
+            const isOnPostPage = slideState.itemToShow && slideState.slideIndex === 1
+            this.setPageTitle(isOnPostPage ? slideState.itemToShow.title : "Feed");
             return (
                 <SwipeableViews
                     disabled
@@ -359,6 +371,7 @@ class App extends React.Component {
                             {/* slideState.itemToShow && <Post ... /> does not work here because itemToShow becomes 0
                         if first post is selected, and 0 is not a truthy value,
                         so the first post will never be shown */}
+                            {/*we must allow it to render at all times otherwise animation will be jagged (post disappears before it could slide back to feed*/}
                             {this.state.slideState.itemToShow && (
                                 <Post
                                     onEdit={onEdit}
@@ -375,10 +388,11 @@ class App extends React.Component {
     }
 
     renderGallery() {
-        let external_visit =
+        this.setPageTitle("Gallery");
+        let isExternalVisit =
             this.props.location.pathname.includes("gallery/album") &&
             !this.state.slideState.itemToShow;
-        if (external_visit) {
+        if (isExternalVisit) {
             // this is dirty and so is the same thing we did for Post routing, refactor ASAP
             return (
                 // note the optional /imdIdx route denoted by question mark
@@ -438,6 +452,7 @@ class App extends React.Component {
     }
 
     renderAbout() {
+        this.setPageTitle("About");
         const { isAdmin, slideState } = this.state;
         const onCreate = isAdmin ? this.openCreateAbout : null;
         const onEdit = isAdmin ? this.openEditAbout : null;

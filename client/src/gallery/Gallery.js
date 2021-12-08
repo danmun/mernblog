@@ -32,16 +32,10 @@ class Gallery extends React.Component {
         this.fetch = this.fetch.bind(this);
         this.showGallery = this.showGallery.bind(this);
         this.downloadAlbum = this.downloadAlbum.bind(this);
-        this.setPageTitle = this.setPageTitle.bind(this);
     }
 
     componentDidMount() {
-        this.setPageTitle();
         this.fetch();
-    }
-
-    setPageTitle() {
-        document.title = "wanderingdnm blog | Gallery"
     }
 
     fetch() {
