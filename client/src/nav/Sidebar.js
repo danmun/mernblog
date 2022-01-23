@@ -33,6 +33,7 @@ function Sidebar(props) {
                     bgColor="#000000"
                     className={classes.socialIcon}
                 />
+                <SocialIcon target="_blank" url="https://twitter.com/wanderingdnm" className={classes.socialIcon}/>
                 {/*<SocialIcon target="_blank" url="https://www.instagram.com/wandering.dnm/" className={classes.socialIcon}/>*/}
             </div>
             <Divider />
