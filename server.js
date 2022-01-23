@@ -38,6 +38,7 @@ const helmetConfig = {
                 "i.imgur.com",
                 "localhost",
                 "drive.google.com",
+                "chart.googleapis.com",
                 "*.googleusercontent.com",
                 "docs.google.com",
                 "wanderingblog.herokuapp.com",
