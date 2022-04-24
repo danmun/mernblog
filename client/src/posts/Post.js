@@ -1,7 +1,7 @@
 import "../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "../style/editor.css";
 import React from "react";
-import { Paper, Grid, Typography, IconButton } from "@material-ui/core";
+import {Paper, Grid, Typography, IconButton, Hidden} from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 import DeletePostIcon from "@material-ui/icons/Delete";
@@ -29,6 +29,8 @@ class Post extends React.Component {
         this.initEditor = this.initEditor.bind(this);
         this.renderDeleteIcon = this.renderDeleteIcon.bind(this);
         this.renderEditIcon = this.renderEditIcon.bind(this);
+        this.renderReadOnlyEditor = this.renderReadOnlyEditor.bind(this);
+        this.renderTitleBar = this.renderTitleBar.bind(this);
         this.showPost = this.showPost.bind(this);
         this.publishedDateComponent = this.publishedDateComponent.bind(this);
         this.editedDateComponent = this.editedDateComponent.bind(this);
@@ -110,16 +112,34 @@ class Post extends React.Component {
         );
     }
 
-    showPost(editor) {
-        const { classes } = this.props;
-        return (
+    renderReadOnlyEditor(editorState, isResponsive){
+        const { typography } = styles.editor;
+        const containerStyle = isResponsive ? typography.responsive : typography.nonResponsive
+        const responsiveEditor = isResponsive ? "-responsive" : ""
+        return(
+            <Typography
+                style={containerStyle}
+                component="div"
+            >
+                <Editor
+                    editorClassName={`wysiwyg-editor-readOnly${responsiveEditor}`}
+                    editorState={editorState}
+                    readOnly={true}
+                    toolbarHidden={true}
+                    style={styles.editor.self}
+                />
+            </Typography>
+        )
+    }
+    
+    renderTitleBar(editor, classes, isResponsive){
+        const backButtonWidth = isResponsive ? 12 : 1;
+        const titleBarWidth = isResponsive ? 12 : 11;
+        return(
             <React.Fragment>
-                {" "}
-                {/* this padding should match with padding in app.js' swipeableview */}
                 <Grid container spacing={1}>
-                    {/* TODO: ideally the post itself should not contain any buttons, should be passed as children*/}
                     {this.props.readPost && (
-                        <Grid item xs={1} style={styles.title.nav.container}>
+                        <Grid item xs={backButtonWidth} style={styles.title.nav.container}>
                             <Button
                                 onClick={() =>
                                     this.props.readPost("prev", editor.post)
@@ -131,7 +151,7 @@ class Post extends React.Component {
                             </Button>
                         </Grid>
                     )}
-                    <Grid item xs={this.props.readPost == null ? 12 : 11}>
+                    <Grid item xs={this.props.readPost == null ? 12 : titleBarWidth}>
                         <Paper
                             style={styles.title.details.container}
                             elevation={1}
@@ -166,22 +186,32 @@ class Post extends React.Component {
                         </Paper>
                     </Grid>
                 </Grid>
+            </React.Fragment>
+        )
+    }
+
+    showPost(editor) {
+        const { classes } = this.props;
+        return (
+            <React.Fragment>
+                {" "}
+                {/* this padding should match with padding in app.js' swipeableview */}
+                <Hidden mdUp implementation="js">
+                    {this.renderTitleBar(editor, classes, true)}
+                </Hidden>
+                <Hidden smDown implementation="js">
+                    {this.renderTitleBar(editor, classes, false)}
+                </Hidden>
                 <br />
                 <Grid container style={styles.editor.container}>
                     <Grid item style={styles.editor.itemContainer}>
                         <Paper elevation={1} className={classes.body}>
-                            <Typography
-                                style={styles.editor.typography}
-                                component="div"
-                            >
-                                <Editor
-                                    editorClassName="wysiwyg-editor-readOnly"
-                                    editorState={editor.editorState}
-                                    readOnly={true}
-                                    toolbarHidden={true}
-                                    style={styles.editor.self}
-                                />
-                            </Typography>
+                            <Hidden mdUp implementation="js">
+                                {this.renderReadOnlyEditor(editor.editorState, true)}
+                            </Hidden>
+                            <Hidden smDown implementation="js">
+                                {this.renderReadOnlyEditor(editor.editorState, false)}
+                            </Hidden>
                         </Paper>
                     </Grid>
                 </Grid>
@@ -280,10 +310,15 @@ const styles = {
             minWidth: "100%",
         },
         typography: {
-            whiteSpace: "pre-wrap",
-            // TODO:CLEANUP modify these margins to reduce excessive content squeeze on mobile
-            marginLeft: "15%",
-            marginRight: "15%",
+            // Modify these margins to adjust content squeeze on mobile
+            responsive: {
+                whiteSpace: "pre-wrap"
+            },
+            nonResponsive: {
+                whiteSpace: "pre-wrap",
+                marginLeft: "15%",
+                marginRight: "15%",
+            }
         },
         self: {
             overflow: "visible",

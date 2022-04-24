@@ -26,7 +26,7 @@ function Album(props) {
                     {album.title}
                     <br />
                     <Typography color="textSecondary">
-                        {album.createdOn}
+                        {dateToStr(album.createdOn)}
                     </Typography>
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
@@ -37,6 +37,10 @@ function Album(props) {
             <CardActions>{props.children}</CardActions>
         </Card>
     );
+}
+
+function dateToStr(date){
+    return new Date(date).toLocaleString("ja-JP");
 }
 
 const useStyles = makeStyles({

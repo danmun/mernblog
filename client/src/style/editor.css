@@ -4,8 +4,6 @@ Styles for displaying the content within a live post editor.
 .wysiwyg-editor {
     min-height: 40vh;
     max-height: 40vh;
-    min-width: 70vw;
-    max-width: 70vw;
     overflow-y: scroll;
     border: 1px solid #f1f1f1;
     cursor: text;
@@ -37,10 +35,6 @@ TODO: use mediaquery to make maxwidth bigger for smaller devices
     max-width: 25vw;
 }
 
-.wysiwyg-editor-responsive img {
-    max-width: 40vw;
-}
-
 /*
 Styles for displaying posts using a read-only editor.
 */
@@ -51,10 +45,17 @@ Styles for displaying posts using a read-only editor.
 }
 
 /*
-TODO: use mediaquery to make maxwidth bigger for smaller devices
-*/
+ * Image sizing for Post page (for image style in editor see non-readonly section above)
+ */
 .wysiwyg-editor-readOnly img {
     max-width: 25vw;
+}
+
+/* TODO: If above ~25vw, causes an issue on medium-sized mobile devices (e.g. ipad)
+ *      when switching from post page back to feed, the feed width expands slightly.
+ */
+.wysiwyg-editor-readOnly-responsive img {
+    max-width: 50vw;
 }
 
 /*
