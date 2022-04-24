@@ -75,6 +75,8 @@ class App extends React.Component {
         this.readPost = this.readPost.bind(this);
         this.viewAlbumAndUpdateSlide = this.viewAlbumAndUpdateSlide.bind(this);
         this.viewPostAndUpdateSlide = this.viewPostAndUpdateSlide.bind(this);
+        this.viewPostAndUpdateSlideExternalVisit = this.viewPostAndUpdateSlideExternalVisit.bind(this);
+        this.clearPostOnTransitionEnd = this.clearPostOnTransitionEnd.bind(this);
 
         this.openCreatePost = this.openCreatePost.bind(this);
         this.openEditPost = this.openEditPost.bind(this);
@@ -143,6 +145,13 @@ class App extends React.Component {
             this.setPageTitle("Feed");
             this.props.history.push({ pathname: `/` });
         }
+    }
+
+    viewPostAndUpdateSlideExternalVisit(newDirection, post) {
+        // When clicking "Back" button in a post page that was loaded via link
+        // the slide animation doesn't work anyway, so we can just null the post here
+        // without affecting the slide animation
+        this.viewPostAndUpdateSlide(newDirection, null);
     }
 
     viewAlbumAndUpdateSlide(newDirection, post) {
@@ -304,6 +313,16 @@ class App extends React.Component {
         }
     }
 
+    /**
+     * Reset the slide state when the slide animation
+     * ends after transitioning from post page to feed.
+     */
+    clearPostOnTransitionEnd(){
+        if(this.state.slideState.slideIndex === 0){
+            this.setState({slideState: initialSlideState})
+        }
+    }
+
     renderBlog() {
         let onEdit = this.state.isAdmin ? this.openEditPost : null;
         let onDelete = this.state.isAdmin ? this.openDeletePost : null;
@@ -324,7 +343,7 @@ class App extends React.Component {
                             <Post
                                 onEdit={onEdit}
                                 onDelete={onDelete}
-                                readPost={this.viewPostAndUpdateSlide}
+                                readPost={this.viewPostAndUpdateSlideExternalVisit}
                                 setPageTitle={this.setPageTitle}
                             />
                         );
@@ -338,6 +357,7 @@ class App extends React.Component {
             return (
                 <SwipeableViews
                     disabled
+                    onTransitionEnd={this.clearPostOnTransitionEnd}
                     springConfig={springConfig}
                     index={this.state.slideState.slideIndex}
                     style={styles.slides.blog.container}

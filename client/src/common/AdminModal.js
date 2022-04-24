@@ -81,7 +81,7 @@ const style = {
         alignItems: "center",
         justifyContent: "center",
         margin: "auto",
-        width: "80vw",
+        width: "73vw"
     },
     modal: {
         container: {

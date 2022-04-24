@@ -109,13 +109,13 @@ class Gallery extends React.Component {
                                     >
                                         <ArrowBack />
                                     </Button>
-                                    <CircularProgressButton
-                                        loading={this.state.isDownloading}
-                                        onClick={() => this.downloadAlbum(albumToShow._id)}
-                                    >
-                                        Download
-                                        <Icon>save</Icon>
-                                    </CircularProgressButton>
+                                    {/*<CircularProgressButton*/}
+                                    {/*    loading={this.state.isDownloading}*/}
+                                    {/*    onClick={() => this.downloadAlbum(albumToShow._id)}*/}
+                                    {/*>*/}
+                                    {/*    Download*/}
+                                    {/*    <Icon>save</Icon>*/}
+                                    {/*</CircularProgressButton>*/}
                                 </div>
                             </PhotoViewer>
                         ) : (
