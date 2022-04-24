@@ -20,9 +20,7 @@ body.modal-open div.blurrable {
     -ms-filter: blur(2px);
     filter: blur(2px);
 
-    /*TODO: host this on own server, do not rely on UNKOWN third party hosters*/
-    filter: url("https://wanderingblog.herokuapp.com/blur".svg#blur);
-    /*! TODO: replace the above !*/
+    filter: url("http://wanderingblog.net/blur".svg#blur);
 
     filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='2');
 }
