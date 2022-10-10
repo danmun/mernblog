@@ -13,7 +13,7 @@ import Spinner from "../common/Spinner";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import AlertBox, { variants } from "../common/AlertBox";
-import { fetchPost } from "../api/posts";
+import { fetchPostBySlug } from "../api/posts";
 import PropTypes from "prop-types";
 
 class Post extends React.Component {
@@ -39,7 +39,7 @@ class Post extends React.Component {
 
     componentDidMount() {
         if (!this.props.post) {
-            fetchPost(this.props.match.params.id).then((json) => {
+            fetchPostBySlug(this.props.match.params.slug).then((json) => {
                 if (json.error) {
                     this.setState({ error: json.error });
                 } else {
