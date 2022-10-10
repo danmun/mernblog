@@ -6,6 +6,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const api = require('./server/routes/api');
+const redirectIdBasedLinks = require('./server/middleware/redirects')
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -65,6 +66,7 @@ app.use(express.static(path.join(__dirname, "photos")));
 app.use(cookieParser());
 app.set('json spaces', 2);
 
+app.use(redirectIdBasedLinks)
 app.use(helmet(helmetConfig));
 app.use('/api', api);
 // should always be last route in this file
