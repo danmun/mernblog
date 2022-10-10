@@ -37,7 +37,8 @@ const index = async (req, res) => {
 const create = async (req, res) => {
     const isDraft = req.query.draft === "true";
     // TODO:CLEANUP validate form content
-    const post = new Post(Post.fromRequest(req.user._id, req.body, isDraft));
+    const postParams = await Post.fromRequest(req.user._id, req.body, isDraft);
+    const post = new Post(postParams);
 
     try {
         await post.save();
@@ -67,15 +68,7 @@ const create = async (req, res) => {
     }
 }
 
-/**
- * Show a single post.
- * @param req
- * @param res
- * @returns {NodeJS.Global.Promise<void>}
- */
-const read = async (req, res) =>  {
-    const {id} = req.query;
-    const query = req.user ? {_id: id} : {_id: id, publishedAt: {$ne: null}};
+const readHelper = async (query, req, res) => {
     const post = await Post.findOne(query);
     if(post){
         try {
@@ -90,6 +83,31 @@ const read = async (req, res) =>  {
             res.status(500).send(err);
         }
     }
+}
+
+
+/**
+ * Return a single post given its ID.
+ * @param req
+ * @param res
+ * @returns {NodeJS.Global.Promise<void>}
+ */
+const readById = async (req, res) =>  {
+    const {id} = req.query;
+    const query = req.user ? {_id: id} : {_id: id, publishedAt: {$ne: null}};
+    readHelper(query, req, res);
+}
+
+/**
+ * Return a single post given its slug.
+ * @param req
+ * @param res
+ * @returns {NodeJS.Global.Promise<void>}
+ */
+const readBySlug = async (req, res) =>  {
+    const {slug} = req.query;
+    const query = req.user ? {slug} : {slug: slug, publishedAt: {$ne: null}};
+    readHelper(query, req, res);
 }
 
 /**
@@ -169,7 +187,8 @@ const del = async (req, res) => {
 module.exports = {
     index: index,
     create: create,
-    read: read,
+    readById: readById,
+    readBySlug: readBySlug,
     update: update,
     // although object properties are allowed to be reserved keywords, like `delete`,
     // it's best to avoid using reserved keywords as names entirely

@@ -35,7 +35,9 @@
     "moment": "2.29.1",
     "mongo-migrate": "2.0.2",
     "node-2fa": "2.0.2",
-    "helmet": "4.6.0"
+    "helmet": "4.6.0",
+    "slugify": "^1.6.5",
+    "shortid": "^2.2.16"
   },
   "devDependencies": {
     "nodemon": "^1.19.3"

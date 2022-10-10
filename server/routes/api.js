@@ -28,7 +28,7 @@ apiRouter.delete(resourceRoutes.MfaEnrolment, auth.enforce, user.remove2fa);
 // auth.enforce guarantees that req.user exists,
 // otherwise it would throw a 401 and the next function in the chain (e.g. post.create) would not execute
 apiRouter.get('/feed', auth.check, post.index);
-apiRouter.get(resourceRoutes.Post, auth.check, post.read);
+apiRouter.get(resourceRoutes.Post, auth.check, post.readBySlug);
 apiRouter.post(resourceRoutes.Post, auth.enforce, post.create);
 apiRouter.put(resourceRoutes.Post, auth.enforce, post.update);
 apiRouter.delete(resourceRoutes.Post, auth.enforce, post.del);

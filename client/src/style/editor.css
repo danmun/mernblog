@@ -4,6 +4,8 @@ Styles for displaying the content within a live post editor.
 .wysiwyg-editor {
     min-height: 40vh;
     max-height: 40vh;
+    min-width: 70vw;
+    max-width: 70vw;
     overflow-y: scroll;
     border: 1px solid #f1f1f1;
     cursor: text;

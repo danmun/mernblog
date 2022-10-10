@@ -139,7 +139,7 @@ class App extends React.Component {
         let slideState = this.readPost(newDirection, post);
         this.setState({ slideState: slideState });
         if (newDirection === "next") {
-            this.props.history.push({ pathname: `/post/${post._id}` });
+            this.props.history.push({ pathname: `/post/${post.slug}` });
         } else if (newDirection === "prev") {
             // don't use goBack(), if the user came via a URL, goBack() will literally return to the last page the user visited
             this.setPageTitle("Feed");
@@ -334,10 +334,11 @@ class App extends React.Component {
         // then display just the post, otherwise display the feed!!
         if (isExternalVisit) {
             // dynamic route, let it handle via the router so we can easily access :id
-            // post itself will be fetched via API within the Post component, since we don't pass a post to it during external request
+            // post itself will be fetched via API within the Post component, since we don't pass a Post object as prop
+            // during an external request (Post page loads and calls API with slug)
             return (
                 <Route
-                    path="/post/:id"
+                    path="/post/:slug"
                     render={() => {
                         return (
                             <Post

@@ -190,7 +190,7 @@ class Feed extends React.Component {
                                                     // for making the site Google-scrapeable while keeping the current
                                                     // animation/transition system. Refactoring this is on the roadmap.
                                                     // As per https://developers.google.com/search/docs/advanced/guidelines/links-crawlable.
-                                                    href={`/post/${post._id}`}
+                                                    href={`/post/${post.slug}`}
                                                     onClick={(e) => this.onPostTileClick(e, post)}
                                                 >
                                                     {readLabel}

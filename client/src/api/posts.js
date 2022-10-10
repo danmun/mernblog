@@ -1,7 +1,15 @@
 let baseUrl = require("./config.json").baseUrl;
 
-export async function fetchPost(id) {
+export async function fetchPostById(id) {
     return await fetch(`${baseUrl}/post?id=${id}`, {
+        credentials: "include",
+    })
+        .then((raw) => raw.json())
+        .then((json) => json);
+}
+
+export async function fetchPostBySlug(id) {
+    return await fetch(`${baseUrl}/post?slug=${id}`, {
         credentials: "include",
     })
         .then((raw) => raw.json())
