@@ -24,7 +24,7 @@
         "react-router-dom": "^5.1.2",
         "react-draft-wysiwyg": "^1.13.2",
         "react-image-lightbox": "^5.1.0",
-        "react-scripts": "3.1.0",
+        "react-scripts": "5.0.1",
         "react-social-icons": "^4.1.0",
         "react-swipeable-views": "^0.13.3",
         "react-text-truncate": "^0.15.0",
